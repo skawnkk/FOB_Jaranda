@@ -18,7 +18,7 @@ export const userMockData = [
   {
     id: 2,
     pw: "123az",
-    name: "농담곰2",
+    name: "농담곰1",
     email: "2nong@gmail.com",
     address: "2경기도 성남시 뭐시기",
     dateOfBirth: "19800112",
@@ -28,7 +28,7 @@ export const userMockData = [
   {
     id: 3,
     pw: "123az",
-    name: "농담곰3",
+    name: "농담곰1",
     email: "3nong@gmail.com",
     address: "3경기도 성남시 뭐시기",
     dateOfBirth: "19880113",
@@ -73,7 +73,7 @@ export const userMockData = [
     address: "7경기도 성남시 뭐시기",
     dateOfBirth: "19701207",
     creditCardNum: "5678909012123636",
-    authority: authority.admin,
+    authority: authority.parent,
   },
   {
     id: 8,
