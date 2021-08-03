@@ -22,6 +22,9 @@ const GlobalStyles = createGlobalStyle`
     background-color: transparent;
     border: none;
     outline: none;
+  }
+
+  button {
     cursor: pointer;
   }
 

@@ -32,15 +32,14 @@ const Input = ({
 };
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: ${({ width }) => width || "100%"};
   padding: 10px 0;
 `;
 
 const InputWrapper = styled.div`
   position: relative;
-
   input {
-    width: ${({ width }) => width || "100%"};
+    width: 100%;
     height: 40px;
     padding-left: 8px;
     font-size: 16px;
@@ -68,7 +67,7 @@ const InputWrapper = styled.div`
   svg {
     position: absolute;
     right: 16px;
-    width: 16px;
+    width: 18px;
     height: 40px;
   }
 `;
