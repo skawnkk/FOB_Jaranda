@@ -20,11 +20,9 @@ export const USERDATA_TEMPLATE = {
   dateOfBirth: "",
   creditCardNum: "",
   authority: {
-    auth: {
-      admin: 0,
-      teacher: 1,
-      parent: 2,
-    },
+    admin: 0,
+    teacher: 1,
+    parent: 2,
   },
 };
 
