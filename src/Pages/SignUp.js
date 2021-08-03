@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import Input from "Components/common/Input";
 import checkIcon from "assets/svg/check.svg";
+import Modal from "Components/common/Modal/Modal";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,15 @@ const SignUp = () => {
   const [address, setAddress] = useState("");
   const [creditCard, setCreditCard] = useState("");
   const [birthday, setBirthday] = useState("");
-
+  const [isOpen, setIsOpen] = useState(false);
+  const modalType = {
+    success: "success",
+    credit: "",
+    address: "address",
+  };
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };  
   const onChangeEmail = useCallback((e) => {
     setEmail(e.target.value);
   }, []);
@@ -125,6 +134,10 @@ const SignUp = () => {
           }}>
           회원가입
         </button>
+        <div>
+          <button onClick={toggleModal}>모달창!</button>
+          <Modal isOpen={isOpen} toggleModal={toggleModal} modalType={modalType.credit} />
+        </div>
       </Form>
     </Wrapper>
   );
