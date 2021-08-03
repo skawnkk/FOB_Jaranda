@@ -11,7 +11,6 @@ import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
 import NavBar from "Components/common/NavBar";
 import { userMockData } from "Utils/MockData";
-import NavBar from "Components/common/NavBar";
 
 const Admin = () => {
   const searchKeywordRef = useRef("");
