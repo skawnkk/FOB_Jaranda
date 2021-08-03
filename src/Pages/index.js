@@ -1,6 +1,6 @@
-import Admin from "Pages/Admin";
-import Login from "Pages/Login";
-import Main from "Pages/Main";
-import SignUp from "Pages/SignUp";
+import Admin from "./Admin";
+import Login from "./Login";
+import Main from "./Main";
+import SignUp from "./SignUp";
 
 export { Admin, Login, Main, SignUp };
