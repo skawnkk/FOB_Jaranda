@@ -33,7 +33,7 @@ const Wrapper = styled.div`
       color: ${({ theme }) => theme.color.fontGray};
     }
     &:focus {
-      border-color: ${({ theme }) => theme.color.fontBlack};
+      border-color: ${({ theme }) => theme.color.green};
     }
 
     ${({ error }) =>
@@ -51,14 +51,14 @@ const Wrapper = styled.div`
     margin-top: 8px;
     font-size: 16px;
     font-weight: 600;
-  }
 
-  .error-message {
-    color: ${({ theme }) => theme.color.red};
-  }
+    &.error-message {
+      color: ${({ theme }) => theme.color.red};
+    }
 
-  .sucess-message {
-    color: ${({ theme }) => theme.color.blue};
+    &.sucess-message {
+      color: ${({ theme }) => theme.color.green};
+    }
   }
 `;
 
