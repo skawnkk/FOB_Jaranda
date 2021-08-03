@@ -1,24 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
-const SearchBar = () => {
-  const handleSearchClick = () => {
-    //console.log(searchKeyword.current.value);
-  };
-  const handleSearchKind = (e) => {
-    // console.log(e.target.value);
-  };
-  const searchKeyword = useRef("");
+const SearchBar = ({ searchKeywordRef, setSearchConditions, handleSearchClick }) => {
+  const handleSearchKind = (e) =>
+    setSearchConditions((prev) => ({ ...prev, searchType: e.target.value }));
 
   return (
     <Wrapper>
       <div className="searchBar">
         <select onChange={handleSearchKind}>
-          <option value="email">Email</option>
           <option value="name">Name</option>
+          <option value="email">Email</option>
         </select>
-        <input className="searchInput" placeholder="검색 입력" ref={searchKeyword}></input>
-        <button className="searchButton" onClick={handleSearchClick}>
+        <input className="searchInput" placeholder="검색 입력" ref={searchKeywordRef} />
+        <button
+          className="searchButton"
+          onClick={() => handleSearchClick(searchKeywordRef.current.value)}>
           검색
         </button>
       </div>
@@ -34,13 +31,14 @@ const Wrapper = styled.div`
 
   .searchBar {
     display: flex;
-    min-width: 470px;
     justify-content: space-between;
     align-items: center;
+    min-width: 470px;
     padding: 0 10px;
     border: 1px solid ${({ theme }) => theme.color.borderline};
     border-radius: 30px;
     background-color: ${({ theme }) => theme.color.inputBackground};
+
     & > select {
       background-color: ${({ theme }) => theme.color.inputBackground};
       border: 1px solid ${({ theme }) => theme.color.borderline};
