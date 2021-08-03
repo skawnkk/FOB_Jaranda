@@ -1,7 +1,7 @@
 import React from "react";
 import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
-import DataTable from "Components/Admin/DataTable/DataTable";
+import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
 
 const Admin = () => {
@@ -9,9 +9,10 @@ const Admin = () => {
     <div>
       {/* <Header /> */}
       {/* <NavigationBar /> */}
+      <div>사용자 관리</div>
       <SearchBar />
       <AuthFilter />
-      <DataTable />
+      <UserDataTable />
       <Pagination />
     </div>
   );
