@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import profile from "assets/profile.png";
+import profile from "Assets/img/profile.png";
 
 const LogoutButton = () => {
   const dropdownRef = useRef(null);

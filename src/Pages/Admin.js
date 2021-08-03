@@ -3,7 +3,7 @@ import NavBar from "Components/common/NavBar";
 
 const Admin = () => {
   const category = {
-    admin: ["이용 안내", "사용자 관리", "계정 생성"],
+    admin: ["이용 안내", "사용자 관리"],
     teacher: ["이용 안내", "학생 관리", "학생 소개받기"],
     parent: ["이용 안내", "우리 아이 관리", "자란다 선생님 찾기"],
   };

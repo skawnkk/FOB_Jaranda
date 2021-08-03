@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import UserButton from "./UserButton";
-import logo from "assets/logo.png";
+import logo from "Assets/img/logo.png";
 
 const Header = () => {
   return (
@@ -12,7 +12,7 @@ const Header = () => {
           <img src={logo} alt="자란다 로고" />
         </h1>
       </Link>
-      <UserButton LoggedUser={true} />
+      <UserButton LoggedUser={false} />
     </Wrapper>
   );
 };
