@@ -5,7 +5,7 @@ const SignUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const modalType = {
     success: "success",
-    credit: "credit",
+    credit: "",
     address: "address",
   };
   const toggleModal = () => {
@@ -15,7 +15,7 @@ const SignUp = () => {
   return (
     <div>
       <button onClick={toggleModal}>모달창!</button>
-      <Modal isOpen={isOpen} toggleModal={toggleModal} modalType={modalType.address} />
+      <Modal isOpen={isOpen} toggleModal={toggleModal} modalType={modalType.credit} />
     </div>
   );
 };

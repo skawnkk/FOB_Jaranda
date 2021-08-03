@@ -1,33 +1,23 @@
 import React from "react";
 import styled from "styled-components";
+import SignUpModal from "Components/common/Modal/SignupModal";
 const ModalContents = (props) => {
   const { modalType } = props;
 
-  return (
-    <Wrapper>
-      {modalType === "success" && (
-        <div>
-          <span>회원가입을 축하합니다🎉</span>
-        </div>
-      )}
-      {modalType === "credit" && (
-        <>
+  const selectModalView = (modalType) => {
+    switch (modalType) {
+      case "success":
+        return (
           <div>
-            <span>신용카드 번호를 입력하세요</span>
+            <span>가입이 완료되었습니다🎉</span>
           </div>
-          <div></div>
-        </>
-      )}
-      {modalType === "address" && (
-        <>
-          <div>
-            <span>동/읍/면을 입력하세요</span>
-          </div>
-          <div></div>
-        </>
-      )}
-    </Wrapper>
-  );
+        );
+      default:
+        return <SignUpModal modalType={modalType} />;
+    }
+  };
+
+  return <Wrapper>{selectModalView(modalType)}</Wrapper>;
 };
 
 const Wrapper = styled.div`
