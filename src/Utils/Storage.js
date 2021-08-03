@@ -15,3 +15,8 @@ export const saveLocalStorage = (storageKey = USER_STORAGE, data) => {
 export const loggedOutStorage = (storageKey = LOGGEDIN_USER) => {
   localStorage.removeItem(storageKey);
 };
+
+export const userAuthority = () => {
+  const nowLoggedInuserData = loadLocalStorage(LOGGEDIN_USER);
+  return nowLoggedInuserData.authority;
+};

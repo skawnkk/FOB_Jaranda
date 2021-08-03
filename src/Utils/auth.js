@@ -6,7 +6,7 @@ const AuthorityControl = (Components, option, authLevel) => {
   const CheckAuthority = ({ history }) => {
     const { HOME, LOGIN } = ROUTES;
 
-    const isLoggedIn = loadLocalStorage("TEST");
+    const isLoggedIn = loadLocalStorage(LOGGEDIN_USER);
 
     useEffect(() => {
       if (!isLoggedIn && option) {
