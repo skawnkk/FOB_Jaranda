@@ -9,8 +9,8 @@ import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
 import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
-import { userMockData } from "Utils/MockData";
 import NavBar from "Components/common/NavBar";
+import { userMockData } from "Utils/MockData";
 
 const Admin = () => {
   const searchKeywordRef = useRef("");
@@ -72,9 +72,7 @@ const Admin = () => {
   };
 
   return (
-    <div>
-      {/* <Header /> */}
-      {/* 권한 별 카테고리 props 다르게 넘겨주어야 함! */}
+    <>
       <NavBar category={category.admin} />
       <SearchBar
         searchKeywordRef={searchKeywordRef}
@@ -84,7 +82,7 @@ const Admin = () => {
       <AuthFilter searchConditions={searchConditions} setSearchConditions={setSearchConditions} />
       <UserDataTable filteredUsers={filteredUsers} />
       <Pagination />
-    </div>
+    </>
   );
 };
 
