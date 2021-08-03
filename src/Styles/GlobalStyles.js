@@ -22,9 +22,12 @@ const GlobalStyles = createGlobalStyle`
     background-color: transparent;
     border: none;
     outline: none;
-    cursor: pointer;
   }
 
+  button {
+    cursor: pointer;
+  }
+  
   ul, ol {
     list-style: none;
   }
