@@ -21,11 +21,12 @@ const AuthorityControl = (Components, option, authLevel) => {
       if (isLoggedIn) {
         const { authority } = isLoggedIn;
         if (authLevel < authority) {
+          if (authLevel === null) return;
+          if (authority) {
+            alert("관리자가 아닙니다.");
+            return history.push(HOME);
+          }
           alert("권한이 없습니다.");
-          return history.push(HOME);
-        }
-        if (!authority) {
-          alert("관리자가 아닙니다.");
           return history.push(HOME);
         }
       }

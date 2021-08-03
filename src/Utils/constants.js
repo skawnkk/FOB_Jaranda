@@ -19,11 +19,6 @@ export const USERDATA_TEMPLATE = {
   address: "",
   dateOfBirth: "",
   creditCardNum: "",
-  authority: {
-    admin: 0,
-    teacher: 1,
-    parent: 2,
-  },
 };
 
 // 로그인 여부
