@@ -14,14 +14,19 @@ function Routes() {
     <Router>
       <Header />
       <Switch>
-        <Route exact path={`${HOME}`} component={AuthorityControl(Main, accessible, unknown)} />
+        {/* <Route exact path={`${HOME}`} component={AuthorityControl(Main, accessible, unknown)} />
         <Route exact path={`${LOGIN}`} component={AuthorityControl(Login, inaccessible, unknown)} />
         <Route
           exact
           path={`${SIGNUP}`}
           component={AuthorityControl(SignUp, inaccessible, unknown)}
         />
-        <Route exact path={`${ADMIN}`} component={AuthorityControl(Admin, accessible, admin)} />
+        <Route exact path={`${ADMIN}`} component={AuthorityControl(Admin, accessible, admin)} /> */}
+        <Route exact path="/" component={Main} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/admin" component={Admin} />
+        <Route exact path="/logout" render={() => <Redirect to="/" />} />
       </Switch>
     </Router>
   );
