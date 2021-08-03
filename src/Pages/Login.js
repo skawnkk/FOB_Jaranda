@@ -2,8 +2,11 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Input from "Components/common/Input";
+import { ReactComponent as Mail } from "Assets/svg/mail.svg";
+import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
 
 const Login = () => {
+  const [validate, setValidate] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,7 +20,9 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("aa");
+    setValidate(true);
+    //* email, password validation 성공하면 false로 수정
+    // setValidate(false);
   };
 
   return (
@@ -28,7 +33,8 @@ const Login = () => {
           value={email}
           onChange={onChangeEmail}
           placeholder="이메일을 입력하세요"
-          error={email.length ? true : false}
+          icon={<Mail />}
+          error={validate && !email}
           errorMessage="이메일을 입력하세요"
         />
 
@@ -38,7 +44,8 @@ const Login = () => {
           value={password}
           onChange={onChangePassword}
           placeholder="비밀번호를 입력하세요"
-          error={password === "123" ? true : false}
+          icon={<ClosedEye />}
+          error={validate && !password}
           errorMessage="비밀번호를 입력하세요"
         />
 
@@ -49,7 +56,9 @@ const Login = () => {
         </button>
       </Form>
       <NavLink to="/signup">
-        자란다 계정이 없으신가요? <span>회원가입</span>
+        <p>
+          자란다 계정이 없으신가요? <span>회원가입</span>
+        </p>
       </NavLink>
     </Wrapper>
   );
@@ -77,12 +86,15 @@ const Form = styled.form`
 const NavLink = styled(Link)`
   color: ${({ theme }) => theme.color.fontGray};
   margin-top: 20px;
+  p {
+    color: ${({ theme }) => theme.color.fontGray};
 
-  span {
-    color: ${({ theme }) => theme.color.green};
-    margin-left: 10px;
-    font-weight: 600;
-    text-decoration: underline;
+    span {
+      color: ${({ theme }) => theme.color.green};
+      margin-left: 10px;
+      font-weight: 600;
+      text-decoration: underline;
+    }
   }
 `;
 
