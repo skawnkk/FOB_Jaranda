@@ -1,3 +1,4 @@
+export const USER_DATA_ARR = ["admin", "teacher", "parent"];
 // Local storage
 export const USER_STORAGE = "USERLIST";
 export const LOGGEDIN_USER = "LOGGEDIN_USER";
