@@ -1,50 +1,56 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const AuthFilter = () => {
-  const [authFilters, setAuthFilters] = useState([
-    { type: "전체", isChecked: false },
-    { type: "선생님", isChecked: false },
-    { type: "부모님", isChecked: false },
-    { type: "관리자", isChecked: false },
-  ]);
+const AuthFilter = ({ searchConditions, setSearchConditions }) => {
+  const { searchType, condition } = searchConditions;
+
+  const authFilters = [
+    { type: "전체", key: "whole" },
+    { type: "관리자", key: "admin" },
+    { type: "선생님", key: "teacher" },
+    { type: "부모님", key: "parents" },
+  ];
 
   const changeFilter = (targetType) => {
-    let updateAuthFilters;
-    if (targetType === "전체") {
-      updateAuthFilters = authFilters.map((filter) =>
-        filter.type === targetType
-          ? { ...filter, isChecked: true }
-          : { ...filter, isChecked: false }
-      );
-    } else {
-      updateAuthFilters = authFilters.map((filter) => {
-        if (filter.type === "전체") return { ...filter, isChecked: false };
-        return filter.type === targetType ? { ...filter, isChecked: !filter.isChecked } : filter;
-      });
-    }
-    setAuthFilters(updateAuthFilters);
+    return targetType === "whole"
+      ? // 전체 선택 클릭했을 때 나머지 false
+        {
+          searchType: searchType,
+          condition: { whole: true, teacher: false, parents: false, admin: false },
+        }
+      : // 나머지를 클릭했을때 전체 선택 false 클릭대상 true
+        {
+          searchType: searchType,
+          condition: {
+            ...condition,
+            whole: false,
+            [targetType]: !condition[targetType],
+          },
+        };
   };
 
   const handleAuthFilter = (e) => {
     const targetType = e.target.value;
-    changeFilter(targetType);
+    const updatedConditions = changeFilter(targetType);
+    setSearchConditions(updatedConditions);
   };
 
   return (
     <Wrapper>
-      {authFilters.map((filter, idx) => (
-        <label key={idx}>
-          <input
-            type="checkbox"
-            id={idx}
-            onChange={handleAuthFilter}
-            value={filter.type}
-            checked={filter.isChecked}
-          />
-          <span>{filter.type}</span>
-        </label>
-      ))}
+      {authFilters.map((filter, idx) => {
+        return (
+          <label key={idx}>
+            <input
+              type="checkbox"
+              id={idx}
+              onChange={handleAuthFilter}
+              value={filter.key}
+              checked={searchConditions.condition[filter.key]}
+            />
+            <span>{filter.type}</span>
+          </label>
+        );
+      })}
     </Wrapper>
   );
 };
