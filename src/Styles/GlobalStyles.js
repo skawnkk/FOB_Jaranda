@@ -18,7 +18,7 @@ const GlobalStyles = createGlobalStyle`
     cursor: pointer;
   }
   
-  input, button {
+  button, input {
     background-color: transparent;
     border: none;
     outline: none;
@@ -27,7 +27,7 @@ const GlobalStyles = createGlobalStyle`
   button {
     cursor: pointer;
   }
-
+  
   ul, ol {
     list-style: none;
   }
