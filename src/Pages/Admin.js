@@ -1,3 +1,9 @@
+// import React from "react";
+// import { userAuthority } from "../Utils/Storage";
+
+// const Admin = () => {
+//   const isAdmin = userAuthority();
+//   return !isAdmin && <div>Admin now</div>;
 import React, { useState, useEffect, useRef } from "react";
 import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";

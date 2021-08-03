@@ -18,7 +18,7 @@ const GlobalStyles = createGlobalStyle`
     cursor: pointer;
   }
   
-  input, button {
+  button, input {
     background-color: transparent;
     border: none;
     outline: none;
