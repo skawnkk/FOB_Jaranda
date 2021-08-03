@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-const UserDataTable = ({ users }) => {
+const UserDataTable = ({ filteredUsers }) => {
+  const authTitle = ["관리자", "선생님", "부모님"];
   return (
     <Wrapper>
       <div className="dataTable">
@@ -17,9 +18,9 @@ const UserDataTable = ({ users }) => {
               <th>신용 카드</th>
               <th colSpan="3">권한</th>
             </tr>
-            {users.map(
+            {filteredUsers.map(
               ({ id, name, email, pw, address, dateOfBirth, creditCardNum, authority }) => (
-                <tr>
+                <tr key={id}>
                   <td>{id}</td>
                   <td>{name}</td>
                   <td>{email}</td>
@@ -27,16 +28,16 @@ const UserDataTable = ({ users }) => {
                   <td>{address}</td>
                   <td>{dateOfBirth}</td>
                   <td>{creditCardNum}</td>
-                  <td>{authority}</td>
+                  <td>{authTitle[authority]}</td>
                   <td>
                     <select>
-                      <option value="">1</option>
-                      <option value="">2</option>
-                      <option value="">3</option>
+                      {authTitle.map((auth) => (
+                        <option value="">{auth}</option>
+                      ))}
                     </select>
                   </td>
                   <td>
-                    <button>권한수정</button>
+                    <button type="button">권한수정</button>
                   </td>
                 </tr>
               )
@@ -58,6 +59,5 @@ const Wrapper = styled.div`
   th,
   td {
     border: 1px solid ${({ theme }) => theme.color.borderline};
-    border-collapse: collapse;
   }
 `;
