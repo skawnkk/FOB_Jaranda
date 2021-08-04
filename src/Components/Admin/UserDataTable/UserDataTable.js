@@ -32,7 +32,9 @@ const UserDataTable = ({ filteredUsers }) => {
                   <td>
                     <select>
                       {authTitle.map((auth) => (
-                        <option value="">{auth}</option>
+                        <option key={auth} value="">
+                          {auth}
+                        </option>
                       ))}
                     </select>
                   </td>
