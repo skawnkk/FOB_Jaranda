@@ -6,7 +6,7 @@ const Input = (
     type = "text",
     name,
     value,
-    onChange,
+    onChange = () => {},
     placeholder,
     icon = null,
     error = false,

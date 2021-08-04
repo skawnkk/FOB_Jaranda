@@ -3,20 +3,21 @@ import styled from "styled-components";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
-import checkIcon from "Assets/svg/check.svg";
 import Modal from "Components/common/Modal/Modal";
-import SignupModal from "Components/SignupModal";
-import AddressModal from "Components/AddressModal";
-import CreditModal from "Components/CreditModal";
 import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
 import { saveLocalStorage } from "Utils/Storage";
 
+import checkIcon from "Assets/svg/check.svg";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
 import { ReactComponent as Person } from "Assets/svg/person.svg";
 import { ReactComponent as Map } from "Assets/svg/map.svg";
 import { ReactComponent as Card } from "Assets/svg/card.svg";
 import { ReactComponent as Calendar } from "Assets/svg/calendar.svg";
+
+import SignupModal from "Components/SignupModal";
+import AddressModal from "Components/AddressModal";
+import CreditModal from "Components/CreditModal";
 
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
@@ -43,7 +44,9 @@ const SignUp = () => {
     creditCardNum: { error: false, message: "" },
   });
 
-  const handleSignupSubmit = () => {
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+
     setFormData({
       ...formData,
       id: formData.id,
@@ -55,6 +58,8 @@ const SignUp = () => {
       dateOfBirth: formData.dateOfBirth,
       creditCardNum: formData.creditCardNum,
     });
+
+    saveLocalStorage(USER_STORAGE, formData);
   };
 
   const onChangeHandler = (e) => {
@@ -72,8 +77,21 @@ const SignUp = () => {
   // const onChangeName = useCallback(() => {}, []);
   // const onChangeDetailAddress = useCallback(() => {}, []);
   // const onChangeDateOfBirth = useCallback(() => {}, []);
-  const onSelectedAddress = (address) => {};
-  const onSelectedCreditcard = (cardNumber) => {};
+  // const onSelectedAddress = (address) => {};
+  // const onSelectedCreditcard = (cardNumber) => {};
+
+  const setAddressValue = (address) => {
+    setFormData({
+      ...formData,
+      address,
+    });
+  };
+  const setCardValue = (creditCardNum) => {
+    setFormData({
+      ...formData,
+      creditCardNum,
+    });
+  };
 
   const toggleModal = (modal) => {
     setIsOpen(!isOpen);
@@ -196,12 +214,21 @@ const SignUp = () => {
 
         <Button type="submit" value="회원가입" marginTop="10px" />
 
-        {/* <Modal
-          isOpen={isOpen}
-          toggleModal={toggleModal}
-          modalType={modalType}
-          onSelected={modalType === "address" ? onSelectedAddress : onSelectedCreditcard}
-        /> */}
+        <Modal isOpen={isOpen} toggleModal={toggleModal}>
+          <>
+            {modalType === "success" && <SignupModal />}
+            {modalType === "address" && (
+              <AddressModal toggleModal={toggleModal} onSelected={setAddressValue} />
+            )}
+            {modalType === "credit" && (
+              <CreditModal
+                creditCard={formData.creditCardNum}
+                onSelected={setCardValue}
+                toggleModal={toggleModal}
+              />
+            )}
+          </>
+        </Modal>
       </Form>
     </Wrapper>
   );
