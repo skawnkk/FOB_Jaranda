@@ -50,22 +50,26 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
 
   return (
     <Wrapper>
+      <strong>카드 번호 입력하기</strong>
       <div className="card-wrapper">
         {Array.from({ length: 4 }, (_, i) => i).map((idx) => (
-          <Input
-            key={idx}
-            ref={(r) => (inputRef.current[idx] = r)}
-            name={`num${idx}`}
-            value={creditCardNumber[`num${idx}`]}
-            onChange={onChangeCreditCardNumber}
-            width="20%"
-            maxLength={4}
-            numberOnly
-          />
+          <>
+            <Input
+              key={idx}
+              ref={(r) => (inputRef.current[idx] = r)}
+              name={`num${idx}`}
+              value={creditCardNumber[`num${idx}`]}
+              onChange={onChangeCreditCardNumber}
+              width="20%"
+              maxLength={4}
+              numberOnly
+            />
+            <span>-</span>
+          </>
         ))}
       </div>
       {error && <p>카드번호 16자리 숫자를 입력해주세요</p>}
-      <Button type="submit" value="카드번호 입력완료" onClick={onClickButton} />
+      <Button type="submit" value="카드번호 입력완료" onClick={onClickButton} width="50%" />
     </Wrapper>
   );
 };
@@ -75,15 +79,33 @@ const Wrapper = styled.form`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  ${({ theme }) => theme.flexSet("center", "center", "column")}
+  ${({ theme }) => theme.flexSet("space-evenly", "center", "column")}
   width: 500px;
   height: 300px;
   margin: 0 auto;
   background-color: ${({ theme }) => theme.color.fontWhite};
   border: 1px solid ${({ theme }) => theme.color.green};
 
+  strong {
+    font-size: 30px;
+    font-weight: 500;
+    color: ${({ theme }) => theme.color.button};
+  }
   .card-wrapper {
     ${({ theme }) => theme.flexSet("center", "center", "row")}
+
+    > div {
+      Input {
+        display: inline;
+      }
+    }
+    span {
+      margin: 0 10px;
+
+      &:last-child {
+        display: none;
+      }
+    }
   }
 
   p {
@@ -95,6 +117,9 @@ const Wrapper = styled.form`
 
   @media (max-width: 768px) {
     width: 80%;
+  }
+
+  Button {
   }
 `;
 

@@ -24,7 +24,7 @@ const Radio = ({ name, value, onChange, data = [], error = false, errorMessage =
 
 const Wrapper = styled.div`
   > div {
-    ${({ theme }) => theme.flexSet("flex-start", "center")}
+    ${({ theme }) => theme.flexSet("center")}
 
     label {
       ${({ theme }) => theme.flexSet("center", "center")}
