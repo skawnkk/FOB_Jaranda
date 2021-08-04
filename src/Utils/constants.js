@@ -34,5 +34,5 @@ export const AUTH_LEVEL = {
   admin: 0,
   teacher: 1,
   parent: 2,
-  unknown: null,
+  unknown: 3,
 };
