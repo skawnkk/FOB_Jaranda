@@ -1,95 +1,73 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "./common/Button";
 import Input from "./common/Input";
 
-const CreditModal = () => {
+const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
   const inputRef = useRef([]);
 
-  const [firstCardNum, setFirstCardNum] = useState("");
-  const [secondCardNum, setSecondCardNum] = useState("");
-  const [thirdCardNum, setThirdCardNum] = useState("");
-  const [fourthCardNum, setFourthCardNum] = useState("");
+  const creditCardArray = (!!creditCard && creditCard.split("-")) || "";
+  const [creditCardNumber, setCreditCardNumber] = useState({
+    num0: creditCardArray[0] || "",
+    num1: creditCardArray[1] || "",
+    num2: creditCardArray[2] || "",
+    num3: creditCardArray[3] || "",
+  });
+  const [error, setError] = useState(false);
 
   const onlyNumber = (value) => {
     return value.replace(/[^0-9]/g, "");
   };
 
-  const onChangeFirstCardNum = useCallback((e) => {
-    setFirstCardNum(onlyNumber(e.target.value));
-  }, []);
+  const onChangeCreditCardNumber = (e) => {
+    const { name, value } = e.target;
+    setCreditCardNumber({ ...creditCardNumber, [name]: onlyNumber(value) });
+  };
 
-  const onChangeSecondCardNum = useCallback((e) => {
-    setSecondCardNum(onlyNumber(e.target.value));
-  }, []);
+  const onClickButton = () => {
+    const cardNumber = Object.keys(creditCardNumber).map((item) => creditCardNumber[item]);
+    const cardNumberLength = cardNumber.join("").length;
+    const cardNumberToString = cardNumber.join("-");
 
-  const onChangeThirdCardNum = useCallback((e) => {
-    setThirdCardNum(onlyNumber(e.target.value));
-  }, []);
-
-  const onChangeFourthCardNum = useCallback((e) => {
-    setFourthCardNum(onlyNumber(e.target.value));
-  }, []);
+    if (cardNumberLength === 16) {
+      setError(false);
+      toggleModal(true);
+      onSelected(cardNumberToString);
+    } else {
+      setError(true);
+    }
+  };
 
   useEffect(() => {
-    const focusIndex = inputRef.current.reduce((acc, cur, idx) => {
-      if (cur.value !== 4) return (acc = idx);
-      return acc;
-    }, 0);
-    console.log(focusIndex);
-    // inputRef.current[focusIndex].focus();
-  }, [firstCardNum]);
+    const focusIndex = inputRef.current.filter((item) => item.value.length !== 4);
+    focusIndex[0]?.focus();
+  }, [creditCardNumber]);
 
   return (
     <Wrapper>
       <div className="card-warpper">
-        <Input
-          ref={(r) => (inputRef.current[0] = r)}
-          name="email"
-          value={firstCardNum}
-          onChange={onChangeFirstCardNum}
-          placeholder="****"
-          width="20%"
-          maxLength={4}
-          numberOnly
-        />
-        <Input
-          ref={(r) => (inputRef.current[1] = r)}
-          name="email"
-          value={secondCardNum}
-          onChange={onChangeSecondCardNum}
-          placeholder="****"
-          width="20%"
-          maxLength={4}
-          numberOnly
-        />
-        <Input
-          ref={(r) => (inputRef.current[2] = r)}
-          name="email"
-          value={thirdCardNum}
-          onChange={onChangeThirdCardNum}
-          placeholder="****"
-          width="20%"
-          maxLength={4}
-          numberOnly
-        />
-        <Input
-          ref={(r) => (inputRef.current[3] = r)}
-          name="email"
-          value={fourthCardNum}
-          onChange={onChangeFourthCardNum}
-          placeholder="****"
-          width="20%"
-          maxLength={4}
-          numberOnly
-        />
+        {Array.from({ length: 4 }, (_, i) => i).map((idx) => (
+          <>
+            <Input
+              key={idx}
+              ref={(r) => (inputRef.current[idx] = r)}
+              name={`num${idx}`}
+              value={creditCardNumber[`num${idx}`]}
+              onChange={onChangeCreditCardNumber}
+              width="20%"
+              maxLength={4}
+              numberOnly
+            />
+          </>
+        ))}
       </div>
-      <Button type="submit" value="카드번호 입력완료" />
+      {error && <p>카드번호 16자리 숫자를 입력해주세요</p>}
+      <Button type="submit" value="카드번호 입력완료" onClick={onClickButton} />
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.form`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -103,6 +81,17 @@ const Wrapper = styled.div`
 
   .card-warpper {
     ${({ theme }) => theme.flexSet("center", "center", "row")}
+  }
+
+  p {
+    color: ${({ theme }) => theme.color.red};
+    padding: 10px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  @media (max-width: 768px) {
+    width: 80%;
   }
 `;
 

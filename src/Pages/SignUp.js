@@ -2,15 +2,19 @@ import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
-import checkIcon from "Assets/svg/check.svg";
 import Modal from "Components/common/Modal/Modal";
 
+import checkIcon from "Assets/svg/check.svg";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
 import { ReactComponent as Person } from "Assets/svg/person.svg";
 import { ReactComponent as Map } from "Assets/svg/map.svg";
 import { ReactComponent as Card } from "Assets/svg/card.svg";
 import { ReactComponent as Calendar } from "Assets/svg/calendar.svg";
+
+import SignupModal from "Components/SignupModal";
+import AddressModal from "Components/AddressModal";
+import CreditModal from "Components/CreditModal";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +26,6 @@ const SignUp = () => {
   const [creditCard, setCreditCard] = useState("");
   const [birthday, setBirthday] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [error, setError] = useState(false);
 
   const [modalType, setModalType] = useState("");
 
@@ -62,19 +65,18 @@ const SignUp = () => {
   }, []);
 
   // 주소, 신용카드 모달 팝업 후 작업
-  const onSelectedAddress = (address) => {
-    setAddress(address);
-  };
-
   // const onChangeAddress = useCallback((e) => {
   //   setAddress(e.target.value);
   // }, []);
+  const setAddressValue = (address) => {
+    setAddress(address);
+  };
 
   const onChangeDetailAddress = useCallback((e) => {
     setDetailAddress(e.target.value);
   }, []);
 
-  const onSelectedCreditcard = (cardNumber) => {
+  const setCardValue = (cardNumber) => {
     setCreditCard(cardNumber);
   };
 
@@ -194,12 +196,21 @@ const SignUp = () => {
         <button onClick={() => toggleModal("address")}>주소검색</button>
         <button onClick={() => toggleModal("credit")}>신용카드</button>
 
-        <Modal
-          isOpen={isOpen}
-          toggleModal={toggleModal}
-          modalType={modalType}
-          onSelected={modalType === "address" ? onSelectedAddress : onSelectedCreditcard}
-        />
+        <Modal isOpen={isOpen} toggleModal={toggleModal}>
+          <>
+            {modalType === "success" && <SignupModal />}
+            {modalType === "address" && (
+              <AddressModal toggleModal={toggleModal} onSelected={setAddressValue} />
+            )}
+            {modalType === "credit" && (
+              <CreditModal
+                creditCard={creditCard}
+                onSelected={setCardValue}
+                toggleModal={toggleModal}
+              />
+            )}
+          </>
+        </Modal>
       </Form>
     </Wrapper>
   );
