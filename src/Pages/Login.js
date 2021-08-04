@@ -5,22 +5,38 @@ import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
+import { loadLocalStorage } from "Utils/Storage";
+import { USER_STORAGE } from "Utils/constants";
+
+import bcrypt from "bcryptjs";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({
-    email: { error: false, message: null },
-    password: { error: false, message: null },
+  const [formData, setFormData] = useState({
+    id: "",
+    email: "",
+    pw: "",
+  });
+  const [errorMsg, setErrorMsg] = useState({
+    id: { error: false, message: "" },
+    email: { error: false, message: "" },
+    pw: { error: false, message: "" },
   });
 
-  const onChangeEmail = useCallback((e) => {
-    setEmail(e.target.value);
-  }, []);
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
 
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const onChangeErrorMsgHandler = (key, message) => {
+    setErrorMsg({
+      ...formData,
+      [key]: { error: true, message },
+    });
+  };
 
   const isEmail = (checkString) => {
     const emailRegex =
@@ -28,55 +44,38 @@ const Login = () => {
     return emailRegex.test(checkString);
   };
 
-  const validateCheck = () => {
-    if (!email || !isEmail(email)) {
-      setErrors({
-        ...errors,
-        email: { error: true, message: "이메일을 다시 확인해주세요" },
-      });
-    }
-
-    if (!password) {
-      setErrors({
-        ...errors,
-        password: { error: true, message: "패스워드를 다시 확인해주세요" },
-      });
-    }
-  };
+  const validateCheck = () => {};
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    validateCheck();
-    //*로컬스토리지에서 id, pw 일치하는 사람 있는지
-    //if
-  };
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
+    const { email, pw } = loadLocalStorage(USER_STORAGE);
+    const isPasswordMatched = bcrypt.compareSync(formData.pw, pw);
+    console.log(isPasswordMatched);
+  };
 
   return (
     <Wrapper>
       <Form onSubmit={handleSubmit}>
         <Input
           name="email"
-          value={email}
-          onChange={onChangeEmail}
+          value={formData.email}
+          onChange={onChangeHandler}
           placeholder="이메일을 입력하세요"
           icon={<Mail />}
-          error={errors.email.error}
-          errorMessage={errors.email.message}
+          error={errorMsg.email.error}
+          errorMessage={errorMsg.email.message}
         />
 
         <Input
           type="password"
-          name="password"
-          value={password}
-          onChange={onChangePassword}
+          name="pw"
+          value={formData.pw}
+          onChange={onChangeHandler}
           placeholder="비밀번호를 입력하세요"
           icon={<ClosedEye />}
-          error={errors.password.error}
-          errorMessage={errors.password.message}
+          error={errorMsg.pw.error}
+          errorMessage={errorMsg.pw.message}
         />
 
         <Button type="submit" value="로그인" marginTop="10px" />

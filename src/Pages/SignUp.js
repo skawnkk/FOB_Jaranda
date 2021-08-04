@@ -19,6 +19,8 @@ import SignupModal from "Components/SignupModal";
 import AddressModal from "Components/AddressModal";
 import CreditModal from "Components/CreditModal";
 
+import bcrypt from "bcryptjs";
+
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -47,18 +49,8 @@ const SignUp = () => {
   const handleSignupSubmit = (e) => {
     e.preventDefault();
 
-    setFormData({
-      ...formData,
-      id: formData.id,
-      email: formData.email,
-      pw: formData.pw,
-      pwCheck: formData.pw,
-      name: formData.name,
-      address: formData.address,
-      dateOfBirth: formData.dateOfBirth,
-      creditCardNum: formData.creditCardNum,
-    });
-
+    formData.pw = bcrypt.hashSync(formData.pw, 8);
+    delete formData.pwCheck;
     saveLocalStorage(USER_STORAGE, formData);
   };
 
