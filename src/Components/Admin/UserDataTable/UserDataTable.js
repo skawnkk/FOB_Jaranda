@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { ADMIN } from "Utils/constants";
+import AuthSelector from "Components/Admin/UserDataTable/AuthSelector";
 
-const UserDataTable = ({ filteredUsers }) => {
-  const authTitle = ["관리자", "선생님", "부모님"];
+const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
+  const {
+    authTitle: { admin, parents, teacher },
+  } = ADMIN;
+  const authTitle = [admin, parents, teacher];
+  const [choicedAuth, setChoicedAuth] = useState(-1);
+
+  const handleOptionChange = (auth) => {
+    if (auth === -1) return;
+    setChoicedAuth(auth);
+  };
+
   return (
     <Wrapper>
       <div className="dataTable">
@@ -30,16 +42,14 @@ const UserDataTable = ({ filteredUsers }) => {
                   <td>{creditCardNum}</td>
                   <td>{authTitle[authority]}</td>
                   <td>
-                    <select>
-                      {authTitle.map((auth) => (
-                        <option key={auth} value="">
-                          {auth}
-                        </option>
-                      ))}
-                    </select>
+                    <AuthSelector
+                      userId={id}
+                      handleOptionChange={handleOptionChange}></AuthSelector>
                   </td>
                   <td>
-                    <button type="button">권한수정</button>
+                    <button type="button" onClick={() => handleAuthUpdate(id, choicedAuth)}>
+                      수정
+                    </button>
                   </td>
                 </tr>
               )
@@ -51,7 +61,7 @@ const UserDataTable = ({ filteredUsers }) => {
   );
 };
 
-export default UserDataTable;
+export default React.memo(UserDataTable);
 
 const Wrapper = styled.div`
   table {
