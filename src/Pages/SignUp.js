@@ -5,8 +5,7 @@ import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
 import Modal from "Components/common/Modal/Modal";
 import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
-import { saveLocalStorage } from "Utils/Storage";
-
+import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 import checkIcon from "Assets/svg/check.svg";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
@@ -72,7 +71,11 @@ const SignUp = () => {
 
     if (checkValidation()) {
       //성공(success) => true
-      saveLocalStorage(USER_STORAGE, formData);
+      setAuthority(authority);
+      console.log(authority);
+      const userData = loadLocalStorage(USER_STORAGE);
+      const user = [{ ...formData, authority: authority }];
+      saveLocalStorage(USER_STORAGE, userData.concat(user));
     } else {
       //하단에 에러메세지 제시
     }
@@ -174,8 +177,8 @@ const SignUp = () => {
           onChange={onChangeHandler}
           icon={<ClosedEye />}
           placeholder="비밀번호를 다시 입력하세요"
-          error={errorMsg.pwCheck.error}
-          errorMessage={errorMsg.pwCheck.message}
+          error={false}
+          errorMessage={false}
         />
         <Input
           name="name"
@@ -207,8 +210,8 @@ const SignUp = () => {
               icon={<Map />}
               onChange={onChangeHandler}
               placeholder="상세주소를 입력하세요"
-              error={errorMsg.detailAddress.error}
-              errorMessage={errorMsg.detailAddress.message}
+              error={false}
+              errorMessage={false}
             />
           )}
         </div>
