@@ -1,42 +1,65 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 //TODO: 상수 관리
 import { PAGE_SIZE } from "Pages/Admin";
 
 const Pagination = ({ pageNum, setPageNum, wholePages }) => {
   const totalPages = Array.from({ length: wholePages }, (_, idx) => idx + 1);
-
   const handlePage = (e, page) => {
     const type = e.target.id;
-
     if (type === "prev") setPageNum((prevPage) => prevPage - 1);
     if (type === "next") setPageNum((prevPage) => prevPage + 1);
     if (type === "first") setPageNum(0);
-    if (type === "last") setPageNum(wholePages.length - 1);
+    if (type === "last") setPageNum(wholePages - 1);
     if (type === "pagination") setPageNum(page);
   };
 
   return (
-    //TODO: 처음, prev, next, end disable추가하기
-    <div>
-      <button id="first" type="button" onClick={handlePage} disabled={pageNum == 0 ? true : false}>
+    <PaginationWrapper>
+      <PaginationBtn id="first" onClick={handlePage} pageNum={pageNum} disabled={!pageNum}>
         {`<<`}처음
-      </button>
-      <button id="prev" type="button" onClick={handlePage} disabled={pageNum == 0 ? true : false}>
+      </PaginationBtn>
+      <PaginationBtn id="prev" onClick={handlePage} pageNum={pageNum} disabled={!pageNum}>
         {`<`}PREV
-      </button>
+      </PaginationBtn>
       {totalPages.map((page, idx) => (
-        <button key={idx} id="pagination" onClick={(e) => handlePage(e, idx)}>
+        <PaginationBtn
+          key={idx}
+          id="pagination"
+          page={idx}
+          pageNum={pageNum}
+          onClick={(e) => handlePage(e, idx)}>
           {page}
-        </button>
+        </PaginationBtn>
       ))}
-      <button id="next" type="button" onClick={handlePage}>
+      <PaginationBtn
+        id="next"
+        onClick={handlePage}
+        pageNum={pageNum}
+        disabled={pageNum === wholePages - 1}>
         NEXT {`>`}
-      </button>
-      <button id="last" type="button" onClick={handlePage}>
+      </PaginationBtn>
+      <PaginationBtn
+        id="last"
+        onClick={handlePage}
+        pageNum={pageNum}
+        disabled={pageNum === wholePages - 1}>
         END {`>>`}
-      </button>
-    </div>
+      </PaginationBtn>
+    </PaginationWrapper>
   );
 };
 
 export default Pagination;
+
+const PaginationWrapper = styled.div`
+  ${({ theme }) => theme.flexSet()};
+`;
+
+const PaginationBtn = styled.button`
+  border: 0.5px solid ${({ theme }) => theme.color.borderline};
+  border-radius: 3px;
+  margin-right: 5px;
+  background-color: ${({ theme, page = -1, pageNum }) =>
+    page === pageNum ? theme.color.button : theme.color.fontWhite};
+`;
