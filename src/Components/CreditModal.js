@@ -50,7 +50,7 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
 
   return (
     <Wrapper>
-      <div className="card-warpper">
+      <div className="card-wrapper">
         {Array.from({ length: 4 }, (_, i) => i).map((idx) => (
           <Input
             key={idx}
@@ -82,7 +82,7 @@ const Wrapper = styled.form`
   background-color: ${({ theme }) => theme.color.fontWhite};
   border: 1px solid ${({ theme }) => theme.color.green};
 
-  .card-warpper {
+  .card-wrapper {
     ${({ theme }) => theme.flexSet("center", "center", "row")}
   }
 
