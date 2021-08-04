@@ -36,6 +36,10 @@ const Wrapper = styled.div`
     font-weight: 700;
     font-size: 1.2rem;
   }
+
+  @media (max-width: 768px) {
+    width: 80%;
+  }
 `;
 
 export default SignupModal;
