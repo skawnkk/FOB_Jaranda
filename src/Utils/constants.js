@@ -14,9 +14,10 @@ export const ROUTES = {
 // Userdata Template
 export const USERDATA_TEMPLATE = {
   id: "",
+  auth: "",
+  email: "",
   pw: "",
   name: "",
-  email: "",
   address: "",
   dateOfBirth: "",
   creditCardNum: "",

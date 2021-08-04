@@ -1,9 +1,15 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
+import Radio from "Components/common/Radio";
 import checkIcon from "Assets/svg/check.svg";
 import Modal from "Components/common/Modal/Modal";
+import SignupModal from "Components/SignupModal";
+import AddressModal from "Components/AddressModal";
+import CreditModal from "Components/CreditModal";
+import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
+import { saveLocalStorage } from "Utils/Storage";
 
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
@@ -13,93 +19,94 @@ import { ReactComponent as Card } from "Assets/svg/card.svg";
 import { ReactComponent as Calendar } from "Assets/svg/calendar.svg";
 
 const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [checkPassword, setCheckPassword] = useState("");
-  const [userName, setUserName] = useState("");
-  const [address, setAddress] = useState("");
-  const [datailAddress, setDetailAddress] = useState("");
-  const [creditCard, setCreditCard] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [error, setError] = useState(false);
-
   const [modalType, setModalType] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    id: "",
+    email: "",
+    pw: "",
+    pwCheck: "",
+    name: "",
+    address: "",
+    dateOfBirth: "",
+    creditCardNum: "",
+  });
+  const [auth, setAuth] = useState(AUTH_LEVEL.unknown);
+  const [errorMsg, setErrorMsg] = useState({
+    id: { error: false, message: "" },
+    auth: { error: false, message: "" },
+    email: { error: false, message: "" },
+    pw: { error: false, message: "" },
+    name: { error: false, message: "" },
+    address: { error: false, message: "" },
+    dateOfBirth: { error: false, message: "" },
+    creditCardNum: { error: false, message: "" },
+  });
 
-  // const modalType = {
-  //   success: "success",
-  //   credit: "credit",
-  //   address: "address",
-  // };
+  const handleSignupSubmit = () => {
+    setFormData({
+      ...formData,
+      id: formData.id,
+      email: formData.email,
+      pw: formData.pw,
+      pwCheck: formData.pw,
+      name: formData.name,
+      address: formData.address,
+      dateOfBirth: formData.dateOfBirth,
+      creditCardNum: formData.creditCardNum,
+    });
+  };
+
+  const onChangeHandler = (e) => {
+    console.log("e", e.target.value, e.target.name);
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // const onChangeEmail = useCallback(() => {}, []);
+  // const onChangePassword = useCallback(() => {}, []);
+  // const onChangeCheckPassword = useCallback(() => {}, []);
+  // const onChangeName = useCallback(() => {}, []);
+  // const onChangeDetailAddress = useCallback(() => {}, []);
+  // const onChangeDateOfBirth = useCallback(() => {}, []);
+  const onSelectedAddress = (address) => {};
+  const onSelectedCreditcard = (cardNumber) => {};
+
   const toggleModal = (modal) => {
     setIsOpen(!isOpen);
     setModalType(modal);
   };
 
-  const nameCheck = () => {
-    const nameRegex = /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
-    return nameRegex.test(userName);
-  };
-
-  const birthCheck = () => {
-    const birthRegex = /([0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1,2][0-9]|3[0,1]))/;
-    return birthRegex.test(birthday);
-  };
-  const onChangeEmail = useCallback((e) => {
-    setEmail(e.target.value);
-  }, []);
-
-  // 중복하는 이메일 체크(localStorage 연동 필요)
-  // const onCheckEmail = () => {};
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
-  const onChangeCheckPassword = useCallback((e) => {
-    setCheckPassword(e.target.value);
-  }, []);
-  const onChangeName = useCallback((e) => {
-    setUserName(e.target.value);
-  }, []);
-
-  // 주소, 신용카드 모달 팝업 후 작업
-  const onSelectedAddress = (address) => {
-    setAddress(address);
-  };
-
-  // const onChangeAddress = useCallback((e) => {
-  //   setAddress(e.target.value);
-  // }, []);
-
-  const onChangeDetailAddress = useCallback((e) => {
-    setDetailAddress(e.target.value);
-  }, []);
-
-  const onSelectedCreditcard = (cardNumber) => {
-    setCreditCard(cardNumber);
-  };
-
-  // const onChangeCreditCard = useCallback((e) => {
-  //   setCreditCard(e.target.value);
-  // }, []);
-
-  const onChangeBirthday = useCallback((e) => {
-    setBirthday(e.target.value);
-  }, []);
-  const handleSignupSubmit = useCallback((e) => {
-    e.preventDefault();
-  }, []);
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   return (
     <Wrapper>
       <Form onSubmit={handleSignupSubmit}>
+        <Radio
+          value={auth}
+          name="auth"
+          onChange={setAuth}
+          icon={<Mail />}
+          data={[
+            { value: AUTH_LEVEL.teacher, label: "선생님" },
+            { value: AUTH_LEVEL.parent, label: "부모님" },
+          ]}
+          error=""
+          errorMessage=""
+        />
         <div className="email-wrapper">
           <Input
             name="email"
-            value={email}
-            onChange={onChangeEmail}
+            value={formData.email}
+            onChange={onChangeHandler}
             placeholder="이메일을 입력하세요"
             icon={<Mail />}
-            error={email.length ? true : false}
+            error={formData.email.length ? true : false}
             errorMessage="이메일을 입력하세요"
             width="75%"
           />
@@ -107,12 +114,12 @@ const SignUp = () => {
         </div>
         <Input
           type="password"
-          name="password"
-          value={password}
-          onChange={onChangePassword}
+          name="pw"
+          value={formData.pw}
+          onChange={onChangeHandler}
           icon={<ClosedEye />}
           placeholder="비밀번호를 입력하세요"
-          error={password === "123" ? true : false}
+          error={formData.pw === "123" ? true : false}
           errorMessage="비밀번호를 입력하세요"
         />
         <div className="password-policy">
@@ -131,19 +138,19 @@ const SignUp = () => {
         </div>
         <Input
           type="password"
-          name="password"
-          value={checkPassword}
-          onChange={onChangeCheckPassword}
+          name="pwCheck"
+          value={formData.pwCheck}
+          onChange={onChangeHandler}
           icon={<ClosedEye />}
           placeholder="비밀번호를 다시 입력하세요"
-          error={checkPassword !== password ? true : false}
+          error={formData.pwCheck !== formData.pw ? true : false}
           errorMessage="비밀번호가 일치하지 않습니다"
         />
         <Input
-          name="username"
-          value={userName}
+          name="name"
+          value={formData.name}
           icon={<Person />}
-          onChange={onChangeName}
+          onChange={onChangeHandler}
           placeholder="이름을 입력하세요"
         />
 
@@ -151,19 +158,19 @@ const SignUp = () => {
           <div className="address-main" onClick={() => toggleModal("address")}>
             <Input
               name="address"
-              value={address}
+              value={formData.address}
               icon={<Map />}
               onChange={() => {}}
               placeholder="주소를 입력하세요"
             />
             <span>주소검색</span>
           </div>
-          {address && (
+          {formData.address && (
             <Input
-              name="datailAddress"
-              value={datailAddress}
+              name="detailAddress"
+              value={formData.detailAddress}
               icon={<Map />}
-              onChange={onChangeDetailAddress}
+              onChange={onChangeHandler}
               placeholder="상세주소를 입력하세요"
             />
           )}
@@ -171,35 +178,30 @@ const SignUp = () => {
 
         <div className="creditcard-wrapper" onClick={() => toggleModal("credit")}>
           <Input
-            name="creditcard"
-            value={creditCard}
+            name="creditCardNum"
+            value={formData.creditCardNum}
             icon={<Card />}
-            onChange={() => {}}
             placeholder="신용카드 정보를 입력하세요"
           />
           <span>번호입력</span>
         </div>
 
         <Input
-          name="birthday"
-          value={birthday}
+          name="dateOfBirth"
+          value={formData.dateOfBirth}
           icon={<Calendar />}
-          onChange={onChangeBirthday}
+          onChange={onChangeHandler}
           placeholder="생년월일 6자리를 입력하세요"
         />
 
         <Button type="submit" value="회원가입" marginTop="10px" />
 
-        <button onClick={() => toggleModal("success")}>회원가입</button>
-        <button onClick={() => toggleModal("address")}>주소검색</button>
-        <button onClick={() => toggleModal("credit")}>신용카드</button>
-
-        <Modal
+        {/* <Modal
           isOpen={isOpen}
           toggleModal={toggleModal}
           modalType={modalType}
           onSelected={modalType === "address" ? onSelectedAddress : onSelectedCreditcard}
-        />
+        /> */}
       </Form>
     </Wrapper>
   );
@@ -238,7 +240,7 @@ const Form = styled.form`
         background: url(${checkIcon});
         content: "";
         width: 20px;
-        height: 20px;
+        height: 16px;
       }
     }
   }
