@@ -1,13 +1,6 @@
-import React, { useEffect } from "react";
-import { saveLocalStorage } from "Utils/Storage";
+import React from "react";
 
-const Main = (props) => {
-  useEffect(() => {
-    saveLocalStorage("TEST", {
-      id: "adfa",
-      authority: 2,
-    });
-  }, []);
+const Main = () => {
   return <div>Main</div>;
 };
 
