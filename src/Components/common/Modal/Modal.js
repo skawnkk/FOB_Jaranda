@@ -1,6 +1,5 @@
 import React from "react";
 import ModalPortal from "./ModalPortal";
-import ModalTypeView from "./ModalTypeView";
 import ModalContents from "./ModalContents";
 import Button from "../Button";
 import styled from "styled-components";
