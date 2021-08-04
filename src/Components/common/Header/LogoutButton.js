@@ -1,12 +1,19 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { LOGGEDIN_USER } from "Utils/constants";
+import { loadLocalStorage, loggedOutStorage } from "Utils/Storage";
 import profile from "Assets/img/profile.png";
 
 const LogoutButton = () => {
+  const { name } = loadLocalStorage(LOGGEDIN_USER)[0];
   const dropdownRef = useRef(null);
   const [activeMenu, setActiveMenu] = useState(false);
   const onClick = () => setActiveMenu(!activeMenu);
+
+  const handleLogout = () => {
+    loggedOutStorage();
+  };
 
   useEffect(() => {
     const pageClickEvent = (e) => {
@@ -32,10 +39,15 @@ const LogoutButton = () => {
         </div>
         <ul ref={dropdownRef} className={`menu ${activeMenu ? "menu-active" : ""}`}>
           <li>
+            <Link to="/">{name}</Link>
+          </li>
+          <li>
             <Link to="/">내 계정 관리</Link>
           </li>
           <li>
-            <Link to="/logout">로그아웃</Link>
+            <Link to="/logout" onClick={handleLogout}>
+              로그아웃
+            </Link>
           </li>
         </ul>
       </button>
