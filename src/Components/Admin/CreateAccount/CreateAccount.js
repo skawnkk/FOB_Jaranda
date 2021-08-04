@@ -38,6 +38,7 @@ const CreateAccount = ({ toggleModal }) => {
     if (selectValue) {
       const accountObj = {
         ...userInput,
+        // id: autoId(),
         authority: Number(selectValue),
       };
       saveLocalStorage("TEST", [...userList, accountObj]);
@@ -93,15 +94,21 @@ const Input = styled.input`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.borderline};
   border-radius: 4px;
+  padding-left: 4px;
 
   &:focus {
     border-color: ${({ theme }) => theme.color.green};
     box-shadow: ${({ theme }) => theme.color.green} 0 4px 2px -2px;
     transition: box-shadow 0.5s ease-in-out;
   }
+
+  &::placeholder {
+    padding-left: 4px;
+  }
 `;
 
 const AuthSelect = styled.select`
+  padding-left: 4px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
   border-radius: 4px;
   background-color: transparent;
@@ -114,7 +121,8 @@ const AuthSelect = styled.select`
 `;
 
 const SubmitButton = styled.button`
-  margin-top: 10px;
+  margin-top: 15px;
+  padding: 7px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
   border-radius: 4px;
   background-color: ${({ theme }) => theme.color.buttonHover};
@@ -127,10 +135,10 @@ const SubmitButton = styled.button`
 
 const INPUT_TITLE_DATA = [
   {
-    type: "text",
-    name: "id",
+    type: "email",
+    name: "email",
     required: true,
-    placeholder: "ID",
+    placeholder: "Email",
   },
   {
     type: "password",
@@ -143,12 +151,6 @@ const INPUT_TITLE_DATA = [
     name: "name",
     required: true,
     placeholder: "이름",
-  },
-  {
-    type: "email",
-    name: "email",
-    required: true,
-    placeholder: "Email",
   },
   {
     type: "text",
