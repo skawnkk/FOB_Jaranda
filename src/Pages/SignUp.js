@@ -32,10 +32,10 @@ const SignUp = () => {
     dateOfBirth: "",
     creditCardNum: "",
   });
-  const [auth, setAuth] = useState(AUTH_LEVEL.unknown);
+  const [authority, setAuthority] = useState(AUTH_LEVEL.unknown);
   const [errorMsg, setErrorMsg] = useState({
     id: { error: false, message: "" },
-    auth: { error: false, message: "" },
+    authority: { error: false, message: "" },
     email: { error: false, message: "" },
     pw: { error: false, message: "" },
     name: { error: false, message: "" },
@@ -44,26 +44,41 @@ const SignUp = () => {
     creditCardNum: { error: false, message: "" },
   });
 
+  const checkValidation = () => {
+    //email
+    // 조건에 안맞으면 errorMsg 값 수정
+    let checkArray = [];
+    if (!formData.email) {
+      checkArray.push("email");
+      onChangeErrorMsgHandler("email", "이메일을 확인해주세요");
+    }
+    //pw
+
+    if (!formData.pw) {
+      checkArray.push("pw");
+      onChangeErrorMsgHandler("pw", "패스워드를 확인해주세요");
+    }
+    //pwCheck
+    //name ...
+
+    //step2. errorMsg.filter : error 트루인게 있으면 return false;
+    // errorMsg.filter : error 트루인게 없으면 return true;
+
+    return true;
+  };
+
   const handleSignupSubmit = (e) => {
     e.preventDefault();
 
-    setFormData({
-      ...formData,
-      id: formData.id,
-      email: formData.email,
-      pw: formData.pw,
-      pwCheck: formData.pw,
-      name: formData.name,
-      address: formData.address,
-      dateOfBirth: formData.dateOfBirth,
-      creditCardNum: formData.creditCardNum,
-    });
-
-    saveLocalStorage(USER_STORAGE, formData);
+    if (checkValidation()) {
+      //성공(success) => true
+      saveLocalStorage(USER_STORAGE, formData);
+    } else {
+      //하단에 에러메세지 제시
+    }
   };
 
   const onChangeHandler = (e) => {
-    console.log("e", e.target.value, e.target.name);
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -71,14 +86,12 @@ const SignUp = () => {
     });
   };
 
-  // const onChangeEmail = useCallback(() => {}, []);
-  // const onChangePassword = useCallback(() => {}, []);
-  // const onChangeCheckPassword = useCallback(() => {}, []);
-  // const onChangeName = useCallback(() => {}, []);
-  // const onChangeDetailAddress = useCallback(() => {}, []);
-  // const onChangeDateOfBirth = useCallback(() => {}, []);
-  // const onSelectedAddress = (address) => {};
-  // const onSelectedCreditcard = (cardNumber) => {};
+  const onChangeErrorMsgHandler = (key, message) => {
+    setErrorMsg({
+      ...formData,
+      [key]: { error: true, message },
+    });
+  };
 
   const setAddressValue = (address) => {
     setFormData({
@@ -106,16 +119,16 @@ const SignUp = () => {
     <Wrapper>
       <Form onSubmit={handleSignupSubmit}>
         <Radio
-          value={auth}
-          name="auth"
-          onChange={setAuth}
+          value={authority}
+          name="authority"
+          onChange={setAuthority}
           icon={<Mail />}
           data={[
             { value: AUTH_LEVEL.teacher, label: "선생님" },
             { value: AUTH_LEVEL.parent, label: "부모님" },
           ]}
-          error=""
-          errorMessage=""
+          // error={errorMsg.authority.error}
+          // errorMessage={errorMsg.authority.message}
         />
         <div className="email-wrapper">
           <Input
@@ -124,8 +137,8 @@ const SignUp = () => {
             onChange={onChangeHandler}
             placeholder="이메일을 입력하세요"
             icon={<Mail />}
-            error={formData.email.length ? true : false}
-            errorMessage="이메일을 입력하세요"
+            error={errorMsg.email.error}
+            errorMessage={errorMsg.email.message}
             width="75%"
           />
           <Button type="submit" value="중복확인" width="20%" />
@@ -137,8 +150,8 @@ const SignUp = () => {
           onChange={onChangeHandler}
           icon={<ClosedEye />}
           placeholder="비밀번호를 입력하세요"
-          error={formData.pw === "123" ? true : false}
-          errorMessage="비밀번호를 입력하세요"
+          error={errorMsg.pw.error}
+          errorMessage={errorMsg.pw.message}
         />
         <div className="password-policy">
           <div>
@@ -161,8 +174,8 @@ const SignUp = () => {
           onChange={onChangeHandler}
           icon={<ClosedEye />}
           placeholder="비밀번호를 다시 입력하세요"
-          error={formData.pwCheck !== formData.pw ? true : false}
-          errorMessage="비밀번호가 일치하지 않습니다"
+          error={errorMsg.pwCheck.error}
+          errorMessage={errorMsg.pwCheck.message}
         />
         <Input
           name="name"
@@ -170,6 +183,8 @@ const SignUp = () => {
           icon={<Person />}
           onChange={onChangeHandler}
           placeholder="이름을 입력하세요"
+          error={errorMsg.name.error}
+          errorMessage={errorMsg.name.message}
         />
 
         <div className="address-wrapper">
@@ -180,6 +195,8 @@ const SignUp = () => {
               icon={<Map />}
               onChange={() => {}}
               placeholder="주소를 입력하세요"
+              error={errorMsg.address.error}
+              errorMessage={errorMsg.address.message}
             />
             <span>주소검색</span>
           </div>
@@ -190,6 +207,8 @@ const SignUp = () => {
               icon={<Map />}
               onChange={onChangeHandler}
               placeholder="상세주소를 입력하세요"
+              error={errorMsg.detailAddress.error}
+              errorMessage={errorMsg.detailAddress.message}
             />
           )}
         </div>
@@ -200,6 +219,8 @@ const SignUp = () => {
             value={formData.creditCardNum}
             icon={<Card />}
             placeholder="신용카드 정보를 입력하세요"
+            error={errorMsg.creditCardNum.error}
+            errorMessage={errorMsg.creditCardNum.message}
           />
           <span>번호입력</span>
         </div>
@@ -210,6 +231,8 @@ const SignUp = () => {
           icon={<Calendar />}
           onChange={onChangeHandler}
           placeholder="생년월일 6자리를 입력하세요"
+          error={errorMsg.dateOfBirth.error}
+          errorMessage={errorMsg.dateOfBirth.message}
         />
 
         <Button type="submit" value="회원가입" marginTop="10px" />
