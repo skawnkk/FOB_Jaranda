@@ -202,7 +202,13 @@ const SignUp = () => {
             {modalType === "address" && (
               <AddressModal toggleModal={toggleModal} onSelected={setAddressValue} />
             )}
-            {modalType === "credit" && <CreditModal onSelected={setCardValue} />}
+            {modalType === "credit" && (
+              <CreditModal
+                creditCard={creditCard}
+                onSelected={setCardValue}
+                toggleModal={toggleModal}
+              />
+            )}
           </>
         </Modal>
       </Form>
