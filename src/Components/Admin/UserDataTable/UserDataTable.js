@@ -18,7 +18,7 @@ const UserDataTable = ({ filteredUsers }) => {
               <th>신용 카드</th>
               <th colSpan="3">권한</th>
             </tr>
-            {filteredUsers.map(
+            {filteredUsers?.map(
               ({ id, name, email, pw, address, dateOfBirth, creditCardNum, authority }) => (
                 <tr key={id}>
                   <td>{id}</td>
