@@ -10,6 +10,7 @@ import { saveLocalStorage } from "Utils/Storage";
 import checkIcon from "Assets/svg/check.svg";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
+import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
 import { ReactComponent as Person } from "Assets/svg/person.svg";
 import { ReactComponent as Map } from "Assets/svg/map.svg";
 import { ReactComponent as Card } from "Assets/svg/card.svg";
@@ -35,6 +36,7 @@ const SignUp = () => {
     creditCardNum: "",
   });
   const [auth, setAuth] = useState(AUTH_LEVEL.unknown);
+  const [passwordHide, setPasswordHide] = useState(true);
   const [errorMsg, setErrorMsg] = useState({
     id: { error: false, message: "" },
     auth: { error: false, message: "" },
@@ -123,11 +125,17 @@ const SignUp = () => {
           <Button type="submit" value="중복확인" width="20%" />
         </div>
         <Input
-          type="password"
+          type={passwordHide ? "password" : "text"}
           name="pw"
           value={formData.pw}
           onChange={onChangeHandler}
-          icon={<ClosedEye />}
+          icon={
+            passwordHide ? (
+              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            ) : (
+              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+            )
+          }
           placeholder="비밀번호를 입력하세요"
           error={formData.pw === "123" ? true : false}
           errorMessage="비밀번호를 입력하세요"
@@ -147,11 +155,17 @@ const SignUp = () => {
           </div>
         </div>
         <Input
-          type="password"
+          type={passwordHide ? "password" : "text"}
           name="pwCheck"
           value={formData.pwCheck}
           onChange={onChangeHandler}
-          icon={<ClosedEye />}
+          icon={
+            passwordHide ? (
+              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            ) : (
+              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+            )
+          }
           placeholder="비밀번호를 다시 입력하세요"
           error={formData.pwCheck !== formData.pw ? true : false}
           errorMessage="비밀번호가 일치하지 않습니다"

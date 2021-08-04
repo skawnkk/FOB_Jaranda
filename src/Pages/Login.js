@@ -5,6 +5,7 @@ import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
+import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
 import { loadLocalStorage } from "Utils/Storage";
 import { USER_STORAGE } from "Utils/constants";
 
@@ -21,6 +22,7 @@ const Login = () => {
     email: { error: false, message: "" },
     pw: { error: false, message: "" },
   });
+  const [passwordHide, setPasswordHide] = useState(true);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -68,12 +70,18 @@ const Login = () => {
         />
 
         <Input
-          type="password"
+          type={passwordHide ? "password" : "text"}
           name="pw"
           value={formData.pw}
           onChange={onChangeHandler}
           placeholder="비밀번호를 입력하세요"
-          icon={<ClosedEye />}
+          icon={
+            passwordHide ? (
+              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            ) : (
+              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+            )
+          }
           error={errorMsg.pw.error}
           errorMessage={errorMsg.pw.message}
         />
