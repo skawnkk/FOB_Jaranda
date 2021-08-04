@@ -5,7 +5,6 @@ import ModalContents from "./ModalContents";
 
 const Modal = (props) => {
   const { isOpen, toggleModal, modalType } = props;
-  console.log(modalType);
 
   return (
     <>
