@@ -1,27 +1,34 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled, { css } from "styled-components";
 
-const Input = ({
-  type = "text",
-  name,
-  value,
-  onChange,
-  placeholder,
-  icon = null,
-  error = false,
-  errorMessage = null,
-  successMessage = null,
-  width,
-}) => {
+const Input = (
+  {
+    type = "text",
+    name,
+    value,
+    onChange,
+    placeholder,
+    icon = null,
+    error = false,
+    errorMessage = null,
+    successMessage = null,
+    width = "100%",
+    numberOnly = false,
+    maxLength = null,
+  },
+  ref
+) => {
   return (
     <Wrapper width={width}>
-      <InputWrapper error={error}>
+      <InputWrapper error={error} numberOnly={numberOnly}>
         <input
+          ref={ref}
           type={type}
           name={name}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          maxLength={maxLength}
         />
         {icon}
       </InputWrapper>
@@ -45,6 +52,7 @@ const InputWrapper = styled.div`
     font-size: 16px;
     border: 1px solid ${({ theme }) => theme.color.borderline};
     border-radius: 4px;
+    text-align: ${({ numberOnly }) => (numberOnly ? "center" : "left")};
 
     &::placeholder {
       color: ${({ theme }) => theme.color.fontGray};
@@ -79,4 +87,4 @@ const Message = styled.p`
   color: ${({ theme, status }) => (status === "error" ? theme.color.red : theme.color.green)};
 `;
 
-export default Input;
+export default forwardRef(Input);
