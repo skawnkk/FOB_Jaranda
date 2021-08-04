@@ -1,18 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ModalPortal from "./ModalPortal";
-import ModalContents from "./ModalContents";
+import ModalTypeView from "./ModalTypeView";
+import Button from "../Button";
 
 const Modal = (props) => {
-  const { isOpen, toggleModal, modalType } = props;
-  console.log(modalType);
+  const {
+    isOpen,
+    toggleModal,
+    modalType,
+    title,
+    content,
+    closeButton = "false",
+    submitButton = "false",
+  } = props;
+
+  const setTitleContent = () => {
+    return (
+      <ContentContainer>
+        <Title>{title}</Title>
+        <Content>{content}</Content>
+      </ContentContainer>
+    );
+  };
+
+  const setButton = () => {
+    //true,false값 수정필요
+    if (submitButton === "true") {
+      return <Button type="submit" width="30%" value="등록" onClick={toggleModal}></Button>;
+    }
+    if (closeButton === "true") {
+      return <Button width="30%" value="닫기" onClick={toggleModal}></Button>;
+    }
+  };
 
   return (
     <>
       {isOpen ? (
         <ModalPortal>
           <Wrapper>
-            <ModalContents modalType={modalType} toggleModal={toggleModal} />
+            {setTitleContent()}
+            <ModalTypeView modalType={modalType} />
+            {setButton()}
           </Wrapper>
         </ModalPortal>
       ) : null}
@@ -21,15 +50,31 @@ const Modal = (props) => {
 };
 
 const Wrapper = styled.div`
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
-  width: 500px;
-  height: 300px;
   transform: translate(-50%, -50%);
-  box-shadow: rgba(0, 0, 0, 0.08) 0 4px 2px -2px;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.color.background};
+
+  width: 100%;
+  height: 100%;
+  ${({ theme }) => theme.flexSet("center", "center", "column")}
+  padding: 20px 10px;
+`;
+
+const ContentContainer = styled.div`
+  ${({ theme }) => theme.flexSet("center", "center", "column")}
+  margin-bottom: 20px;
+`;
+
+const Title = styled.div`
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+`;
+const Content = styled.div`
+  font-size: 1rem;
+  padding: 10px;
+  width: 80%;
 `;
 
 export default Modal;

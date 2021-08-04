@@ -24,7 +24,6 @@ const SignUp = () => {
   const [error, setError] = useState(false);
 
   const modalType = {
-    success: "success",
     credit: "credit",
     address: "address",
   };
@@ -157,7 +156,13 @@ const SignUp = () => {
 
         <div>
           <button onClick={toggleModal}>모달창!</button>
-          <Modal isOpen={isOpen} toggleModal={toggleModal} modalType={modalType.credit} />
+          <Modal
+            isOpen={isOpen}
+            toggleModal={toggleModal}
+            title="신용카드 번호를 입력해 주세요"
+            content="여기 추가하라주구아머ㅣ아러ㅓㅐㅁㅈ더리ㅏ추가해죠아니허미나ㅓㄻ쟈ㅐㄷ러테스트테ㅡ트테스트테스트"
+            submitButton="true"
+          />
         </div>
       </Form>
     </Wrapper>
