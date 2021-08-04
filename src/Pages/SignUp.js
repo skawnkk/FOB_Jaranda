@@ -9,6 +9,7 @@ import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 import checkIcon from "Assets/svg/check.svg";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
+import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
 import { ReactComponent as Person } from "Assets/svg/person.svg";
 import { ReactComponent as Map } from "Assets/svg/map.svg";
 import { ReactComponent as Card } from "Assets/svg/card.svg";
@@ -17,12 +18,14 @@ import { ReactComponent as Calendar } from "Assets/svg/calendar.svg";
 import SignupModal from "Components/SignupModal";
 import AddressModal from "Components/AddressModal";
 import CreditModal from "Components/CreditModal";
+import { hashSync } from "Utils/bcrypt";
+
+import { isEmail, isPassword, isName, isDateOfBirth, isCreditNum } from "Utils/validator.js";
 
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
-    id: "",
     email: "",
     pw: "",
     pwCheck: "",
@@ -31,51 +34,63 @@ const SignUp = () => {
     dateOfBirth: "",
     creditCardNum: "",
   });
+
   const [authority, setAuthority] = useState(AUTH_LEVEL.unknown);
-  const [errorMsg, setErrorMsg] = useState({
-    id: { error: false, message: "" },
-    authority: { error: false, message: "" },
-    email: { error: false, message: "" },
-    pw: { error: false, message: "" },
-    name: { error: false, message: "" },
-    address: { error: false, message: "" },
-    dateOfBirth: { error: false, message: "" },
-    creditCardNum: { error: false, message: "" },
+  const [passwordHide, setPasswordHide] = useState(true);
+  const [errors, setErrors] = useState({
+    id: false,
+    authority: false,
+    email: false,
+    pw: false,
+    name: false,
+    address: false,
+    dateOfBirth: false,
+    creditCardNum: false,
   });
 
-  const checkValidation = () => {
-    //email
-    // 조건에 안맞으면 errorMsg 값 수정
-    let checkArray = [];
-    if (!formData.email) {
-      checkArray.push("email");
-      onChangeErrorMsgHandler("email", "이메일을 확인해주세요");
+  const validator = {
+    email: (email) => isEmail(email),
+    pw: (pw) => isPassword(pw),
+    // pwCheck: (pwCheck) => formData.pw === pwCheck,
+    name: (name) => isName(name),
+    address: (address) => !(address === ""),
+    dateOfBirth: (dateOfBirth) => isDateOfBirth(dateOfBirth),
+    creditCardNum: (creditCardNum) => isCreditNum(creditCardNum),
+  };
+
+  const isAllValid = (formData) => {
+    const copyformData = { ...formData };
+    delete copyformData.pwCheck;
+    for (const name in copyformData) {
+      console.log("name", name);
+      const value = formData[name];
+      const validateFunction = validator[name];
+      if (!validateFunction(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: !errors[name],
+        }));
+        return false;
+      }
     }
-    //pw
-
-    if (!formData.pw) {
-      checkArray.push("pw");
-      onChangeErrorMsgHandler("pw", "패스워드를 확인해주세요");
-    }
-    //pwCheck
-    //name ...
-
-    //step2. errorMsg.filter : error 트루인게 있으면 return false;
-    // errorMsg.filter : error 트루인게 없으면 return true;
-
     return true;
   };
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
+    // 위에 함수 formData
+    const allValid = isAllValid(formData);
+    if (allValid) {
+      formData.authority = authority;
+      formData.pw = hashSync(formData.pw, 8);
+      delete formData.pwCheck;
 
-    if (checkValidation()) {
-      //성공(success) => true
-      setAuthority(authority);
-      console.log(authority);
       const userData = loadLocalStorage(USER_STORAGE);
-      const user = [{ ...formData, authority: authority }];
-      saveLocalStorage(USER_STORAGE, userData.concat(user));
+      const user = { ...formData, authority: authority };
+      userData
+        ? saveLocalStorage(USER_STORAGE, [...userData, user])
+        : saveLocalStorage(USER_STORAGE, [user]);
+      toggleModal("success");
     } else {
       //하단에 에러메세지 제시
     }
@@ -83,26 +98,20 @@ const SignUp = () => {
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
-  const onChangeErrorMsgHandler = (key, message) => {
-    setErrorMsg({
-      ...formData,
-      [key]: { error: true, message },
-    });
-  };
-
-  const setAddressValue = (address) => {
+  const handleSetAddressValue = (address) => {
     setFormData({
       ...formData,
       address,
     });
   };
-  const setCardValue = (creditCardNum) => {
+
+  const handleSetCardValue = (creditCardNum) => {
     setFormData({
       ...formData,
       creditCardNum,
@@ -121,17 +130,17 @@ const SignUp = () => {
   return (
     <Wrapper>
       <Form onSubmit={handleSignupSubmit}>
+        <h4>회원가입</h4>
         <Radio
           value={authority}
           name="authority"
           onChange={setAuthority}
-          icon={<Mail />}
           data={[
             { value: AUTH_LEVEL.teacher, label: "선생님" },
             { value: AUTH_LEVEL.parent, label: "부모님" },
           ]}
-          // error={errorMsg.authority.error}
-          // errorMessage={errorMsg.authority.message}
+          // error={errors.authority}
+          // errorMessage={errors.authority}
         />
         <div className="email-wrapper">
           <Input
@@ -140,21 +149,27 @@ const SignUp = () => {
             onChange={onChangeHandler}
             placeholder="이메일을 입력하세요"
             icon={<Mail />}
-            error={errorMsg.email.error}
-            errorMessage={errorMsg.email.message}
+            error={errors.email}
+            errorMessage="이메일을 다시 입력해 주세요"
             width="75%"
           />
           <Button type="submit" value="중복확인" width="20%" />
         </div>
         <Input
-          type="password"
+          type={passwordHide ? "password" : "text"}
           name="pw"
           value={formData.pw}
           onChange={onChangeHandler}
-          icon={<ClosedEye />}
+          icon={
+            passwordHide ? (
+              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            ) : (
+              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+            )
+          }
           placeholder="비밀번호를 입력하세요"
-          error={errorMsg.pw.error}
-          errorMessage={errorMsg.pw.message}
+          error={errors.pw}
+          errorMessage="비밀번호를 다시 입력해 주세요"
         />
         <div className="password-policy">
           <div>
@@ -171,14 +186,20 @@ const SignUp = () => {
           </div>
         </div>
         <Input
-          type="password"
+          type={passwordHide ? "password" : "text"}
           name="pwCheck"
           value={formData.pwCheck}
           onChange={onChangeHandler}
-          icon={<ClosedEye />}
+          icon={
+            passwordHide ? (
+              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            ) : (
+              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+            )
+          }
           placeholder="비밀번호를 다시 입력하세요"
           error={false}
-          errorMessage={false}
+          errorMessage="비밀번호를 다시 입력해 주세요"
         />
         <Input
           name="name"
@@ -186,8 +207,8 @@ const SignUp = () => {
           icon={<Person />}
           onChange={onChangeHandler}
           placeholder="이름을 입력하세요"
-          error={errorMsg.name.error}
-          errorMessage={errorMsg.name.message}
+          error={errors.name}
+          errorMessage="이름을 다시 입력해 주세요"
         />
 
         <div className="address-wrapper">
@@ -198,8 +219,8 @@ const SignUp = () => {
               icon={<Map />}
               onChange={() => {}}
               placeholder="주소를 입력하세요"
-              error={errorMsg.address.error}
-              errorMessage={errorMsg.address.message}
+              error={errors.address}
+              errorMessage="주소를 다시 입력해 주세요"
             />
             <span>주소검색</span>
           </div>
@@ -222,8 +243,8 @@ const SignUp = () => {
             value={formData.creditCardNum}
             icon={<Card />}
             placeholder="신용카드 정보를 입력하세요"
-            error={errorMsg.creditCardNum.error}
-            errorMessage={errorMsg.creditCardNum.message}
+            error={errors.creditCardNum}
+            errorMessage="카드번호를 다시 입력해 주세요"
           />
           <span>번호입력</span>
         </div>
@@ -234,8 +255,9 @@ const SignUp = () => {
           icon={<Calendar />}
           onChange={onChangeHandler}
           placeholder="생년월일 6자리를 입력하세요"
-          error={errorMsg.dateOfBirth.error}
-          errorMessage={errorMsg.dateOfBirth.message}
+          error={errors.dateOfBirth}
+          maxLength={6}
+          errorMessage="생년월일을 다시 입력해 주세요"
         />
 
         <Button type="submit" value="회원가입" marginTop="10px" />
@@ -244,12 +266,12 @@ const SignUp = () => {
           <>
             {modalType === "success" && <SignupModal />}
             {modalType === "address" && (
-              <AddressModal toggleModal={toggleModal} onSelected={setAddressValue} />
+              <AddressModal toggleModal={toggleModal} onSelected={handleSetAddressValue} />
             )}
             {modalType === "credit" && (
               <CreditModal
                 creditCard={formData.creditCardNum}
-                onSelected={setCardValue}
+                onSelected={handleSetCardValue}
                 toggleModal={toggleModal}
               />
             )}
@@ -276,6 +298,13 @@ const Form = styled.form`
     padding: 40px 0;
   }
 
+  h4 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-align: center;
+  }
+
   > .email-wrapper {
     ${({ theme }) => theme.flexSet("space-between")};
   }
@@ -287,6 +316,7 @@ const Form = styled.form`
       span {
         color: ${({ theme }) => theme.color.borderline};
         text-align: center;
+        font-size: 16px;
       }
       &::before {
         display: inline-block;
