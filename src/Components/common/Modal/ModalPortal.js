@@ -1,25 +1,26 @@
-import React, { useRef, useEffect } from "react";
+import { useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 
-const modalRoot = document.getElementById("modal-root");
-const ModalPortal = ({ children }) => {
-  const elRef = useRef(null);
-  if (!elRef.current) {
-    elRef.current = document.createElement("div");
-  }
+const ModalPortal = ({ toggleModal, children }) => {
+  const dropdownRef = useRef(null);
+  const handleClick = (e) => {
+    if (dropdownRef.current === e.target) {
+      toggleModal();
+    }
+  };
 
-  useEffect(() => {
-    modalRoot.appendChild(elRef.current);
-    return () => {
-      modalRoot.removeChild(elRef.current);
-    };
-  }, []);
-  return ReactDOM.createPortal(<Wrapper>{children}</Wrapper>, elRef.current);
+  const elRef = document.getElementById("modalDom");
+  return ReactDOM.createPortal(
+    <Wrapper ref={dropdownRef} onClick={handleClick}>
+      {children}
+    </Wrapper>,
+    elRef
+  );
 };
 
 const Wrapper = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
