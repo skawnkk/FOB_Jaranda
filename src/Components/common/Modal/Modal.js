@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React from "react";
 import ModalPortal from "./ModalPortal";
 import ModalTypeView from "./ModalTypeView";
+import ModalContents from "./ModalContents";
 import Button from "../Button";
+import styled from "styled-components";
 
 const Modal = (props) => {
   const {
@@ -13,6 +14,7 @@ const Modal = (props) => {
     content,
     closeButton = "false",
     submitButton = "false",
+    onSelected,
   } = props;
 
   const setTitleContent = () => {
@@ -35,31 +37,17 @@ const Modal = (props) => {
   };
 
   return (
-    <>
-      {isOpen ? (
-        <ModalPortal>
-          <Wrapper>
-            {setTitleContent()}
-            <ModalTypeView modalType={modalType} />
-            {setButton()}
-          </Wrapper>
+    <div id="modalDom">
+      {isOpen && (
+        <ModalPortal toggleModal={toggleModal}>
+          {setTitleContent()}
+          <ModalContents modalType={modalType} toggleModal={toggleModal} onSelected={onSelected} />
+          {setButton()}
         </ModalPortal>
-      ) : null}
-    </>
+      )}
+    </div>
   );
 };
-
-const Wrapper = styled.div`
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  width: 100%;
-  height: 100%;
-  ${({ theme }) => theme.flexSet("center", "center", "column")}
-  padding: 20px 10px;
-`;
 
 const ContentContainer = styled.div`
   ${({ theme }) => theme.flexSet("center", "center", "column")}

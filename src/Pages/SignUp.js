@@ -18,17 +18,22 @@ const SignUp = () => {
   const [checkPassword, setCheckPassword] = useState("");
   const [userName, setUserName] = useState("");
   const [address, setAddress] = useState("");
+  const [datailAddress, setDetailAddress] = useState("");
   const [creditCard, setCreditCard] = useState("");
   const [birthday, setBirthday] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(false);
 
-  const modalType = {
-    credit: "credit",
-    address: "address",
-  };
-  const toggleModal = () => {
+  const [modalType, setModalType] = useState("");
+
+  // const modalType = {
+  //   success: "success",
+  //   credit: "credit",
+  //   address: "address",
+  // };
+  const toggleModal = (modal) => {
     setIsOpen(!isOpen);
+    setModalType(modal);
   };
 
   const nameCheck = () => {
@@ -55,14 +60,27 @@ const SignUp = () => {
   const onChangeName = useCallback((e) => {
     setUserName(e.target.value);
   }, []);
+
   // 주소, 신용카드 모달 팝업 후 작업
-  const onChangeAddress = useCallback((e) => {
-    setAddress(e.target.value);
+  const onSelectedAddress = (address) => {
+    setAddress(address);
+  };
+
+  // const onChangeAddress = useCallback((e) => {
+  //   setAddress(e.target.value);
+  // }, []);
+
+  const onChangeDetailAddress = useCallback((e) => {
+    setDetailAddress(e.target.value);
   }, []);
 
-  const onChangeCreditCard = useCallback((e) => {
-    setCreditCard(e.target.value);
-  }, []);
+  const onSelectedCreditcard = (cardNumber) => {
+    setCreditCard(cardNumber);
+  };
+
+  // const onChangeCreditCard = useCallback((e) => {
+  //   setCreditCard(e.target.value);
+  // }, []);
 
   const onChangeBirthday = useCallback((e) => {
     setBirthday(e.target.value);
@@ -128,22 +146,40 @@ const SignUp = () => {
           onChange={onChangeName}
           placeholder="이름을 입력하세요"
         />
-        <Input
-          name="address"
-          value={address}
-          icon={<Map />}
-          onChange={onChangeAddress}
-          // onClick={}
-          placeholder="주소를 입력하세요"
-        />
-        <Input
-          name="creditcard"
-          value={creditCard}
-          icon={<Card />}
-          onChange={onChangeCreditCard}
-          // onClick={}
-          placeholder="신용카드 정보를 입력하세요"
-        />
+
+        <div className="address-wrapper">
+          <div className="address-main" onClick={() => toggleModal("address")}>
+            <Input
+              name="address"
+              value={address}
+              icon={<Map />}
+              onChange={() => {}}
+              placeholder="주소를 입력하세요"
+            />
+            <span>주소검색</span>
+          </div>
+          {address && (
+            <Input
+              name="datailAddress"
+              value={datailAddress}
+              icon={<Map />}
+              onChange={onChangeDetailAddress}
+              placeholder="상세주소를 입력하세요"
+            />
+          )}
+        </div>
+
+        <div className="creditcard-wrapper" onClick={() => toggleModal("credit")}>
+          <Input
+            name="creditcard"
+            value={creditCard}
+            icon={<Card />}
+            onChange={() => {}}
+            placeholder="신용카드 정보를 입력하세요"
+          />
+          <span>번호입력</span>
+        </div>
+
         <Input
           name="birthday"
           value={birthday}
@@ -154,16 +190,16 @@ const SignUp = () => {
 
         <Button type="submit" value="회원가입" marginTop="10px" />
 
-        <div>
-          <button onClick={toggleModal}>모달창!</button>
-          <Modal
-            isOpen={isOpen}
-            toggleModal={toggleModal}
-            title="신용카드 번호를 입력해 주세요"
-            content="여기 추가하라주구아머ㅣ아러ㅓㅐㅁㅈ더리ㅏ추가해죠아니허미나ㅓㄻ쟈ㅐㄷ러테스트테ㅡ트테스트테스트"
-            submitButton="true"
-          />
-        </div>
+        <button onClick={() => toggleModal("success")}>회원가입</button>
+        <button onClick={() => toggleModal("address")}>주소검색</button>
+        <button onClick={() => toggleModal("credit")}>신용카드</button>
+
+        <Modal
+          isOpen={isOpen}
+          toggleModal={toggleModal}
+          modalType={modalType}
+          onSelected={modalType === "address" ? onSelectedAddress : onSelectedCreditcard}
+        />
       </Form>
     </Wrapper>
   );
@@ -171,6 +207,7 @@ const SignUp = () => {
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexSet("center", "center", "column")};
+  width: 100%;
   height: calc(100% - 72px);
 `;
 
@@ -203,6 +240,36 @@ const Form = styled.form`
         width: 20px;
         height: 20px;
       }
+    }
+  }
+
+  .address-wrapper {
+    position: relative;
+
+    span {
+      position: absolute;
+      top: 12.5px;
+      right: 50px;
+      color: ${({ theme }) => theme.color.green};
+      font-size: 10pt;
+      font-weight: 600;
+      padding: 10px 0;
+      cursor: pointer;
+    }
+  }
+
+  .creditcard-wrapper {
+    position: relative;
+
+    span {
+      position: absolute;
+      top: 12.5px;
+      right: 50px;
+      color: ${({ theme }) => theme.color.green};
+      font-size: 10pt;
+      font-weight: 600;
+      padding: 10px 0;
+      cursor: pointer;
     }
   }
 `;
