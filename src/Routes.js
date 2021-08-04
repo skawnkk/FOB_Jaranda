@@ -6,7 +6,7 @@ import { AUTH_LEVEL, IS_LOGGED_IN, ROUTES } from "Utils/constants";
 import { Admin, Login, Main, SignUp } from "Pages";
 
 function Routes() {
-  const { accessible, inaccessible } = IS_LOGGED_IN;
+  const { accessible, inaccessible, allAllow } = IS_LOGGED_IN;
   const { parent, unknown, admin } = AUTH_LEVEL;
   const { HOME, LOGIN, SIGNUP, ADMIN } = ROUTES;
 
@@ -14,7 +14,7 @@ function Routes() {
     <Router>
       <Header />
       <Switch>
-        <Route exact path={`${HOME}`} component={AuthorityControl(Main, accessible, unknown)} />
+        <Route exact path={`${HOME}`} component={AuthorityControl(Main, allAllow, unknown)} />
         <Route exact path={`${LOGIN}`} component={AuthorityControl(Login, inaccessible, unknown)} />
         <Route
           exact

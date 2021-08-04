@@ -9,6 +9,7 @@ const AuthorityControl = (Components, option, authLevel) => {
     const isLoggedIn = loadLocalStorage("TEST");
 
     const checkLoggedIn = (isLoggedIn, option) => {
+      if (option === null) return;
       if (!isLoggedIn && option) {
         alert("로그인 해주세요.");
         return history.push(LOGIN);

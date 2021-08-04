@@ -3,12 +3,14 @@ import Routes from "Routes";
 import styled from "styled-components";
 import { USER_STORAGE } from "Utils/constants";
 import { userMockData } from "Utils/MockData";
-import { saveLocalStorage } from "Utils/Storage";
+import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 
 // App 컴포넌트에서 setLocalStorageItem
 const App = () => {
   useEffect(() => {
-    saveLocalStorage(USER_STORAGE, userMockData);
+    if (!loadLocalStorage(USER_STORAGE)) {
+      saveLocalStorage(USER_STORAGE, userMockData);
+    }
   }, []);
 
   return (
