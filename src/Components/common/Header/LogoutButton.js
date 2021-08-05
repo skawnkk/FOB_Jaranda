@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { LOGGEDIN_USER } from "Utils/constants";
 import { loadLocalStorage, loggedOutStorage } from "Utils/Storage";
 import profile from "Assets/img/profile.png";
@@ -17,7 +17,7 @@ const LogoutButton = () => {
 
   const getUserName = () => {
     if (userData) {
-      const { name } = userData[0];
+      const { name } = userData;
       return name;
     }
   };
