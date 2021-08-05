@@ -53,19 +53,18 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
       <strong>카드 번호 입력하기</strong>
       <div className="card-wrapper">
         {Array.from({ length: 4 }, (_, i) => i).map((idx) => (
-          <>
+          <div key={idx}>
             <Input
-              key={idx}
               ref={(r) => (inputRef.current[idx] = r)}
               name={`num${idx}`}
               value={creditCardNumber[`num${idx}`]}
               onChange={onChangeCreditCardNumber}
-              width="20%"
+              width="70%"
               maxLength={4}
               numberOnly
             />
             <span>-</span>
-          </>
+          </div>
         ))}
       </div>
       {error && <p>카드번호 16자리 숫자를 입력해주세요</p>}
@@ -96,14 +95,11 @@ const Wrapper = styled.form`
     ${({ theme }) => theme.flexSet("center", "center", "row")}
 
     > div {
-      input {
-        display: inline;
+      ${({ theme }) => theme.flexSet("space-around")}
+      > div {
+        display: inline-block;
       }
-    }
-    span {
-      margin: 0 10px;
-
-      &:last-child {
+      &:last-child > span {
         display: none;
       }
     }
