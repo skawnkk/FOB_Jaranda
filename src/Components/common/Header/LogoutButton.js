@@ -6,13 +6,20 @@ import { loadLocalStorage, loggedOutStorage } from "Utils/Storage";
 import profile from "Assets/img/profile.png";
 
 const LogoutButton = () => {
-  const { name } = loadLocalStorage(LOGGEDIN_USER)[0];
+  const userData = loadLocalStorage(LOGGEDIN_USER);
   const dropdownRef = useRef(null);
   const [activeMenu, setActiveMenu] = useState(false);
   const onClick = () => setActiveMenu(!activeMenu);
 
   const handleLogout = () => {
     loggedOutStorage();
+  };
+
+  const getUserName = () => {
+    if (userData) {
+      const { name } = userData[0];
+      return name;
+    }
   };
 
   useEffect(() => {
@@ -39,7 +46,7 @@ const LogoutButton = () => {
         </div>
         <ul ref={dropdownRef} className={`menu ${activeMenu ? "menu-active" : ""}`}>
           <li>
-            <Link to="/">{name}</Link>
+            <Link to="/">{getUserName()}</Link>
           </li>
           <li>
             <Link to="/">내 계정 관리</Link>
