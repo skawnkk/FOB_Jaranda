@@ -25,6 +25,7 @@ import { isEmail, isPassword, isName, isDateOfBirth, isCreditNum } from "Utils/v
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [passwordCheckError, setPasswordError] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     pw: "",
@@ -96,13 +97,20 @@ const SignUp = () => {
     }
   };
 
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const onChangeHandler = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      if (name === "pwCheck") {
+        setPasswordError(value !== formData.pw);
+        setFormData({ ...formData, pwCheck: value });
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    [formData.pw, formData.pwCheck]
+  );
 
   const handleSetAddressValue = (address) => {
     setFormData({
@@ -198,7 +206,7 @@ const SignUp = () => {
             )
           }
           placeholder="비밀번호를 다시 입력하세요"
-          error={false}
+          error={passwordCheckError}
           errorMessage="비밀번호를 다시 입력해 주세요"
         />
         <Input

@@ -25,6 +25,19 @@ export const isCreditNum = (checkString) => {
   const creditNumRegexp = /^[0-9]{4}[-][0-9]{4}[-][0-9]{4}[-][0-9]{4}$/;
   return creditNumRegexp.test(checkString);
 };
+
+export const isPwNum = (checkString) => {
+  const pwNumRegex = /[0-9]/g;
+  return checkString.search(pwNumRegex);
+};
+export const isEng = (checkString) => {
+  const engRegex = /[a-zA-Z]/gi;
+  return checkString.search(engRegex);
+};
+export const isSpe = (checkString) => {
+  const speRegex = /[~`!@#$%\^&*()-+=]/gi;
+  return checkString.search(speRegex);
+};
 // const num = pw.search(/[0-9]/g);
 // const eng = pw.search(/[a-z]/gi);
 // const spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
