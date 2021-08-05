@@ -334,12 +334,16 @@ const Form = styled.form`
     span {
       position: absolute;
       top: 12.5px;
-      right: 50px;
+      right: 2px;
       color: ${({ theme }) => theme.color.green};
       font-size: 10pt;
       font-weight: 600;
-      padding: 10px 0;
+      padding: 10px 50px 13px 0;
       cursor: pointer;
+      background-color: white;
+    }
+    svg {
+      z-index: 1;
     }
   }
 
@@ -349,12 +353,16 @@ const Form = styled.form`
     span {
       position: absolute;
       top: 12.5px;
-      right: 50px;
+      right: 2px;
       color: ${({ theme }) => theme.color.green};
       font-size: 10pt;
       font-weight: 600;
-      padding: 10px 0;
+      padding: 10px 50px 13px 0;
       cursor: pointer;
+      background-color: white;
+    }
+    svg {
+      z-index: 1;
     }
   }
 `;

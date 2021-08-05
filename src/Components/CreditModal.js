@@ -91,11 +91,12 @@ const Wrapper = styled.form`
     font-weight: 500;
     color: ${({ theme }) => theme.color.button};
   }
+
   .card-wrapper {
     ${({ theme }) => theme.flexSet("center", "center", "row")}
 
     > div {
-      Input {
+      input {
         display: inline;
       }
     }
