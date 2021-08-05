@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { USERDATA_TEMPLATE, USER_DATA_OBJ } from "Utils/constants";
-import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { USERDATA_TEMPLATE, USER_DATA_OBJ, USER_STORAGE } from "Utils/constants";
+import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
 import hashSync from "Utils/bcrypt";
 
 const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
@@ -12,18 +12,13 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
   useEffect(() => {
     // saveLocalStorage("TEST", []);
     setUserInput(USERDATA_TEMPLATE);
-    setUserList(loadLocalStorage("USERLIST"));
+    setUserList(loadLocalStorage(USER_STORAGE));
   }, []);
 
   const inputUserData = (event) => {
     const {
       target: { value, name },
     } = event;
-    if (name === "pw")
-      return setUserInput({
-        ...userInput,
-        [name]: hashSync(value),
-      });
 
     return setUserInput({
       ...userInput,
@@ -45,10 +40,11 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
     if (selectValue) {
       const accountObj = {
         ...userInput,
-        // id: autoId(),
+        id: autoIncrementUserId(),
+        pw: hashSync(userInput.pw),
         authority: Number(selectValue),
       };
-      saveLocalStorage("USERLIST", [...userList, accountObj]);
+      saveLocalStorage(USER_STORAGE, [...userList, accountObj]);
       //<여기서 출력할값 갱신 [...userList, accountObj]>
       setIsCreateAccount((prev) => !prev);
     }

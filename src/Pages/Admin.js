@@ -18,18 +18,24 @@ const Admin = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
+
   // 회원가입후 가입된 사람 검색했을 때 안나오는 이슈 , 관리자페이지에서 계정생성후 검색안됨
-  useEffect(() => {
-    //userMockData
-    setUsers(userMockData);
-    setFilteredUsers(users);
-  }, [users]);
+  // useEffect(() => {
+  //   //userMockData
+  //   setUsers(userMockData);
+  //   setFilteredUsers(users);
+  // }, [users]);
 
   const [dividedState, setDividedState] = useState([]);
   const [searchConditions, setSearchConditions] = useState({
     searchType: "name",
     condition: { whole: true, teacher: false, parents: false, admin: false },
   });
+  const {
+    searchType,
+    condition: { whole, teacher, parents, admin },
+  } = searchConditions;
+
   const [isSearch, setIsSearch] = useState(false);
   const [wholePages, setWholePages] = useState(1);
 
@@ -52,14 +58,18 @@ const Admin = () => {
   ! 원랜없는 로직 TEST용
   * localStoage에 유저데이터가 없으면 mockData불러오기, 아니면 localStorage그대로 사용하기
   */
-  // // // //
 
   useEffect(() => {
-    setUsers(loadLocalStorage(USER_STORAGE));
-    const paginatedUsers = dividedPageUsers(users) || [];
-    setDividedState(paginatedUsers);
-    setFilteredUsers(dividedState[pageNum]);
-  }, []);
+    setUsers(loadLocalStorage(USER_STORAGE)); //isCreated가되면 불러올 친구
+    const dividedUsers = dividedPageUsers(search());
+    setWholePages(dividedUsers.length);
+    setFilteredUsers(dividedUsers[pageNum] || []);
+    console.log("isCreated!");
+    // setUsers(loadLocalStorage(USER_STORAGE)); //isCreated가되면 불러올 친구
+    // const paginatedUsers = dividedPageUsers(users) || []; //users에서 쪼개진 친구
+    // setDividedState(paginatedUsers);
+    // setFilteredUsers(dividedState[pageNum]);
+  }, [isCreateAccount]);
 
   const dividedPageUsers = (users) => {
     if (!users.length) return [];
@@ -81,11 +91,6 @@ const Admin = () => {
   useEffect(() => setPageNum(0), [searchConditions.condition, isSearch]);
 
   const search = (searchKeyword = searchKeywordRef.current.value) => {
-    const {
-      searchType,
-      condition: { whole, teacher, parents, admin },
-    } = searchConditions;
-
     if (searchKeyword)
       return users.filter(
         (item) =>
