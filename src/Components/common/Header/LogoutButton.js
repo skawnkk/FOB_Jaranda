@@ -25,12 +25,12 @@ const LogoutButton = () => {
   useEffect(() => {
     const pageClickEvent = (e) => {
       !dropdownRef.current?.contains(e.target) && setActiveMenu(!activeMenu);
-    };
-    if (activeMenu) {
-      window.addEventListener("click", pageClickEvent);
-    }
-    return () => {
-      window.removeEventListener("click", pageClickEvent);
+      if (activeMenu) {
+        window.addEventListener("click", pageClickEvent);
+      }
+      return () => {
+        window.removeEventListener("click", pageClickEvent);
+      };
     };
   }, [activeMenu]);
 
@@ -92,7 +92,8 @@ const Wrapper = styled.div`
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s;
 
-      li {
+      li > a {
+        display: block;
         padding: 10px;
       }
 
