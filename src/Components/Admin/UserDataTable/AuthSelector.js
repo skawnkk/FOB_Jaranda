@@ -11,7 +11,7 @@ const AuthSelector = ({ handleOptionChange, authTitle }) => {
     <>
       <select value={seletedAuth} onChange={handleAuthChange}>
         {authTitle.map((auth, idx) => (
-          <option key={idx} selected={auth === authTitle[0]}>
+          <option key={idx} defaultValue={auth === authTitle[0]}>
             {auth}
           </option>
         ))}

@@ -9,23 +9,18 @@ import logo from "Assets/img/logo.png";
 
 const Header = () => {
   const location = useLocation();
-  const [logged, setLogged] = useState(false);
-  // const [userData, setUserData] = useState(loadLocalStorage(LOGGEDIN_USER));
-  const userData = loadLocalStorage(LOGGEDIN_USER);
+  const [userData, setUserData] = useState([]);
 
   useEffect(() => {
-    userData ? setLogged(true) : setLogged(false);
-  }, [userData]);
+    setUserData(loadLocalStorage(LOGGEDIN_USER));
+  }, [location]);
 
   return (
     <Wrapper>
       <Link to="/">
-        <h1>
-          <img src={logo} alt="자란다 로고" />
-        </h1>
+        <img src={logo} alt="자란다 로고" />
       </Link>
-      {/* <UserButton LoggedUser={logged} /> */}
-      {logged ? <LogoutButton /> : <LoginButton />}
+      {userData ? <LogoutButton /> : <LoginButton />}
     </Wrapper>
   );
 };

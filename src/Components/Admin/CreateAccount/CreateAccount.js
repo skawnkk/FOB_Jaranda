@@ -10,7 +10,6 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
   const [selectValue, setSelectValue] = useState("");
 
   useEffect(() => {
-    // saveLocalStorage("TEST", []);
     setUserInput(USERDATA_TEMPLATE);
     setUserList(loadLocalStorage(USER_STORAGE));
   }, []);
@@ -45,7 +44,6 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
         authority: Number(selectValue),
       };
       saveLocalStorage(USER_STORAGE, [...userList, accountObj]);
-      //<여기서 출력할값 갱신 [...userList, accountObj]>
       setIsCreateAccount((prev) => !prev);
     }
     event.target.reset();

@@ -1,4 +1,3 @@
-// Select Box Data
 export const USER_DATA_OBJ = [
   {
     authLevel: 0,
@@ -16,14 +15,14 @@ export const USER_DATA_OBJ = [
     selectName: "부모님",
   },
 ];
-// Local storage
+
 export const USER_STORAGE = "USERLIST";
 export const LOGGEDIN_USER = "LOGGEDIN_USER";
 
-// User Paths
 export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
+  LOGOUT: "/logout",
   SIGNUP: "/signup",
   ADMIN: "/admin",
   STUDENTS: "/students",
@@ -32,7 +31,6 @@ export const ROUTES = {
   KIDS: "/kids",
 };
 
-// Userdata Template
 export const USERDATA_TEMPLATE = {
   id: "",
   authority: "",
@@ -44,14 +42,12 @@ export const USERDATA_TEMPLATE = {
   creditCardNum: "",
 };
 
-// 로그인 여부
 export const IS_LOGGED_IN = {
   accessible: true,
   inaccessible: false,
   allAllow: null,
 };
 
-// 권한레벨
 export const AUTH_LEVEL = {
   admin: 0,
   teacher: 1,
@@ -77,7 +73,6 @@ export const CATEGORY = {
   allUser: [{ title: "이용 안내", path: "/" }],
 };
 
-//관리자페이지 상수
 export const ADMIN = {
   PAGE_SIZE: 10,
   authTitle: { choice: "선택", admin: "관리자", teacher: "선생님", parents: "부모님" },
