@@ -5,7 +5,8 @@ import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
 import NavBar from "Components/common/NavBar";
 import { userMockData } from "Utils/MockData";
-import { ADMIN } from "Utils/constants";
+import { ADMIN, USER_STORAGE } from "Utils/constants";
+import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 
 const Admin = () => {
   const { PAGE_SIZE } = ADMIN;
@@ -22,22 +23,30 @@ const Admin = () => {
   const [wholePages, setWholePages] = useState(1);
 
   const handleAuthUpdate = (selectedId, auth) => {
-    console.log(auth, "update"); // ! test
-    if (auth === -1) return; // ! test부분
-    console.log("updating"); // ! test
+    if (auth === -1) return;
 
     const updatedUsers = users.map((user) =>
       user.id === selectedId ? { ...user, authority: auth } : user
     );
-    setUsers(updatedUsers); //TODO: updatedUsers를 local로 setItem
+    setUsers(updatedUsers);
+    saveLocalStorage(USER_STORAGE, updatedUsers);
+
     const updateAuthFilteredUsers = filteredUsers.map((user) =>
       user.id === selectedId ? { ...user, authority: auth } : user
     );
     setFilteredUsers(updateAuthFilteredUsers);
   };
 
+  /*
+  ! 원랜없는 로직 TEST용
+  * localStoage에 유저데이터가 없으면 mockData불러오기, 아니면 localStorage그대로 사용하기
+  */
   useEffect(() => {
-    setUsers(userMockData);
+    if (!loadLocalStorage(USER_STORAGE)) saveLocalStorage(USER_STORAGE, userMockData);
+  }, []);
+
+  useEffect(() => {
+    setUsers(loadLocalStorage(USER_STORAGE));
     const paginatedUsers = dividedPageUsers(users) || [];
     setDividedState(paginatedUsers);
     setFilteredUsers(dividedState[pageNum]);
