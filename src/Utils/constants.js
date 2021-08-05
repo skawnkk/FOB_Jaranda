@@ -58,3 +58,9 @@ export const CATEGORY = {
   ],
   allUser: [{ title: "이용 안내", path: "/" }],
 };
+
+//관리자페이지 상수
+export const ADMIN = {
+  PAGE_SIZE: 10,
+  authTitle: { choice: "선택", admin: "관리자", teacher: "선생님", parents: "부모님" },
+};
