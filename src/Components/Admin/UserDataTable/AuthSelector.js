@@ -10,8 +10,10 @@ const AuthSelector = ({ handleOptionChange, authTitle }) => {
   return (
     <>
       <select value={seletedAuth} onChange={handleAuthChange}>
-        {authTitle.map((auth) => (
-          <option selected={auth === authTitle[0]}>{auth}</option>
+        {authTitle.map((auth, idx) => (
+          <option key={idx} selected={auth === authTitle[0]}>
+            {auth}
+          </option>
         ))}
       </select>
     </>

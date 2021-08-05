@@ -35,32 +35,38 @@ const Pagination = ({ pageNum, setPageNum, wholePages }) => {
 
   return (
     <PaginationWrapper>
-      <OptionBtn id="first" onClick={handlePage} disabled={!pageNum}>
-        {`<< First`}
-      </OptionBtn>
-      <OptionBtn id="prev" onClick={handlePage} disabled={!pageNum}>
-        {`< Prev`}
-      </OptionBtn>
+      {wholePages !== 0 && (
+        <>
+          <OptionBtn id="first" onClick={handlePage} disabled={!pageNum}>
+            {`<< First`}
+          </OptionBtn>
+          <OptionBtn id="prev" onClick={handlePage} disabled={!pageNum}>
+            {`< Prev`}
+          </OptionBtn>
+        </>
+      )}
       <AlignPages>
-        {!!lastBook.length
-          ? lastBook.map((page, idx) => (
-              <PaginationBtn
-                key={idx}
-                id="pagination"
-                page={page}
-                pageNum={pageNum + 1}
-                onClick={(e) => handlePage(e, page)}>
-                {page}
-              </PaginationBtn>
-            ))
-          : "사용자 데이터가 없습니다."}
+        {lastBook.map((page, idx) => (
+          <PaginationBtn
+            key={idx}
+            id="pagination"
+            page={page}
+            pageNum={pageNum + 1}
+            onClick={(e) => handlePage(e, page)}>
+            {page}
+          </PaginationBtn>
+        ))}
       </AlignPages>
-      <OptionBtn id="next" onClick={handlePage} disabled={pageNum === wholePages - 1}>
-        Next {` >`}
-      </OptionBtn>
-      <OptionBtn id="end" onClick={handlePage} disabled={pageNum === wholePages - 1}>
-        End {` >>`}
-      </OptionBtn>
+      {wholePages !== 0 && (
+        <>
+          <OptionBtn id="next" onClick={handlePage} disabled={pageNum === wholePages - 1}>
+            Next {` >`}
+          </OptionBtn>
+          <OptionBtn id="end" onClick={handlePage} disabled={pageNum === wholePages - 1}>
+            End {` >>`}
+          </OptionBtn>
+        </>
+      )}
     </PaginationWrapper>
   );
 };

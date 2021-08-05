@@ -4,7 +4,7 @@ import SignUpModal from "Components/common/Modal/SignupModal";
 import CreateAccount from "Components/Admin/CreateAccount/CreateAccount";
 
 const ModalContents = (props) => {
-  const { modalType, toggleModal } = props;
+  const { modalType, toggleModal, setIsCreateAccount } = props;
 
   const selectModalView = (modalType) => {
     switch (modalType) {
@@ -15,7 +15,7 @@ const ModalContents = (props) => {
           </div>
         );
       case "account":
-        return <CreateAccount toggleModal={toggleModal} />;
+        return <CreateAccount toggleModal={toggleModal} setIsCreateAccount={setIsCreateAccount} />;
       default:
         return <SignUpModal modalType={modalType} />;
     }

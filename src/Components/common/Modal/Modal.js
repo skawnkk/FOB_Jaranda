@@ -4,14 +4,18 @@ import ModalPortal from "./ModalPortal";
 import ModalContents from "./ModalContents";
 
 const Modal = (props) => {
-  const { isOpen, toggleModal, modalType } = props;
+  const { isOpen, toggleModal, modalType, setIsCreateAccount } = props;
 
   return (
     <>
       {isOpen ? (
         <ModalPortal>
           <Wrapper>
-            <ModalContents modalType={modalType} toggleModal={toggleModal} />
+            <ModalContents
+              setIsCreateAccount={setIsCreateAccount}
+              modalType={modalType}
+              toggleModal={toggleModal}
+            />
           </Wrapper>
         </ModalPortal>
       ) : null}

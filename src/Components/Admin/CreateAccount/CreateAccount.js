@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { USERDATA_TEMPLATE, USER_DATA_OBJ } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 
-const CreateAccount = ({ toggleModal }) => {
+const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
   const [userInput, setUserInput] = useState([]);
   const [userList, setUserList] = useState([]);
   const [selectValue, setSelectValue] = useState("");
@@ -11,7 +11,7 @@ const CreateAccount = ({ toggleModal }) => {
   useEffect(() => {
     // saveLocalStorage("TEST", []);
     setUserInput(USERDATA_TEMPLATE);
-    setUserList(loadLocalStorage("TEST"));
+    setUserList(loadLocalStorage("USERLIST"));
   }, []);
 
   const inputUserData = (event) => {
@@ -41,7 +41,9 @@ const CreateAccount = ({ toggleModal }) => {
         // id: autoId(),
         authority: Number(selectValue),
       };
-      saveLocalStorage("TEST", [...userList, accountObj]);
+      saveLocalStorage("USERLIST", [...userList, accountObj]);
+      //<여기서 출력할값 갱신 [...userList, accountObj]>
+      // setIsCreateAccount((prev) => !prev);
     }
     event.target.reset();
     toggleModal();

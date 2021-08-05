@@ -3,7 +3,6 @@ import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
 import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
-import NavBar from "Components/common/NavBar";
 import { MODAL_TYPE } from "Utils/constants";
 import Modal from "Components/common/Modal/Modal";
 import styled from "styled-components";
@@ -18,8 +17,10 @@ const Admin = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isCreateAccount, setIsCreateAccount] = useState(false);
 
   useEffect(() => {
+    //userMockData
     setUsers(userMockData);
     setFilteredUsers(users);
   }, [users]);
@@ -105,17 +106,10 @@ const Admin = () => {
     );
   };
 
-  const handleSearchClick = (searchKeyword) => setIsSearch((prev) => !prev);
-
-  // const category = {
-  //   admin: ["이용 안내", "사용자 관리"],
-  //   teacher: ["이용 안내", "학생 관리", "학생 소개받기"],
-  //   parent: ["이용 안내", "우리 아이 관리", "자란다 선생님 찾기"],
-  // };
+  const handleSearchClick = () => setIsSearch((prev) => !prev);
 
   return (
     <AdminWrapper>
-      <NavBar category={category.admin} />
       <SearchContainer>
         <ModalBox>
           <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
@@ -123,6 +117,7 @@ const Admin = () => {
             isOpen={isOpen}
             toggleModal={() => setIsOpen(!isOpen)}
             modalType={MODAL_TYPE.account}
+            setIsCreateAccount={setIsCreateAccount}
           />
         </ModalBox>
         <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />

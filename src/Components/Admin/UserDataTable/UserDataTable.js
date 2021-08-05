@@ -4,6 +4,7 @@ import { ADMIN } from "Utils/constants";
 import AuthSelector from "Components/Admin/UserDataTable/AuthSelector";
 
 const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
+  console.log(filteredUsers.length);
   const {
     authTitle: { choice, admin, teacher, parents },
   } = ADMIN;
@@ -54,6 +55,11 @@ const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
             )}
           </tbody>
         </table>
+        {filteredUsers.length === 0 && (
+          <EmptyData>
+            <span>일치하는 데이터가 없습니다. 🤢</span>
+          </EmptyData>
+        )}
       </div>
     </Wrapper>
   );
@@ -85,4 +91,10 @@ const Wrapper = styled.div`
   button {
     border: 1px solid ${({ theme }) => theme.color.borderline};
   }
+`;
+
+const EmptyData = styled.div`
+  ${({ theme }) => theme.flexSet()};
+  height: 300px;
+  border: 1px solid ${({ theme }) => theme.color.borderline};
 `;
