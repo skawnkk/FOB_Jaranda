@@ -17,7 +17,7 @@ export const isDateOfBirth = (checkString) => {
 
 //비밀번호 숫자/특수문자/영문/8자리이상
 export const isPassword = (checkString) => {
-  const passwordRegex = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
+  const passwordRegex = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{8,50}$/;
   return passwordRegex.test(checkString);
 };
 
@@ -25,6 +25,16 @@ export const isCreditNum = (checkString) => {
   const creditNumRegexp = /^[0-9]{4}[-][0-9]{4}[-][0-9]{4}[-][0-9]{4}$/;
   return creditNumRegexp.test(checkString);
 };
-// const num = pw.search(/[0-9]/g);
-// const eng = pw.search(/[a-z]/gi);
-// const spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+
+export const isPwNum = (checkString) => {
+  const pwNumRegex = /[0-9]/g;
+  return checkString.search(pwNumRegex);
+};
+export const isEng = (checkString) => {
+  const engRegex = /[a-zA-Z]/gi;
+  return checkString.search(engRegex);
+};
+export const isSpe = (checkString) => {
+  const speRegex = /[~`!@#$%\^&*()-+=]/gi;
+  return checkString.search(speRegex);
+};

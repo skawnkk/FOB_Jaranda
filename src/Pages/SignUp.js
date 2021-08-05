@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
@@ -20,40 +20,67 @@ import AddressModal from "Components/AddressModal";
 import CreditModal from "Components/CreditModal";
 import { hashSync } from "Utils/bcrypt";
 
-import { isEmail, isPassword, isName, isDateOfBirth, isCreditNum } from "Utils/validator.js";
+import {
+  isEmail,
+  isPassword,
+  isName,
+  isDateOfBirth,
+  isCreditNum,
+  isEng,
+  isPwNum,
+  isSpe,
+} from "Utils/validator.js";
+
+const EMAIL_STATUS = {
+  default: 0,
+  invalidType: 1,
+  unConfirmed: 2,
+  confirmedFailure: 3,
+  confirmedSuccess: 4,
+};
 
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [emailOverlapStatus, setEmailOverlapStatus] = useState(EMAIL_STATUS.default);
+  const [emailOverlapChecked, setEmailOverlapChecked] = useState(false);
+  const [passwordHide, setPasswordHide] = useState(true);
+  const [passwordCheckError, setPasswordCheckError] = useState(false);
+  const [passwordError, setPasswordError] = useState({
+    pwNum: false,
+    eng: false,
+    spe: false,
+    digit: false,
+  });
   const [formData, setFormData] = useState({
+    authority: AUTH_LEVEL.unknown,
     email: "",
     pw: "",
     pwCheck: "",
     name: "",
     address: "",
+    detailAddress: "",
     dateOfBirth: "",
     creditCardNum: "",
   });
 
-  const [authority, setAuthority] = useState(AUTH_LEVEL.unknown);
-  const [passwordHide, setPasswordHide] = useState(true);
   const [errors, setErrors] = useState({
     id: false,
     authority: false,
     email: false,
     pw: false,
     name: false,
-    address: false,
+    detailAddress: false,
     dateOfBirth: false,
     creditCardNum: false,
   });
 
   const validator = {
+    authority: (authority) => !(authority === AUTH_LEVEL.unknown),
     email: (email) => isEmail(email),
     pw: (pw) => isPassword(pw),
-    // pwCheck: (pwCheck) => formData.pw === pwCheck,
     name: (name) => isName(name),
-    address: (address) => !(address === ""),
+    detailAddress: (detailAddress) => !(detailAddress === ""),
     dateOfBirth: (dateOfBirth) => isDateOfBirth(dateOfBirth),
     creditCardNum: (creditCardNum) => isCreditNum(creditCardNum),
   };
@@ -61,16 +88,22 @@ const SignUp = () => {
   const isAllValid = (formData) => {
     const copyformData = { ...formData };
     delete copyformData.pwCheck;
+    delete copyformData.address;
     for (const name in copyformData) {
-      console.log("name", name);
       const value = formData[name];
       const validateFunction = validator[name];
+
       if (!validateFunction(value)) {
         setErrors((prev) => ({
           ...prev,
-          [name]: !errors[name],
+          [name]: true,
         }));
         return false;
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: false,
+        }));
       }
     }
     return true;
@@ -78,36 +111,98 @@ const SignUp = () => {
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
-    // 위에 함수 formData
+
+    if (!emailOverlapChecked) {
+      setErrors((prev) => ({
+        ...prev,
+        email: true,
+      }));
+      setEmailOverlapStatus(EMAIL_STATUS.unConfirmed);
+      return;
+    }
+
     const allValid = isAllValid(formData);
     if (allValid) {
-      formData.authority = authority;
       formData.pw = hashSync(formData.pw, 8);
       delete formData.pwCheck;
 
       const userData = loadLocalStorage(USER_STORAGE);
-      const user = { ...formData, authority: authority };
+      if (!userData) return;
+      const user = { ...formData };
       userData
         ? saveLocalStorage(USER_STORAGE, [...userData, user])
         : saveLocalStorage(USER_STORAGE, [user]);
       toggleModal("success");
-    } else {
-      //하단에 에러메세지 제시
     }
   };
 
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const onChangeHandler = useCallback(
+    (e) => {
+      setEmailOverlapChecked(false);
+      const { name, value } = e.target;
+      if (name === "pwCheck") {
+        setPasswordCheckError(value !== formData.pw);
+        setFormData({ ...formData, pwCheck: value });
+      }
+      if (name === "pw") {
+        setPasswordError({
+          ...passwordError,
+          eng: isEng(value) >= 0,
+          pwNum: isPwNum(value) >= 0,
+          spe: isSpe(value) >= 0,
+          digit: value.length >= 8,
+        });
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    [formData.pw, formData.pwCheck]
+  );
 
   const handleSetAddressValue = (address) => {
     setFormData({
       ...formData,
       address,
+    });
+  };
+
+  const onClickOverlapCheck = () => {
+    setEmailOverlapChecked(true);
+
+    if (!isEmail(formData.email)) {
+      setErrors({ ...errors, email: true });
+      setEmailOverlapStatus(EMAIL_STATUS.invalidType);
+      return;
+    }
+
+    const userData = loadLocalStorage(USER_STORAGE);
+    if (userData) {
+      const searchEmail = userData.filter((user) => user.email === formData.email);
+      if (searchEmail.length) {
+        setErrors({ ...errors, email: true });
+        setEmailOverlapStatus(EMAIL_STATUS.confirmedFailure);
+      } else {
+        setErrors({ ...errors, email: false });
+        setEmailOverlapStatus(EMAIL_STATUS.confirmedSuccess);
+      }
+    }
+  };
+
+  const getEmailStatusMessage = (status) => {
+    let message = errors.email ? "이메일을 입력하세요" : "";
+    if (status === EMAIL_STATUS.invalidType) message = "이메일 형식을 확인해주세요";
+    else if (status === EMAIL_STATUS.unConfirmed) message = "중복 검사를 진행해주세요";
+    else if (status === EMAIL_STATUS.confirmedFailure) message = "중복된 이메일 입니다.";
+
+    return message;
+  };
+
+  const handleSetAuthority = (authority) => {
+    setFormData({
+      ...formData,
+      authority,
     });
   };
 
@@ -123,24 +218,20 @@ const SignUp = () => {
     setModalType(modal);
   };
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
   return (
     <Wrapper>
-      <Form onSubmit={handleSignupSubmit}>
+      <Form onSubmit={handleSignupSubmit} passwordError={passwordError}>
         <h4>회원가입</h4>
         <Radio
-          value={authority}
+          value={formData.authority}
           name="authority"
-          onChange={setAuthority}
+          onChange={handleSetAuthority}
           data={[
             { value: AUTH_LEVEL.teacher, label: "선생님" },
             { value: AUTH_LEVEL.parent, label: "부모님" },
           ]}
-          // error={errors.authority}
-          // errorMessage={errors.authority}
+          error={errors.authority}
+          errorMessage="원하시는 계정 유형을 선택해 주세요."
         />
         <div className="email-wrapper">
           <Input
@@ -150,10 +241,11 @@ const SignUp = () => {
             placeholder="이메일을 입력하세요"
             icon={<Mail />}
             error={errors.email}
-            errorMessage="이메일을 다시 입력해 주세요"
+            errorMessage={getEmailStatusMessage(emailOverlapStatus)}
+            successMessage={emailOverlapChecked && "사용 가능한 이메일 입니다"}
             width="75%"
           />
-          <Button type="submit" value="중복확인" width="20%" />
+          <Button value="중복확인" width="20%" onClick={onClickOverlapCheck} />
         </div>
         <Input
           type={passwordHide ? "password" : "text"}
@@ -173,16 +265,16 @@ const SignUp = () => {
         />
         <div className="password-policy">
           <div>
-            <span>숫자</span>
+            <span className="password-pwNum">숫자</span>
           </div>
           <div>
-            <span>특수문자</span>
+            <span className="password-spe">특수문자</span>
           </div>
           <div>
-            <span>영문</span>
+            <span className="password-eng">영문</span>
           </div>
           <div>
-            <span>8자리 이상</span>
+            <span className="password-digit">8자리 이상</span>
           </div>
         </div>
         <Input
@@ -198,7 +290,7 @@ const SignUp = () => {
             )
           }
           placeholder="비밀번호를 다시 입력하세요"
-          error={false}
+          error={passwordCheckError}
           errorMessage="비밀번호를 다시 입력해 주세요"
         />
         <Input
@@ -231,8 +323,8 @@ const SignUp = () => {
               icon={<Map />}
               onChange={onChangeHandler}
               placeholder="상세주소를 입력하세요"
-              error={false}
-              errorMessage={false}
+              error={errors.detailAddress}
+              errorMessage="상세주소를 다시 입력해 주세요"
             />
           )}
         </div>
@@ -264,6 +356,7 @@ const SignUp = () => {
 
         <Modal isOpen={isOpen} toggleModal={toggleModal}>
           <>
+            {modalType === "emailCheck" && <EmailDuplicateCModal />}
             {modalType === "success" && <SignupModal />}
             {modalType === "address" && (
               <AddressModal toggleModal={toggleModal} onSelected={handleSetAddressValue} />
@@ -316,7 +409,7 @@ const Form = styled.form`
       span {
         color: ${({ theme }) => theme.color.borderline};
         text-align: center;
-        font-size: 16px;
+        font-size: 15px;
       }
       &::before {
         display: inline-block;
@@ -324,6 +417,38 @@ const Form = styled.form`
         content: "";
         width: 20px;
         height: 16px;
+      }
+      .password-pwNum {
+        ${(props) =>
+          props.passwordError.pwNum &&
+          css`
+            color: ${({ theme }) => theme.color.green};
+            font-weight: 600;
+          `};
+      }
+      .password-eng {
+        ${(props) =>
+          props.passwordError.eng &&
+          css`
+            color: ${({ theme }) => theme.color.green};
+            font-weight: 600;
+          `};
+      }
+      .password-spe {
+        ${(props) =>
+          props.passwordError.spe &&
+          css`
+            color: ${({ theme }) => theme.color.green};
+            font-weight: 600;
+          `};
+      }
+      .password-digit {
+        ${(props) =>
+          props.passwordError.digit &&
+          css`
+            color: ${({ theme }) => theme.color.green};
+            font-weight: 600;
+          `};
       }
     }
   }
