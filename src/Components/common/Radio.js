@@ -69,6 +69,7 @@ const Wrapper = styled.div`
     margin-top: 8px;
     font-size: 16px;
     font-weight: 600;
+    text-align: center;
 
     &.error-message {
       color: ${({ theme }) => theme.color.red};
