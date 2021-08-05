@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
-import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
 import { hashSync } from "Utils/bcrypt";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
@@ -124,6 +124,7 @@ const SignUp = () => {
 
     const allValid = isAllValid(formData);
     if (allValid) {
+      formData.id = autoIncrementUserId();
       formData.pw = hashSync(formData.pw, 8);
       delete formData.pwCheck;
 
