@@ -18,7 +18,7 @@ const Admin = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
-
+  // 회원가입후 가입된 사람 검색했을 때 안나오는 이슈 , 관리자페이지에서 계정생성후 검색안됨
   useEffect(() => {
     //userMockData
     setUsers(userMockData);
@@ -52,9 +52,7 @@ const Admin = () => {
   ! 원랜없는 로직 TEST용
   * localStoage에 유저데이터가 없으면 mockData불러오기, 아니면 localStorage그대로 사용하기
   */
-  useEffect(() => {
-    if (!loadLocalStorage(USER_STORAGE)) saveLocalStorage(USER_STORAGE, userMockData);
-  }, []);
+  // // // //
 
   useEffect(() => {
     setUsers(loadLocalStorage(USER_STORAGE));

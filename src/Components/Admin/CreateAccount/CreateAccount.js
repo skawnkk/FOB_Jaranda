@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { USERDATA_TEMPLATE, USER_DATA_OBJ } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import hashSync from "Utils/bcrypt";
 
 const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
   const [userInput, setUserInput] = useState([]);
@@ -18,7 +19,13 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
     const {
       target: { value, name },
     } = event;
-    setUserInput({
+    if (name === "pw")
+      return setUserInput({
+        ...userInput,
+        [name]: hashSync(value),
+      });
+
+    return setUserInput({
       ...userInput,
       [name]: value,
     });
@@ -43,7 +50,7 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
       };
       saveLocalStorage("USERLIST", [...userList, accountObj]);
       //<여기서 출력할값 갱신 [...userList, accountObj]>
-      // setIsCreateAccount((prev) => !prev);
+      setIsCreateAccount((prev) => !prev);
     }
     event.target.reset();
     toggleModal();

@@ -7,7 +7,7 @@ const authority = {
 export const userMockData = [
   {
     id: 1,
-    pw: "123az",
+    pw: "123az!!!!",
     name: "농담곰1",
     email: "1nong@gmail.com",
     address: "경기도 성남시 뭐시기",
@@ -1083,5 +1083,16 @@ export const userMockData = [
     dateOfBirth: "19880119",
     creditCardNum: "1234123412341234",
     authority: authority.parent,
+  },
+  {
+    id: 1,
+    authority: authority.admin,
+    email: "admin@gmail.com",
+    pw: "$2a$08$8QTvmuv74dTktsg3Hz7OlOKSEtMNsR2fEEvI9ScYjFN8W1.xG7ELC",
+    name: "관리자",
+    address: "[06161]서울 강남구 선릉로 520 (삼성동, 선릉빌딩)",
+    detailAddress: "위코드",
+    creditCardNum: "1234-1234-1234-1234",
+    dateOfBirth: "990101",
   },
 ];
