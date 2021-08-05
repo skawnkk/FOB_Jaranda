@@ -1,12 +1,26 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { LOGGEDIN_USER } from "Utils/constants";
+import { loadLocalStorage, loggedOutStorage } from "Utils/Storage";
 import profile from "Assets/img/profile.png";
 
 const LogoutButton = () => {
+  const userData = loadLocalStorage(LOGGEDIN_USER);
   const dropdownRef = useRef(null);
   const [activeMenu, setActiveMenu] = useState(false);
   const onClick = () => setActiveMenu(!activeMenu);
+
+  const handleLogout = () => {
+    loggedOutStorage();
+  };
+
+  const getUserName = () => {
+    if (userData) {
+      const { name } = userData;
+      return name;
+    }
+  };
 
   useEffect(() => {
     const pageClickEvent = (e) => {
@@ -32,10 +46,15 @@ const LogoutButton = () => {
         </div>
         <ul ref={dropdownRef} className={`menu ${activeMenu ? "menu-active" : ""}`}>
           <li>
+            <Link to="/">{getUserName()}</Link>
+          </li>
+          <li>
             <Link to="/">내 계정 관리</Link>
           </li>
           <li>
-            <Link to="/logout">로그아웃</Link>
+            <Link to="/logout" onClick={handleLogout}>
+              로그아웃
+            </Link>
           </li>
         </ul>
       </button>
