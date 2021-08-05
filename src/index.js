@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import GlobalStyles from "Styles/GlobalStyles";
+import GlobalStyles from "./Styles/GlobalStyles";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "styled-components";
-import { Theme } from "Styles/Theme";
-import Mixin from "Styles/Mixin";
+import { Theme } from "./Styles/Theme";
+import Mixin from "./Styles/Mixin";
 
 ReactDOM.render(
   <React.StrictMode>
