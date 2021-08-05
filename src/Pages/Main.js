@@ -5,7 +5,7 @@ import styled from "styled-components";
 const Main = () => {
   return (
     <Wrapper>
-      <img src={main} alt="자란다" />
+      <img src={main} alt="자란다" width={800} />
     </Wrapper>
   );
 };

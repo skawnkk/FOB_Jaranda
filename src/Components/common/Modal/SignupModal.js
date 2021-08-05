@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 const SignupModal = () => {
   const history = useHistory();
-
   useEffect(() => {
     const timeoutID = setTimeout(() => {
       history.replace("/login");
@@ -25,7 +24,6 @@ const Wrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   ${({ theme }) => theme.flexSet("center", "center", "column")}
   width: 500px;
   height: 300px;

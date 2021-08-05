@@ -1,19 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 import { LOGGEDIN_USER } from "Utils/constants";
 import { loadLocalStorage, loggedOutStorage } from "Utils/Storage";
 import profile from "Assets/img/profile.png";
 
 const LogoutButton = () => {
-  const userData = loadLocalStorage(LOGGEDIN_USER);
   const dropdownRef = useRef(null);
   const [activeMenu, setActiveMenu] = useState(false);
-  const onClick = () => setActiveMenu(!activeMenu);
-
-  const handleLogout = () => {
-    loggedOutStorage();
-  };
+  const userData = loadLocalStorage(LOGGEDIN_USER);
 
   const getUserName = () => {
     if (userData) {
@@ -22,19 +17,20 @@ const LogoutButton = () => {
     }
   };
 
+  const onClick = () => setActiveMenu(!activeMenu);
+  const handleLogout = () => {
+    loggedOutStorage();
+  };
+
   useEffect(() => {
     const pageClickEvent = (e) => {
-      if (dropdownRef.current !== null && !dropdownRef.current.contains(e.target)) {
-        setActiveMenu(!activeMenu);
+      !dropdownRef.current?.contains(e.target) && setActiveMenu(!activeMenu);
+      if (activeMenu) {
+        window.addEventListener("click", pageClickEvent);
       }
-    };
-
-    if (activeMenu) {
-      window.addEventListener("click", pageClickEvent);
-    }
-
-    return () => {
-      window.removeEventListener("click", pageClickEvent);
+      return () => {
+        window.removeEventListener("click", pageClickEvent);
+      };
     };
   }, [activeMenu]);
 
@@ -81,6 +77,7 @@ const Wrapper = styled.div`
         border: 1px solid ${({ theme }) => theme.color.borderline};
       }
     }
+
     .menu {
       padding: 0 10px;
       background-color: ${({ theme }) => theme.color.background};
@@ -95,7 +92,8 @@ const Wrapper = styled.div`
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s;
 
-      li {
+      li > a {
+        display: block;
         padding: 10px;
       }
 

@@ -5,7 +5,6 @@ import { USER_STORAGE } from "Utils/constants";
 import { userMockData } from "Utils/MockData";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 
-// App 컴포넌트에서 setLocalStorageItem
 const App = () => {
   useEffect(() => {
     if (!loadLocalStorage(USER_STORAGE)) {

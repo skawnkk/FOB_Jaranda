@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
 import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
-import { MODAL_TYPE } from "Utils/constants";
 import Modal from "Components/common/Modal/Modal";
-import styled from "styled-components";
-import { userMockData } from "Utils/MockData";
-import { ADMIN, USER_STORAGE } from "Utils/constants";
+import CreateAccount from "Components/Admin/CreateAccount/CreateAccount";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { ADMIN, USER_STORAGE } from "Utils/constants";
 
 const Admin = () => {
   const { PAGE_SIZE } = ADMIN;
@@ -17,51 +16,38 @@ const Admin = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [wholePages, setWholePages] = useState(1);
+  const [isSearch, setIsSearch] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
-
-  useEffect(() => {
-    //userMockData
-    setUsers(userMockData);
-    setFilteredUsers(users);
-  }, [users]);
-
-  const [dividedState, setDividedState] = useState([]);
   const [searchConditions, setSearchConditions] = useState({
     searchType: "name",
     condition: { whole: true, teacher: false, parents: false, admin: false },
   });
-  const [isSearch, setIsSearch] = useState(false);
-  const [wholePages, setWholePages] = useState(1);
+  const {
+    searchType,
+    condition: { whole, teacher, parents, admin },
+  } = searchConditions;
 
   const handleAuthUpdate = (selectedId, auth) => {
     if (auth === -1) return;
+    const updateUserInfo = (users) => {
+      return users.map((user) => (user.id === selectedId ? { ...user, authority: auth } : user));
+    };
 
-    const updatedUsers = users.map((user) =>
-      user.id === selectedId ? { ...user, authority: auth } : user
-    );
+    const updatedUsers = updateUserInfo(users);
     setUsers(updatedUsers);
     saveLocalStorage(USER_STORAGE, updatedUsers);
 
-    const updateAuthFilteredUsers = filteredUsers.map((user) =>
-      user.id === selectedId ? { ...user, authority: auth } : user
-    );
+    const updateAuthFilteredUsers = updateUserInfo(filteredUsers);
     setFilteredUsers(updateAuthFilteredUsers);
   };
 
-  /*
-  ! 원랜없는 로직 TEST용
-  * localStoage에 유저데이터가 없으면 mockData불러오기, 아니면 localStorage그대로 사용하기
-  */
-  useEffect(() => {
-    if (!loadLocalStorage(USER_STORAGE)) saveLocalStorage(USER_STORAGE, userMockData);
-  }, []);
-
   useEffect(() => {
     setUsers(loadLocalStorage(USER_STORAGE));
-    const paginatedUsers = dividedPageUsers(users) || [];
-    setDividedState(paginatedUsers);
-    setFilteredUsers(dividedState[pageNum]);
-  }, []);
+    const dividedUsers = dividedPageUsers(search());
+    setWholePages(dividedUsers.length);
+    setFilteredUsers(dividedUsers[pageNum] || []);
+  }, [isCreateAccount]);
 
   const dividedPageUsers = (users) => {
     if (!users.length) return [];
@@ -70,10 +56,9 @@ const Admin = () => {
       const pageUsers = users.slice(i, i + PAGE_SIZE);
       pageGroupUsers.push(pageUsers);
     }
-    return pageGroupUsers; // [[1,2,3], [3,4,5], [6,7,8]]
+    return pageGroupUsers;
   };
 
-  //TODO: Refactor const pipe = (f, g) = (x) => f(g(x))
   useEffect(() => {
     const searchedTotalPages = dividedPageUsers(search()).length;
     setWholePages(searchedTotalPages);
@@ -83,11 +68,6 @@ const Admin = () => {
   useEffect(() => setPageNum(0), [searchConditions.condition, isSearch]);
 
   const search = (searchKeyword = searchKeywordRef.current.value) => {
-    const {
-      searchType,
-      condition: { whole, teacher, parents, admin },
-    } = searchConditions;
-
     if (searchKeyword)
       return users.filter(
         (item) =>
@@ -110,16 +90,14 @@ const Admin = () => {
 
   return (
     <AdminWrapper>
+      <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
+        <CreateAccount
+          setIsCreateAccount={setIsCreateAccount}
+          toggleModal={() => setIsOpen(!isOpen)}
+        />
+      </Modal>
       <SearchContainer>
-        <ModalBox>
-          <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
-          <Modal
-            isOpen={isOpen}
-            toggleModal={() => setIsOpen(!isOpen)}
-            modalType={MODAL_TYPE.account}
-            setIsCreateAccount={setIsCreateAccount}
-          />
-        </ModalBox>
+        <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
         <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
       </SearchContainer>
       <AuthFilter {...{ searchConditions, setSearchConditions }} />
@@ -140,17 +118,14 @@ const AdminWrapper = styled.div`
 
 const SearchContainer = styled.div`
   position: relative;
+  margin: 30px;
   width: 66.5%;
 `;
 
-const ModalBox = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 0px;
-  transform: translate(0, -50%);
-`;
-
 const CreateAccountButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 11px;
   padding: 10px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
   border-radius: 30px;

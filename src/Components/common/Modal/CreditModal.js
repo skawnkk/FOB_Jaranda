@@ -2,10 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "Components/common/Button";
 import Input from "Components/common/Input";
+import MessageBox from "Components/common/MessageBox";
 
-const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
+const CreditModal = ({ creditCard, handleSetCardNum, toggleModal }) => {
   const inputRef = useRef([]);
-
+  const [error, setError] = useState(false);
   const creditCardArray = (!!creditCard && creditCard.split("-")) || "";
   const [creditCardNumber, setCreditCardNumber] = useState({
     num0: creditCardArray[0] || "",
@@ -13,20 +14,18 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
     num2: creditCardArray[2] || "",
     num3: creditCardArray[3] || "",
   });
-  const [error, setError] = useState(false);
 
-  const onlyNumber = (value) => {
+  const changeStringToNumber = (value) => {
     return value.replace(/[^0-9]/g, "");
   };
 
-  const onChangeCreditCardNumber = (e) => {
+  const handleChangeCreditCardNumber = (e) => {
     const { name, value } = e.target;
-    setCreditCardNumber({ ...creditCardNumber, [name]: onlyNumber(value) });
+    setCreditCardNumber({ ...creditCardNumber, [name]: changeStringToNumber(value) });
   };
 
-  const onClickButton = (e) => {
+  const handleClickButton = (e) => {
     e.preventDefault();
-
     const cardNumber = Object.keys(creditCardNumber).reduce(
       (acc, cur) => acc.concat(creditCardNumber[cur]),
       []
@@ -35,9 +34,9 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
     const cardNumberToString = cardNumber.join("-");
 
     if (cardNumberLength === 16) {
+      handleSetCardNum(cardNumberToString);
       setError(false);
       toggleModal(true);
-      onSelected(cardNumberToString);
     } else {
       setError(true);
     }
@@ -58,7 +57,7 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
               ref={(r) => (inputRef.current[idx] = r)}
               name={`num${idx}`}
               value={creditCardNumber[`num${idx}`]}
-              onChange={onChangeCreditCardNumber}
+              onChange={handleChangeCreditCardNumber}
               width="70%"
               maxLength={4}
               numberOnly
@@ -67,8 +66,8 @@ const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
           </div>
         ))}
       </div>
-      {error && <p>카드번호 16자리 숫자를 입력해주세요</p>}
-      <Button type="submit" value="카드번호 입력완료" onClick={onClickButton} width="50%" />
+      {error && <MessageBox>카드번호 16자리 숫자를 입력해주세요</MessageBox>}
+      <Button type="submit" width="50%" value="카드번호 입력완료" onClick={handleClickButton} />
     </Wrapper>
   );
 };
@@ -105,18 +104,8 @@ const Wrapper = styled.form`
     }
   }
 
-  p {
-    color: ${({ theme }) => theme.color.red};
-    padding: 10px;
-    font-weight: 600;
-    font-size: 14px;
-  }
-
   @media (max-width: 768px) {
     width: 80%;
-  }
-
-  Button {
   }
 `;
 
