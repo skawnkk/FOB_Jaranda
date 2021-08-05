@@ -1,7 +1,16 @@
 import React from "react";
+import main from "Assets/img/main.png";
+import styled from "styled-components";
 
 const Main = () => {
-  return <div>Main</div>;
+  return (
+    <Wrapper>
+      <img src={main} alt="자란다" />
+    </Wrapper>
+  );
 };
+const Wrapper = styled.div`
+  ${({ theme }) => theme.absoluteCenter()}
+`;
 
 export default Main;
