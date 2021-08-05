@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { ADMIN } from "Utils/constants";
+import AuthSelector from "Components/Admin/UserDataTable/AuthSelector";
 
-const UserDataTable = ({ filteredUsers }) => {
-  const authTitle = ["관리자", "선생님", "부모님"];
+const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
+  const {
+    authTitle: { choice, admin, teacher, parents },
+  } = ADMIN;
+  const authTitle = [choice, admin, teacher, parents];
+  const [choicedAuth, setChoicedAuth] = useState(-1);
+
+  const handleOptionChange = (auth) => {
+    if (auth === -1) return;
+    setChoicedAuth(auth);
+  };
+
   return (
     <Wrapper>
       <div className="dataTable">
@@ -18,7 +30,7 @@ const UserDataTable = ({ filteredUsers }) => {
               <th>신용 카드</th>
               <th colSpan="3">권한</th>
             </tr>
-            {filteredUsers.map(
+            {filteredUsers?.map(
               ({ id, name, email, pw, address, dateOfBirth, creditCardNum, authority }) => (
                 <tr key={id}>
                   <td>{id}</td>
@@ -28,16 +40,14 @@ const UserDataTable = ({ filteredUsers }) => {
                   <td>{address}</td>
                   <td>{dateOfBirth}</td>
                   <td>{creditCardNum}</td>
-                  <td>{authTitle[authority]}</td>
+                  <td>{authTitle.slice(1)[authority]}</td>
                   <td>
-                    <select>
-                      {authTitle.map((auth) => (
-                        <option value="">{auth}</option>
-                      ))}
-                    </select>
+                    <AuthSelector handleOptionChange={handleOptionChange} authTitle={authTitle} />
                   </td>
                   <td>
-                    <button type="button">권한수정</button>
+                    <button type="button" onClick={() => handleAuthUpdate(id, choicedAuth)}>
+                      수정
+                    </button>
                   </td>
                 </tr>
               )
@@ -49,15 +59,30 @@ const UserDataTable = ({ filteredUsers }) => {
   );
 };
 
-export default UserDataTable;
+export default React.memo(UserDataTable);
 
 const Wrapper = styled.div`
   table {
     margin: 0 auto;
+    min-width: 1100px;
   }
 
   th,
   td {
+    border: 1px solid ${({ theme }) => theme.color.borderline};
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  tr:nth-child(odd) {
+    background-color: rgba(135, 191, 68, 0.3);
+  }
+
+  tr:first-child {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  button {
     border: 1px solid ${({ theme }) => theme.color.borderline};
   }
 `;
