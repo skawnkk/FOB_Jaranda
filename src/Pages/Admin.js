@@ -5,6 +5,7 @@ import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
 import { MODAL_TYPE } from "Utils/constants";
 import Modal from "Components/common/Modal/Modal";
+import CreateAccount from "Components/Admin/CreateAccount/CreateAccount";
 import styled from "styled-components";
 import { userMockData } from "Utils/MockData";
 import { ADMIN, USER_STORAGE } from "Utils/constants";
@@ -108,16 +109,11 @@ const Admin = () => {
 
   return (
     <AdminWrapper>
+      <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
+        <CreateAccount setIsCreateAccount={setIsCreateAccount} />
+      </Modal>
       <SearchContainer>
-        <ModalBox>
-          <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
-          <Modal
-            isOpen={isOpen}
-            toggleModal={() => setIsOpen(!isOpen)}
-            modalType={MODAL_TYPE.account}
-            setIsCreateAccount={setIsCreateAccount}
-          />
-        </ModalBox>
+        <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
         <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
       </SearchContainer>
       <AuthFilter {...{ searchConditions, setSearchConditions }} />
@@ -138,17 +134,14 @@ const AdminWrapper = styled.div`
 
 const SearchContainer = styled.div`
   position: relative;
+  margin: 30px;
   width: 66.5%;
 `;
 
-const ModalBox = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 0px;
-  transform: translate(0, -50%);
-`;
-
 const CreateAccountButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 11px;
   padding: 10px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
   border-radius: 30px;
