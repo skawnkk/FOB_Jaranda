@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
 import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
-import { MODAL_TYPE } from "Utils/constants";
 import Modal from "Components/common/Modal/Modal";
 import CreateAccount from "Components/Admin/CreateAccount/CreateAccount";
-import styled from "styled-components";
-import { userMockData } from "Utils/MockData";
-import { ADMIN, USER_STORAGE } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { ADMIN, USER_STORAGE } from "Utils/constants";
 
 const Admin = () => {
   const { PAGE_SIZE } = ADMIN;
@@ -18,49 +16,38 @@ const Admin = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [wholePages, setWholePages] = useState(1);
+  const [isSearch, setIsSearch] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
-  // 회원가입후 가입된 사람 검색했을 때 안나오는 이슈 , 관리자페이지에서 계정생성후 검색안됨
-  useEffect(() => {
-    //userMockData
-    setUsers(userMockData);
-    setFilteredUsers(users);
-  }, [users]);
-
-  const [dividedState, setDividedState] = useState([]);
   const [searchConditions, setSearchConditions] = useState({
     searchType: "name",
     condition: { whole: true, teacher: false, parents: false, admin: false },
   });
-  const [isSearch, setIsSearch] = useState(false);
-  const [wholePages, setWholePages] = useState(1);
+  const {
+    searchType,
+    condition: { whole, teacher, parents, admin },
+  } = searchConditions;
 
   const handleAuthUpdate = (selectedId, auth) => {
     if (auth === -1) return;
+    const updateUserInfo = (users) => {
+      return users.map((user) => (user.id === selectedId ? { ...user, authority: auth } : user));
+    };
 
-    const updatedUsers = users.map((user) =>
-      user.id === selectedId ? { ...user, authority: auth } : user
-    );
+    const updatedUsers = updateUserInfo(users);
     setUsers(updatedUsers);
     saveLocalStorage(USER_STORAGE, updatedUsers);
 
-    const updateAuthFilteredUsers = filteredUsers.map((user) =>
-      user.id === selectedId ? { ...user, authority: auth } : user
-    );
+    const updateAuthFilteredUsers = updateUserInfo(filteredUsers);
     setFilteredUsers(updateAuthFilteredUsers);
   };
 
-  /*
-  ! 원랜없는 로직 TEST용
-  * localStoage에 유저데이터가 없으면 mockData불러오기, 아니면 localStorage그대로 사용하기
-  */
-  // // // //
-
   useEffect(() => {
     setUsers(loadLocalStorage(USER_STORAGE));
-    const paginatedUsers = dividedPageUsers(users) || [];
-    setDividedState(paginatedUsers);
-    setFilteredUsers(dividedState[pageNum]);
-  }, []);
+    const dividedUsers = dividedPageUsers(search());
+    setWholePages(dividedUsers.length);
+    setFilteredUsers(dividedUsers[pageNum] || []);
+  }, [isCreateAccount]);
 
   const dividedPageUsers = (users) => {
     if (!users.length) return [];
@@ -69,10 +56,9 @@ const Admin = () => {
       const pageUsers = users.slice(i, i + PAGE_SIZE);
       pageGroupUsers.push(pageUsers);
     }
-    return pageGroupUsers; // [[1,2,3], [3,4,5], [6,7,8]]
+    return pageGroupUsers;
   };
 
-  //TODO: Refactor const pipe = (f, g) = (x) => f(g(x))
   useEffect(() => {
     const searchedTotalPages = dividedPageUsers(search()).length;
     setWholePages(searchedTotalPages);
@@ -82,11 +68,6 @@ const Admin = () => {
   useEffect(() => setPageNum(0), [searchConditions.condition, isSearch]);
 
   const search = (searchKeyword = searchKeywordRef.current.value) => {
-    const {
-      searchType,
-      condition: { whole, teacher, parents, admin },
-    } = searchConditions;
-
     if (searchKeyword)
       return users.filter(
         (item) =>
@@ -110,7 +91,10 @@ const Admin = () => {
   return (
     <AdminWrapper>
       <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
-        <CreateAccount setIsCreateAccount={setIsCreateAccount} />
+        <CreateAccount
+          setIsCreateAccount={setIsCreateAccount}
+          toggleModal={() => setIsOpen(!isOpen)}
+        />
       </Modal>
       <SearchContainer>
         <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>

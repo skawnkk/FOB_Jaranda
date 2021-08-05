@@ -1,7 +1,6 @@
 import Button from "Components/common/Button";
 import styled from "styled-components";
 
-//*hj - 재사용 함수 생성
 export const setTitleContent = (title = "", content = "") => {
   const ContentContainer = styled.div`
     ${({ theme }) => theme.flexSet("center", "center", "column")}

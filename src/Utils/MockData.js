@@ -1085,7 +1085,7 @@ export const userMockData = [
     authority: authority.parent,
   },
   {
-    id: 1,
+    id: 1000000,
     authority: authority.admin,
     email: "admin@gmail.com",
     pw: "$2a$08$8QTvmuv74dTktsg3Hz7OlOKSEtMNsR2fEEvI9ScYjFN8W1.xG7ELC",
