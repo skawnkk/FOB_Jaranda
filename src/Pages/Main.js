@@ -1,21 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
+import main from "Assets/img/main.png";
 import styled from "styled-components";
-import { saveLocalStorage } from "Utils/Storage";
 
 const Main = () => {
-  useEffect(() => {
-    saveLocalStorage("TEST", { id: "afda", authority: 0 });
-  }, []);
-
   return (
     <Wrapper>
-      <div>This is Main Page🔧</div>
+      <img src={main} alt="자란다" />
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  ${({ theme }) => theme.absoluteCenter()};
+  ${({ theme }) => theme.absoluteCenter()}
 `;
 
 export default Main;

@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-const Radio = ({ value, onChange, data = [], error = false, errorMessage = null }) => {
+const Radio = ({ name, value, onChange, data = [], error = false, errorMessage = null }) => {
   return (
-    <Wapper error={error}>
+    <Wrapper error={error}>
       <div>
         {data.map((item, idx) => (
           <label key={idx}>
             <input
               type="radio"
+              name={name}
               checked={value === item.value}
               onChange={() => onChange(item.value)}
             />
@@ -17,13 +18,13 @@ const Radio = ({ value, onChange, data = [], error = false, errorMessage = null 
         ))}
       </div>
       {error && errorMessage && <p className="error-message">{errorMessage}</p>}
-    </Wapper>
+    </Wrapper>
   );
 };
 
-const Wapper = styled.div`
+const Wrapper = styled.div`
   > div {
-    ${({ theme }) => theme.flexSet("flex-start", "center")}
+    ${({ theme }) => theme.flexSet("center")}
 
     label {
       ${({ theme }) => theme.flexSet("center", "center")}
@@ -57,6 +58,10 @@ const Wapper = styled.div`
         background-color: ${({ theme }) => theme.color.fontWhite};
         border-radius: 50%;
       }
+
+      span {
+        color: ${({ theme }) => theme.color.fontGray};
+      }
     }
   }
 
@@ -64,6 +69,7 @@ const Wapper = styled.div`
     margin-top: 8px;
     font-size: 16px;
     font-weight: 600;
+    text-align: center;
 
     &.error-message {
       color: ${({ theme }) => theme.color.red};

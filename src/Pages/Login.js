@@ -1,84 +1,110 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { USER_STORAGE, LOGGEDIN_USER } from "Utils/constants";
+import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { compareSync } from "Utils/bcrypt";
+import { isEmail } from "Utils/validator";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
+import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({
-    email: { error: false, message: null },
-    password: { error: false, message: null },
+  const history = useHistory();
+  const [formData, setFormData] = useState({
+    email: "",
+    pw: "",
   });
+  const [errors, setErrors] = useState({
+    email: false,
+    pw: false,
+  });
+  const [passwordHide, setPasswordHide] = useState(true);
+  const [unknownUser, setUnknownUser] = useState(false);
 
-  const onChangeEmail = useCallback((e) => {
-    setEmail(e.target.value);
-  }, []);
-
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
-
-  const isEmail = (checkString) => {
-    const emailRegex =
-      /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-    return emailRegex.test(checkString);
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const validateCheck = () => {
-    if (!email || !isEmail(email)) {
-      setErrors({
-        ...errors,
-        email: { error: true, message: "이메일을 다시 확인해주세요" },
-      });
-    }
+  const validator = {
+    email: (email) => isEmail(email),
+    pw: (pw) => pw.length,
+  };
 
-    if (!password) {
-      setErrors({
-        ...errors,
-        password: { error: true, message: "패스워드를 다시 확인해주세요" },
-      });
+  const isAllValid = (form) => {
+    for (const name in form) {
+      const value = form[name];
+      const validateFunction = validator[name];
+      if (!validateFunction(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: true,
+        }));
+        return false;
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: false,
+        }));
+      }
     }
+    return true;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    validateCheck();
-    //*로컬스토리지에서 id, pw 일치하는 사람 있는지
-    //if
-  };
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
+    if (isAllValid(formData)) {
+      const userData = loadLocalStorage(USER_STORAGE);
+      if (!userData) return setUnknownUser(true);
+
+      const existUser = userData.find(
+        (user) => user.email === formData.email && compareSync(formData.pw, user.pw)
+      );
+      if (!existUser) return setUnknownUser(true);
+
+      saveLocalStorage(LOGGEDIN_USER, existUser);
+      setUnknownUser(false);
+      history.push("/");
+    }
+  };
 
   return (
     <Wrapper>
       <Form onSubmit={handleSubmit}>
+        <h4>로그인</h4>
         <Input
           name="email"
-          value={email}
-          onChange={onChangeEmail}
+          value={formData.email}
+          onChange={onChangeHandler}
           placeholder="이메일을 입력하세요"
           icon={<Mail />}
-          error={errors.email.error}
-          errorMessage={errors.email.message}
+          error={errors.email}
+          errorMessage="이메일을 다시 확인해 주세요."
         />
-
         <Input
-          type="password"
-          name="password"
-          value={password}
-          onChange={onChangePassword}
+          type={passwordHide ? "password" : "text"}
+          name="pw"
+          value={formData.pw}
+          onChange={onChangeHandler}
           placeholder="비밀번호를 입력하세요"
-          icon={<ClosedEye />}
-          error={errors.password.error}
-          errorMessage={errors.password.message}
+          icon={
+            passwordHide ? (
+              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            ) : (
+              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+            )
+          }
+          error={errors.pw}
+          errorMessage="비밀번호를 다시 입력해 주세요"
         />
-
+        {unknownUser && <p>로그인 또는 패스워드를 다시 확인해주세요</p>}
         <Button type="submit" value="로그인" marginTop="10px" />
       </Form>
       <NavLink to="/signup">
@@ -98,10 +124,20 @@ const Wrapper = styled.div`
 `;
 
 const Form = styled.form`
+  h4 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
   ${({ theme }) => theme.flexSet("space-between", "center", "column")}
   width: 450px;
   padding: 40px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
+
+  p {
+    color: ${({ theme }) => theme.color.red};
+    font-weight: 600;
+  }
 
   @media (max-width: 768px) {
     width: 100%;

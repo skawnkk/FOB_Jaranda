@@ -1,6 +1,9 @@
 # 자란다 중간 제출 (8/4)
 
+[🔗 7ill Resource 미팅 로그](https://bohyunkang.notion.site/7ill-Resource-2f8ec63f3a9048418eaa18269cc9bfb8)
+
 ## 현재까지 구현된 기능
+
 [🔗 피그마 UI 디자인 시안](https://www.figma.com/file/BV3d2knhk0j275H0kLQnRs/%EC%9E%90%EB%9E%80%EB%8B%A4-%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85-UI-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=0%3A1)
 
 ![1](https://user-images.githubusercontent.com/65386533/128053217-7c095bfd-5cfb-4042-ad8b-69c78cfda60b.png)

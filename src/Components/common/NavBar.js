@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { CATEGORY } from "Utils/constants";
@@ -17,6 +17,8 @@ const NavBar = () => {
         return CATEGORY.parent;
       case null:
         return CATEGORY.allUser;
+      default:
+        return;
     }
   };
 

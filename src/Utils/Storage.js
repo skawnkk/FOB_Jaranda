@@ -9,8 +9,8 @@ export const loadLocalStorage = (storageKey = USER_STORAGE) => {
 
 // local storage 저장
 export const saveLocalStorage = (storageKey = USER_STORAGE, data) => {
-  const fommatedSaveData = JSON.stringify(data);
-  const savedUserListData = localStorage.setItem(storageKey, fommatedSaveData);
+  const formattedSaveData = JSON.stringify(data);
+  const savedUserListData = localStorage.setItem(storageKey, formattedSaveData);
   return savedUserListData;
 };
 
