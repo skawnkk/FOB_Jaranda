@@ -20,8 +20,9 @@ export const loggedOutStorage = (storageKey = LOGGEDIN_USER) => {
 };
 
 // 로그인 한 유저의 권한 참조
-export const userAuthority = () => {
-  const nowLoggedInuserData = loadLocalStorage(LOGGEDIN_USER);
+export const userAuthority = (storageKey = LOGGEDIN_USER) => {
+  const nowLoggedInuserData = loadLocalStorage(storageKey);
+  if (!nowLoggedInuserData) return null;
   return nowLoggedInuserData.authority;
 };
 
