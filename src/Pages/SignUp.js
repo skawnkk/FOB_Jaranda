@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
@@ -20,12 +20,27 @@ import AddressModal from "Components/AddressModal";
 import CreditModal from "Components/CreditModal";
 import { hashSync } from "Utils/bcrypt";
 
-import { isEmail, isPassword, isName, isDateOfBirth, isCreditNum } from "Utils/validator.js";
+import {
+  isEmail,
+  isPassword,
+  isName,
+  isDateOfBirth,
+  isCreditNum,
+  isEng,
+  isPwNum,
+  isSpe,
+} from "Utils/validator.js";
 
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [passwordCheckError, setPasswordError] = useState(false);
+  const [passwordCheckError, setPasswordCheckError] = useState(false);
+  const [passwordError, setPasswordError] = useState({
+    pwNum: false,
+    eng: false,
+    spe: false,
+    digit: false,
+  });
   const [formData, setFormData] = useState({
     email: "",
     pw: "",
@@ -106,9 +121,19 @@ const SignUp = () => {
     (e) => {
       const { name, value } = e.target;
       if (name === "pwCheck") {
-        setPasswordError(value !== formData.pw);
+        setPasswordCheckError(value !== formData.pw);
         setFormData({ ...formData, pwCheck: value });
       }
+      if (name === "pw") {
+        setPasswordError({
+          ...passwordError,
+          eng: isEng(value) >= 0,
+          pwNum: isPwNum(value) >= 0,
+          spe: isSpe(value) >= 0,
+          digit: value.length >= 8,
+        });
+      }
+      console.log(passwordError);
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -142,7 +167,7 @@ const SignUp = () => {
 
   return (
     <Wrapper>
-      <Form onSubmit={handleSignupSubmit}>
+      <Form onSubmit={handleSignupSubmit} passwordError={passwordError}>
         <h4>회원가입</h4>
         <Radio
           value={authority}
@@ -186,16 +211,16 @@ const SignUp = () => {
         />
         <div className="password-policy">
           <div>
-            <span>숫자</span>
+            <span className="password-pwNum">숫자</span>
           </div>
           <div>
-            <span>특수문자</span>
+            <span className="password-spe">특수문자</span>
           </div>
           <div>
-            <span>영문</span>
+            <span className="password-eng">영문</span>
           </div>
           <div>
-            <span>8자리 이상</span>
+            <span className="password-digit">8자리 이상</span>
           </div>
         </div>
         <Input
@@ -337,6 +362,34 @@ const Form = styled.form`
         content: "";
         width: 20px;
         height: 16px;
+      }
+      .password-pwNum {
+        ${(props) =>
+          props.passwordError.pwNum &&
+          css`
+            color: ${({ theme }) => theme.color.red};
+          `};
+      }
+      .password-eng {
+        ${(props) =>
+          props.passwordError.eng &&
+          css`
+            color: ${({ theme }) => theme.color.red};
+          `};
+      }
+      .password-spe {
+        ${(props) =>
+          props.passwordError.spe &&
+          css`
+            color: ${({ theme }) => theme.color.red};
+          `};
+      }
+      .password-digit {
+        ${(props) =>
+          props.passwordError.digit &&
+          css`
+            color: ${({ theme }) => theme.color.red};
+          `};
       }
     }
   }
