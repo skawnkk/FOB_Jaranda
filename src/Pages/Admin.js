@@ -4,6 +4,9 @@ import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
 import UserDataTable from "Components/Admin/UserDataTable/UserDataTable";
 import Pagination from "Components/Admin/Pagination/Pagination";
 import NavBar from "Components/common/NavBar";
+import { MODAL_TYPE } from "Utils/constants";
+import Modal from "Components/common/Modal/Modal";
+import styled from "styled-components";
 import { userMockData } from "Utils/MockData";
 import { ADMIN, USER_STORAGE } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
@@ -14,6 +17,13 @@ const Admin = () => {
   const [pageNum, setPageNum] = useState(0);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setUsers(userMockData);
+    setFilteredUsers(users);
+  }, [users]);
+
   const [dividedState, setDividedState] = useState([]);
   const [searchConditions, setSearchConditions] = useState({
     searchType: "name",
@@ -104,13 +114,58 @@ const Admin = () => {
   // };
 
   return (
-    <>
-      <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
+    <AdminWrapper>
+      <NavBar category={category.admin} />
+      <SearchContainer>
+        <ModalBox>
+          <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
+          <Modal
+            isOpen={isOpen}
+            toggleModal={() => setIsOpen(!isOpen)}
+            modalType={MODAL_TYPE.account}
+          />
+        </ModalBox>
+        <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
+      </SearchContainer>
       <AuthFilter {...{ searchConditions, setSearchConditions }} />
       <UserDataTable {...{ filteredUsers, handleAuthUpdate }} />
       <Pagination {...{ pageNum, setPageNum, wholePages }} />
-    </>
+    </AdminWrapper>
   );
 };
+
+const AdminWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  width: 66.5%;
+`;
+
+const ModalBox = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0px;
+  transform: translate(0, -50%);
+`;
+
+const CreateAccountButton = styled.button`
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.color.borderline};
+  border-radius: 30px;
+  font-weight: 600;
+  background-color: ${({ theme }) => theme.color.button};
+  color: ${({ theme }) => theme.color.fontWhite};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.buttonHover};
+  }
+`;
 
 export default React.memo(Admin);
