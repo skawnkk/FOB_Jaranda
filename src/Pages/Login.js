@@ -1,18 +1,17 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
+import { USER_STORAGE, LOGGEDIN_USER } from "Utils/constants";
+import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { compareSync } from "Utils/bcrypt";
+import { isEmail } from "Utils/validator";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
 import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
-import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
-import { USER_STORAGE, LOGGEDIN_USER } from "Utils/constants";
-import { compareSync } from "Utils/bcrypt";
-import { isEmail } from "Utils/validator";
 
 const Login = () => {
-  const userData = loadLocalStorage(LOGGEDIN_USER);
   const history = useHistory();
   const [formData, setFormData] = useState({
     email: "",

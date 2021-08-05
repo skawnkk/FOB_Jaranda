@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
-import Button from "./common/Button";
-import Input from "./common/Input";
+import Button from "Components/common/Button";
+import Input from "Components/common/Input";
 
 const CreditModal = ({ creditCard, onSelected, toggleModal }) => {
   const inputRef = useRef([]);

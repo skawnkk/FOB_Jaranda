@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import { Link, useLocation } from "react-router-dom";
+import LoginButton from "Components/common/Header/LoginButton";
+import LogoutButton from "Components/common/Header/LogoutButton";
 import { LOGGEDIN_USER } from "Utils/constants";
 import { loadLocalStorage } from "Utils/Storage";
 import logo from "Assets/img/logo.png";
-import { useLocation } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
