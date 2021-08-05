@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const AuthFilter = ({ searchConditions, setSearchConditions }) => {
@@ -11,23 +11,19 @@ const AuthFilter = ({ searchConditions, setSearchConditions }) => {
     { type: "부모님", key: "parents" },
   ];
 
-  const activeWholeFilter = () => {
-    return {
-      searchType: searchType,
-      condition: { whole: true, teacher: true, parents: true, admin: true },
-    };
-  };
+  const activeWholeFilter = () => ({
+    searchType: searchType,
+    condition: { whole: true, teacher: true, parents: true, admin: true },
+  });
 
-  const toggleAuthFilter = (filterType) => {
-    return {
-      searchType: searchType,
-      condition: {
-        ...condition,
-        whole: false,
-        [filterType]: !condition[filterType],
-      },
-    };
-  };
+  const toggleAuthFilter = (filterType) => ({
+    searchType: searchType,
+    condition: {
+      ...condition,
+      whole: false,
+      [filterType]: !condition[filterType],
+    },
+  });
 
   const activeAuthFilters = (filterType) => {
     const toggledCondition = toggleAuthFilter(filterType);
@@ -39,9 +35,8 @@ const AuthFilter = ({ searchConditions, setSearchConditions }) => {
     return toggledCondition;
   };
 
-  const changeFilter = (filterType) => {
-    return filterType === "whole" ? activeWholeFilter() : activeAuthFilters(filterType);
-  };
+  const changeFilter = (filterType) =>
+    filterType === "whole" ? activeWholeFilter() : activeAuthFilters(filterType);
 
   const handleAuthFilter = (e) => {
     const filterType = e.target.value;
