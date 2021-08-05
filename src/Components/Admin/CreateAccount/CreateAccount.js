@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { USERDATA_TEMPLATE, USER_DATA_OBJ, USER_STORAGE } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
-import hashSync from "Utils/bcrypt";
+import { hashSync } from "Utils/bcrypt";
 
 const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
   const [userInput, setUserInput] = useState([]);
@@ -82,12 +82,22 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
 };
 
 const FormWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+  background-color: ${({ theme }) => theme.color.fontWhite};
+  border: 1px solid ${({ theme }) => theme.color.green};
 `;
 
 const FormContainer = styled.form`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   justify-content: center;

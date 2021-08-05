@@ -77,13 +77,6 @@ export const CATEGORY = {
   allUser: [{ title: "이용 안내", path: "/" }],
 };
 
-// 모달창 종류
-export const MODAL_TYPE = {
-  success: "success",
-  credit: "credit",
-  address: "address",
-  account: "account",
-};
 //관리자페이지 상수
 export const ADMIN = {
   PAGE_SIZE: 10,
