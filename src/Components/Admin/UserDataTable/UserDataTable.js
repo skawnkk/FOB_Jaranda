@@ -5,9 +5,9 @@ import AuthSelector from "Components/Admin/UserDataTable/AuthSelector";
 
 const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
   const {
-    authTitle: { admin, parents, teacher },
+    authTitle: { choice, admin, teacher, parents },
   } = ADMIN;
-  const authTitle = [admin, parents, teacher];
+  const authTitle = [choice, admin, teacher, parents];
   const [choicedAuth, setChoicedAuth] = useState(-1);
 
   const handleOptionChange = (auth) => {
@@ -40,11 +40,9 @@ const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
                   <td>{address}</td>
                   <td>{dateOfBirth}</td>
                   <td>{creditCardNum}</td>
-                  <td>{authTitle[authority]}</td>
+                  <td>{authTitle.slice(1)[authority]}</td>
                   <td>
-                    <AuthSelector
-                      userId={id}
-                      handleOptionChange={handleOptionChange}></AuthSelector>
+                    <AuthSelector handleOptionChange={handleOptionChange} authTitle={authTitle} />
                   </td>
                   <td>
                     <button type="button" onClick={() => handleAuthUpdate(id, choicedAuth)}>

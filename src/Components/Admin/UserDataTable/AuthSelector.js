@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import { ADMIN } from "Utils/constants";
 
-const AuthSelector = ({ handleOptionChange, userId }) => {
-  const {
-    authTitle: { choice, admin, teacher, parents },
-  } = ADMIN;
-  const authTitle = [choice, admin, parents, teacher];
+const AuthSelector = ({ handleOptionChange, authTitle }) => {
   const [seletedAuth, setSeletedAuth] = useState(-1);
 
   const handleAuthChange = (e) => {
@@ -16,7 +11,7 @@ const AuthSelector = ({ handleOptionChange, userId }) => {
     <>
       <select value={seletedAuth} onChange={handleAuthChange}>
         {authTitle.map((auth) => (
-          <option selected={auth === choice}>{auth}</option>
+          <option selected={auth === authTitle[0]}>{auth}</option>
         ))}
       </select>
     </>
