@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
+import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
+import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import { hashSync } from "Utils/bcrypt";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
 import Modal from "Components/common/Modal/Modal";
-import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
-import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
+import AddressModal from "Components/common/Modal/AddressModal";
+import SignupModal from "Components/common/Modal/SignupModal";
+import CreditModal from "Components/common/Modal/CreditModal";
 import checkIcon from "Assets/svg/check.svg";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
@@ -14,11 +18,6 @@ import { ReactComponent as Person } from "Assets/svg/person.svg";
 import { ReactComponent as Map } from "Assets/svg/map.svg";
 import { ReactComponent as Card } from "Assets/svg/card.svg";
 import { ReactComponent as Calendar } from "Assets/svg/calendar.svg";
-
-import SignupModal from "Components/SignupModal";
-import AddressModal from "Components/AddressModal";
-import CreditModal from "Components/CreditModal";
-import { hashSync } from "Utils/bcrypt";
 
 import {
   isEmail,
@@ -60,8 +59,8 @@ const SignUp = () => {
     name: "",
     address: "",
     detailAddress: "",
-    dateOfBirth: "",
     creditCardNum: "",
+    dateOfBirth: "",
   });
 
   const [errors, setErrors] = useState({
@@ -70,9 +69,10 @@ const SignUp = () => {
     email: false,
     pw: false,
     name: false,
+    address: false,
     detailAddress: false,
-    dateOfBirth: false,
     creditCardNum: false,
+    dateOfBirth: false,
   });
 
   const validator = {
@@ -80,6 +80,7 @@ const SignUp = () => {
     email: (email) => isEmail(email),
     pw: (pw) => isPassword(pw),
     name: (name) => isName(name),
+    address: (address) => !(address === ""),
     detailAddress: (detailAddress) => !(detailAddress === ""),
     dateOfBirth: (dateOfBirth) => isDateOfBirth(dateOfBirth),
     creditCardNum: (creditCardNum) => isCreditNum(creditCardNum),
@@ -88,7 +89,7 @@ const SignUp = () => {
   const isAllValid = (formData) => {
     const copyformData = { ...formData };
     delete copyformData.pwCheck;
-    delete copyformData.address;
+
     for (const name in copyformData) {
       const value = formData[name];
       const validateFunction = validator[name];
@@ -127,7 +128,6 @@ const SignUp = () => {
       delete formData.pwCheck;
 
       const userData = loadLocalStorage(USER_STORAGE);
-      if (!userData) return;
       const user = { ...formData };
       userData
         ? saveLocalStorage(USER_STORAGE, [...userData, user])
@@ -136,30 +136,30 @@ const SignUp = () => {
     }
   };
 
-  const onChangeHandler = useCallback(
-    (e) => {
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    if (name === "email") {
       setEmailOverlapChecked(false);
-      const { name, value } = e.target;
-      if (name === "pwCheck") {
-        setPasswordCheckError(value !== formData.pw);
-        setFormData({ ...formData, pwCheck: value });
-      }
-      if (name === "pw") {
-        setPasswordError({
-          ...passwordError,
-          eng: isEng(value) >= 0,
-          pwNum: isPwNum(value) >= 0,
-          spe: isSpe(value) >= 0,
-          digit: value.length >= 8,
-        });
-      }
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    },
-    [formData.pw, formData.pwCheck]
-  );
+    }
+
+    if (name === "pwCheck") {
+      setPasswordCheckError(value !== formData.pw);
+      setFormData({ ...formData, pwCheck: value });
+    }
+    if (name === "pw") {
+      setPasswordError({
+        ...passwordError,
+        eng: isEng(value) >= 0,
+        pwNum: isPwNum(value) >= 0,
+        spe: isSpe(value) >= 0,
+        digit: value.length >= 8,
+      });
+    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSetAddressValue = (address) => {
     setFormData({
@@ -178,15 +178,19 @@ const SignUp = () => {
     }
 
     const userData = loadLocalStorage(USER_STORAGE);
-    if (userData) {
-      const searchEmail = userData.filter((user) => user.email === formData.email);
-      if (searchEmail.length) {
-        setErrors({ ...errors, email: true });
-        setEmailOverlapStatus(EMAIL_STATUS.confirmedFailure);
-      } else {
-        setErrors({ ...errors, email: false });
-        setEmailOverlapStatus(EMAIL_STATUS.confirmedSuccess);
-      }
+    if (!userData) {
+      setErrors({ ...errors, email: false });
+      setEmailOverlapStatus(EMAIL_STATUS.confirmedSuccess);
+      return;
+    }
+
+    const searchEmail = userData.filter((user) => user.email === formData.email);
+    if (searchEmail.length) {
+      setErrors({ ...errors, email: true });
+      setEmailOverlapStatus(EMAIL_STATUS.confirmedFailure);
+    } else {
+      setErrors({ ...errors, email: false });
+      setEmailOverlapStatus(EMAIL_STATUS.confirmedSuccess);
     }
   };
 
@@ -354,9 +358,8 @@ const SignUp = () => {
 
         <Button type="submit" value="회원가입" marginTop="10px" />
 
-        <Modal isOpen={isOpen} toggleModal={toggleModal}>
+        <Modal isOpen={isOpen} toggleModal={toggleModal} modalType={modalType}>
           <>
-            {modalType === "emailCheck" && <EmailDuplicateCModal />}
             {modalType === "success" && <SignupModal />}
             {modalType === "address" && (
               <AddressModal toggleModal={toggleModal} onSelected={handleSetAddressValue} />
