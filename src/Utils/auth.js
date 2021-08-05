@@ -6,7 +6,7 @@ const AuthorityControl = (Components, option, authLevel) => {
   const CheckAuthority = ({ history }) => {
     const [render, setRender] = useState(false);
     const { HOME, LOGIN } = ROUTES;
-    const isLoggedIn = loadLocalStorage("TEST");
+    const isLoggedIn = loadLocalStorage(LOGGEDIN_USER);
 
     const checkLoggedIn = (isLoggedIn, option) => {
       if (option === null) return;
