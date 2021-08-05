@@ -9,6 +9,7 @@ const Main = () => {
     </Wrapper>
   );
 };
+
 const Wrapper = styled.div`
   ${({ theme }) => theme.absoluteCenter()}
 `;
