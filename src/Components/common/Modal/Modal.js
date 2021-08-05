@@ -1,10 +1,14 @@
 import React from "react";
-import ModalPortal from "./ModalPortal";
+import ModalPortal from "Components/common/Modal/ModalPortal";
 
-const Modal = ({ isOpen, toggleModal, children }) => {
+const Modal = ({ isOpen, toggleModal, modalType = null, children }) => {
   return (
     <div id="modalDom">
-      {isOpen && <ModalPortal toggleModal={toggleModal}> {children}</ModalPortal>}
+      {isOpen && (
+        <ModalPortal toggleModal={toggleModal} modalType={modalType}>
+          {children}
+        </ModalPortal>
+      )}
     </div>
   );
 };
