@@ -69,9 +69,14 @@ const SignUp = () => {
       if (!validateFunction(value)) {
         setErrors((prev) => ({
           ...prev,
-          [name]: !errors[name],
+          [name]: true,
         }));
         return false;
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: false,
+        }));
       }
     }
     return true;
