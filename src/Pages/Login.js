@@ -12,69 +12,48 @@ import { compareSync } from "Utils/bcrypt";
 import { isEmail } from "Utils/validator";
 
 const Login = () => {
+  const userData = loadLocalStorage(LOGGEDIN_USER);
   const history = useHistory();
   const [formData, setFormData] = useState({
     email: "",
     pw: "",
   });
-  const [errorMsg, setErrorMsg] = useState({
-    email: { error: false, message: "" },
-    pw: { error: false, message: "" },
+  const [errors, setErrors] = useState({
+    email: false,
+    pw: false,
   });
   const [passwordHide, setPasswordHide] = useState(true);
-  const [userMissingError, setUserMissingError] = useState(false);
+  const [unknownUser, setUnknownUser] = useState(false);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-
     setFormData({
       ...formData,
       [name]: value,
     });
   };
 
-  const onChangeErrorMsgHandler = (key, message) => {
-    setErrorMsg({
-      ...formData,
-      [key]: { error: true, message },
-    });
-  };
-
-  const validateCheck = () => {
-    setUserMissingError(false);
-    let isError = false;
-    const initState = {
-      email: { error: false, message: "" },
-      pw: { error: false, message: "" },
-    };
-
-    if (!formData.email || !isEmail(formData.email)) {
-      initState["email"] = { error: true, message: "이메일을 다시 확인해주세요" };
-      isError = true;
-    }
-
-    if (!formData.pw) {
-      initState["pw"] = { error: true, message: "패스워드를 다시 확인해주세요" };
-      isError = true;
-    }
-
-    setErrorMsg(initState);
-    return isError;
-  };
-
   const validator = {
-    email: (email) => email.length > 0 && email.includes("@"),
-    pw: (pw) => pw.length > 0,
+    email: (email) => isEmail(email),
+    pw: (pw) => pw.length,
   };
-  // ver1
-  //const isAllValid = (form) => Object.entries(form).every(([key, value]) => validator[key](value));
 
-  // ver2
   const isAllValid = (form) => {
     for (const name in form) {
       const value = form[name];
       const validateFunction = validator[name];
-      if (!validateFunction(value)) return false;
+      if (!validateFunction(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: true,
+        }));
+        return false;
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: false,
+        }));
+      }
     }
     return true;
   };
@@ -82,22 +61,18 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validateCheck()) {
+    if (isAllValid(formData)) {
       const userData = loadLocalStorage(USER_STORAGE);
-      if (userData) {
-        const searchedUser = userData.filter(
-          (user) => user.email === formData.email && compareSync(formData.pw, user.pw)
-        );
+      if (!userData) return setUnknownUser(true);
 
-        console.log(searchedUser.length);
-        if (searchedUser.length) {
-          saveLocalStorage(LOGGEDIN_USER, searchedUser);
-          history.push("/");
-          setUserMissingError(false);
-        } else {
-          setUserMissingError(true);
-        }
-      }
+      const existUser = userData.find(
+        (user) => user.email === formData.email && compareSync(formData.pw, user.pw)
+      );
+      if (!existUser) return setUnknownUser(true);
+
+      saveLocalStorage(LOGGEDIN_USER, existUser);
+      setUnknownUser(false);
+      history.push("/");
     }
   };
 
@@ -111,8 +86,8 @@ const Login = () => {
           onChange={onChangeHandler}
           placeholder="이메일을 입력하세요"
           icon={<Mail />}
-          error={errorMsg.email.error}
-          errorMessage={errorMsg.email.message}
+          error={errors.email}
+          errorMessage="이메일을 다시 확인해 주세요."
         />
         <Input
           type={passwordHide ? "password" : "text"}
@@ -127,10 +102,10 @@ const Login = () => {
               <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
             )
           }
-          error={errorMsg.pw.error}
-          errorMessage={errorMsg.pw.message}
+          error={errors.pw}
+          errorMessage="비밀번호를 다시 입력해 주세요"
         />
-        {userMissingError && <p>로그인 또는 패스워드를 다시 확인해주세요</p>}
+        {unknownUser && <p>로그인 또는 패스워드를 다시 확인해주세요</p>}
         <Button type="submit" value="로그인" marginTop="10px" />
       </Form>
       <NavLink to="/signup">
