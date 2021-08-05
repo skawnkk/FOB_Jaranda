@@ -1,18 +1,21 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
+import styled from "styled-components";
+import Input from "Components/common/Input";
+import Button from "Components/common/Button";
+import MessageBox from "Components/common/MessageBox";
 import { USER_STORAGE, LOGGEDIN_USER } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 import { compareSync } from "Utils/bcrypt";
 import { isEmail } from "Utils/validator";
-import Input from "Components/common/Input";
-import Button from "Components/common/Button";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
 import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
 
 const Login = () => {
   const history = useHistory();
+  const [visiblePassword, setVisiblePassword] = useState(true);
+  const [unknownUser, setUnknownUser] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     pw: "",
@@ -21,18 +24,8 @@ const Login = () => {
     email: false,
     pw: false,
   });
-  const [passwordHide, setPasswordHide] = useState(true);
-  const [unknownUser, setUnknownUser] = useState(false);
 
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const validator = {
+  const loginValidator = {
     email: (email) => isEmail(email),
     pw: (pw) => pw.length,
   };
@@ -40,8 +33,8 @@ const Login = () => {
   const isAllValid = (form) => {
     for (const name in form) {
       const value = form[name];
-      const validateFunction = validator[name];
-      if (!validateFunction(value)) {
+      const loginValidateFunction = loginValidator[name];
+      if (!loginValidateFunction(value)) {
         setErrors((prev) => ({
           ...prev,
           [name]: true,
@@ -57,19 +50,26 @@ const Login = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleLoginSubmit = (e) => {
     e.preventDefault();
 
     if (isAllValid(formData)) {
       const userData = loadLocalStorage(USER_STORAGE);
       if (!userData) return setUnknownUser(true);
-
-      const existUser = userData.find(
+      const existedUser = userData.find(
         (user) => user.email === formData.email && compareSync(formData.pw, user.pw)
       );
-      if (!existUser) return setUnknownUser(true);
+      if (!existedUser) return setUnknownUser(true);
 
-      saveLocalStorage(LOGGEDIN_USER, existUser);
+      saveLocalStorage(LOGGEDIN_USER, existedUser);
       setUnknownUser(false);
       history.push("/");
     }
@@ -77,40 +77,43 @@ const Login = () => {
 
   return (
     <Wrapper>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleLoginSubmit}>
         <h4>로그인</h4>
+
         <Input
           name="email"
           value={formData.email}
-          onChange={onChangeHandler}
+          onChange={handleLoginChange}
           placeholder="이메일을 입력하세요"
           icon={<Mail />}
           error={errors.email}
           errorMessage="이메일을 다시 확인해 주세요."
         />
+
         <Input
-          type={passwordHide ? "password" : "text"}
           name="pw"
           value={formData.pw}
-          onChange={onChangeHandler}
+          onChange={handleLoginChange}
           placeholder="비밀번호를 입력하세요"
+          type={visiblePassword ? "password" : "text"}
           icon={
-            passwordHide ? (
-              <ClosedEye onClick={() => setPasswordHide(!passwordHide)} />
+            visiblePassword ? (
+              <ClosedEye onClick={() => setVisiblePassword(!visiblePassword)} />
             ) : (
-              <OpenedEye onClick={() => setPasswordHide(!passwordHide)} />
+              <OpenedEye onClick={() => setVisiblePassword(!visiblePassword)} />
             )
           }
           error={errors.pw}
           errorMessage="비밀번호를 다시 입력해 주세요"
         />
-        {unknownUser && <p>로그인 또는 패스워드를 다시 확인해주세요</p>}
+
+        {unknownUser && <MessageBox>로그인 또는 패스워드를 다시 확인해주세요</MessageBox>}
+
         <Button type="submit" value="로그인" marginTop="10px" />
       </Form>
+
       <NavLink to="/signup">
-        <p>
-          자란다 계정이 없으신가요? <span>회원가입</span>
-        </p>
+        자란다 계정이 없으신가요? <span>회원가입</span>
       </NavLink>
     </Wrapper>
   );
@@ -124,19 +127,15 @@ const Wrapper = styled.div`
 `;
 
 const Form = styled.form`
-  h4 {
-    font-size: 30px;
-    margin-bottom: 20px;
-    font-weight: 500;
-  }
   ${({ theme }) => theme.flexSet("space-between", "center", "column")}
   width: 450px;
   padding: 40px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
 
-  p {
-    color: ${({ theme }) => theme.color.red};
-    font-weight: 600;
+  h4 {
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 500;
   }
 
   @media (max-width: 768px) {
@@ -146,17 +145,14 @@ const Form = styled.form`
 `;
 
 const NavLink = styled(Link)`
-  color: ${({ theme }) => theme.color.fontGray};
   margin-top: 20px;
-  p {
-    color: ${({ theme }) => theme.color.fontGray};
+  color: ${({ theme }) => theme.color.fontGray};
 
-    span {
-      color: ${({ theme }) => theme.color.green};
-      margin-left: 10px;
-      font-weight: 600;
-      text-decoration: underline;
-    }
+  span {
+    margin-left: 10px;
+    color: ${({ theme }) => theme.color.green};
+    font-weight: 600;
+    text-decoration: underline;
   }
 `;
 

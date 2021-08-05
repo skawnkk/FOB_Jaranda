@@ -4,7 +4,6 @@ import { ADMIN } from "Utils/constants";
 import AuthSelector from "Components/Admin/UserDataTable/AuthSelector";
 
 const UserDataTable = ({ filteredUsers, handleAuthUpdate }) => {
-  console.log(filteredUsers.length);
   const {
     authTitle: { choice, admin, teacher, parents },
   } = ADMIN;

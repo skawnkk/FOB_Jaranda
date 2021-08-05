@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import styled, { css } from "styled-components";
+import MessageBox from "Components/common/MessageBox";
 
 const Input = (
   {
@@ -32,8 +33,8 @@ const Input = (
         />
         {icon}
       </InputWrapper>
-      {error && errorMessage && <Message status="error">{errorMessage}</Message>}
-      {!error && successMessage && <Message status="success">{successMessage}</Message>}
+      {error && errorMessage && <MessageBox>{errorMessage}</MessageBox>}
+      {!error && successMessage && <MessageBox textColor="#87BF44">{successMessage}</MessageBox>}
     </Wrapper>
   );
 };
@@ -45,13 +46,14 @@ const Wrapper = styled.div`
 
 const InputWrapper = styled.div`
   position: relative;
+
   input {
     width: 100%;
     height: 40px;
     padding-left: 8px;
-    font-size: 16px;
     border: 1px solid ${({ theme }) => theme.color.borderline};
     border-radius: 4px;
+    font-size: 16px;
     text-align: ${({ numberOnly }) => (numberOnly ? "center" : "left")};
 
     &::placeholder {
@@ -78,13 +80,6 @@ const InputWrapper = styled.div`
     width: 18px;
     height: 40px;
   }
-`;
-
-const Message = styled.p`
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  color: ${({ theme, status }) => (status === "error" ? theme.color.red : theme.color.green)};
 `;
 
 export default forwardRef(Input);

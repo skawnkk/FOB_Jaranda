@@ -1,6 +1,6 @@
 import React from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 import { CATEGORY } from "Utils/constants";
 import { userAuthority } from "Utils/Storage";
 import { LOGGEDIN_USER } from "Utils/constants";
