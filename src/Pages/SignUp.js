@@ -54,8 +54,7 @@ const SignUp = () => {
     dateOfBirth: "",
   });
 
-  const [errors, setErrors] = useState({
-    id: false,
+  const initialState = {
     authority: false,
     email: false,
     pw: false,
@@ -65,13 +64,14 @@ const SignUp = () => {
     detailAddress: false,
     creditCardNum: false,
     dateOfBirth: false,
-  });
+  };
+  const [errors, setErrors] = useState(initialState);
 
   const validator = {
     authority: (authority) => !(authority === AUTH_LEVEL.unknown),
     email: (email) => isEmail(email),
     pw: (pw) => isPassword(pw),
-    pwCheck: (pwCheck) => !(pwCheck === ""),
+    pwCheck: (pwCheck) => pwCheck === formData.pw,
     name: (name) => isName(name),
     address: (address) => !(address === ""),
     detailAddress: (detailAddress) => !(detailAddress === ""),
@@ -79,9 +79,9 @@ const SignUp = () => {
     creditCardNum: (creditCardNum) => isCreditNum(creditCardNum),
   };
 
-  const isAllValid = (formData) => {
-    for (const name in formData) {
-      const value = formData[name];
+  const isAllValid = (data) => {
+    for (const name in data) {
+      const value = data[name];
       const validateFunction = validator[name];
 
       if (!validateFunction(value)) {
@@ -98,31 +98,6 @@ const SignUp = () => {
       }
     }
     return true;
-  };
-
-  const handleSignUpChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "email") {
-      setEmailDuplicateChecked(false);
-    }
-
-    if (name === "pwCheck") {
-      setPasswordCheckError(value !== formData.pw);
-      setFormData({ ...formData, pwCheck: value });
-    }
-    if (name === "pw") {
-      setPasswordError({
-        ...passwordError,
-        eng: isEng(value) >= 0,
-        pwNum: isPwNum(value) >= 0,
-        spe: isSpe(value) >= 0,
-        digit: value.length >= 8,
-      });
-    }
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   const handleClickDuplicateCheck = () => {
@@ -165,6 +140,7 @@ const SignUp = () => {
   };
 
   const handleSetAuthority = (authority) => {
+    setErrors(initialState);
     setFormData({
       ...formData,
       authority,
@@ -172,6 +148,7 @@ const SignUp = () => {
   };
 
   const handleSetAddressValue = (address) => {
+    setErrors(initialState);
     setFormData({
       ...formData,
       address,
@@ -179,10 +156,39 @@ const SignUp = () => {
   };
 
   const handleSetCardNum = (creditCardNum) => {
+    setErrors(initialState);
     setFormData({
       ...formData,
       creditCardNum,
     });
+  };
+
+  const handleSignUpChange = (e) => {
+    const { name, value } = e.target;
+    setErrors(initialState);
+
+    if (name === "email") {
+      setEmailDuplicateChecked(false);
+    }
+
+    if (name === "pw") {
+      setPasswordError({
+        ...passwordError,
+        eng: isEng(value) >= 0,
+        pwNum: isPwNum(value) >= 0,
+        spe: isSpe(value) >= 0,
+        digit: value.length >= 8,
+      });
+    }
+
+    if (name === "pwCheck") {
+      setPasswordCheckError(value !== formData.pw);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSignupSubmit = (e) => {
@@ -204,10 +210,9 @@ const SignUp = () => {
       delete formData.pwCheck;
 
       const userData = loadLocalStorage(USER_STORAGE);
-      const user = { ...formData };
       userData
-        ? saveLocalStorage(USER_STORAGE, [...userData, user])
-        : saveLocalStorage(USER_STORAGE, [user]);
+        ? saveLocalStorage(USER_STORAGE, [...userData, formData])
+        : saveLocalStorage(USER_STORAGE, [formData]);
       toggleModal("success");
     }
   };
@@ -289,7 +294,7 @@ const SignUp = () => {
               <OpenedEye onClick={() => setVisiblePassword(!visiblePassword)} />
             )
           }
-          error={errors.pwCheck}
+          error={passwordCheckError}
           errorMessage="비밀번호를 다시 입력해 주세요"
         />
 
