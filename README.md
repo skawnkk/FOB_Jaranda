@@ -1,64 +1,125 @@
-# 자란다 중간 제출 (8/4)
+# 자란다 기업 과제 (Team 7ill Resource)
 
-[🔗 7ill Resource 미팅 로그](https://bohyunkang.notion.site/7ill-Resource-2f8ec63f3a9048418eaa18269cc9bfb8)
+## [🔗 배포 링크](https://naughty-curie-d72f2a.netlify.app/)
 
-## 현재까지 구현된 기능
+## UI 미리 보기
 
-[🔗 피그마 UI 디자인 시안](https://www.figma.com/file/BV3d2knhk0j275H0kLQnRs/%EC%9E%90%EB%9E%80%EB%8B%A4-%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85-UI-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=0%3A1)
+[🔗 기능별 영상 및 사진 스크린샷 위키 페이지](https://github.com/SeongsangCHO/wanted-preonboarding-subject-3/wiki/%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%B3%84-%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7)
 
-![1](https://user-images.githubusercontent.com/65386533/128053217-7c095bfd-5cfb-4042-ad8b-69c78cfda60b.png)
-![2](https://user-images.githubusercontent.com/65386533/128053224-f2ca802a-dd26-4d9b-8fd2-44f7423db479.png)
-![3](https://user-images.githubusercontent.com/65386533/128053227-8ea0bf19-7717-4e85-a23d-ed7fd10200e5.png)
+## 권한 별 계정 정보 및 접근 가능한 페이지 목록
 
-## 기능 분담
+1. 관리자
 
-### 강보현, 박현정, 이다은
+   [계정 정보]  
+   - ID: admin@gmail.com
+   - PW: 1q2w3e4r!
 
-**[마크업, 스타일링]**
+   [접근 가능한 페이지]
 
-- [x] 로그인 페이지
-- [x] 회원가입 페이지
-- [x] 공통 컴포넌트
-  - [x] header
-  - [x] navbar
-  - [x] input (radio, text)
-  - [x] button
-  - [x] modal
+   - 모든 페이지 접근 가능(`/admin`, `/teacher`, `/kids`, `/students`, `/matchup`)
 
-**[기능 구현]**
+2. 선생님
 
-- [ ] 유효성 검사 (로그인/회원가입 페이지)
-- [ ] `localStorage` 연동 (로그인/회원가입 페이지)
-- [ ] 패스워드 해시 암호화 처리
-- [ ] 모달 팝업 기능 구현
-  - [ ] 다음 주소 API 연동
-  - [ ] 신용카드
+   [계정 정보]
 
-### 김남주, 박현찬, 조성상
+   - ID: teacher@gmail.com
+   - PW: 1q2w3e4r!
 
-**[마크업, 스타일링]**
+   [접근 가능한 페이지]
 
-- [x] 검색창, 유저 데이터 테이블, 필터
-- [ ] 유저 데이터 테이블 스타일링
+   - 관리자 페이지를 제외한 모든 페이지(`/teacher`, `/kids`, `/students`, `/matchup`)
 
-**[기능 구현]**
+3. 부모님
 
-- [x] 검색어유무에 따른 유저 데이터 검색기능
-- [x] 필터조건에 따른 유저 데이터 검색기능
-- [x] 검색어 & 필터 조합에 따른 유저 데이터 검색기능
-- [ ] 테스트 케이스 진행 중 [#7](https://github.com/SeongsangCHO/wanted-preonboarding-subject-3/issues/7)
-      :모든 권한 클릭 해지 시, 전체 클릭 true (4 번조건에서 연결),에러: Email 검색조건
-- [ ] 페이지네이션
-- [ ] 계정 생성 연동
-- [ ] 권한 수정
-- [ ] `localStorage` 데이터 연동 (로그인/회원가입 페이지)
+   [계정 정보]
 
-### 김민기, 한우빈
+   - ID: parents@gmail.com 
+   - PW: 1q2w3e4r!
 
-**[기능 구현]**
+   [접근 가능한 페이지]
 
-- [x] 유저 로그인 여부 판단 후 권한 부여
-- [x] 계정 별 접근 제한 기능 구현
-- [x] 접근 제한시 리다이렉트 기능 구현
-- [x] 라우팅 상수 util 함수 작성
-- [x] `localStorage` util 함수 작성
+   - 관리자, 선생님 페이지를 제외한 모든 페이지 (`/teacher`, `/kids`)
+
+## 팀원 별 분담한 기능
+
+### [강보현](https://github.com/bohyunkang) & [박현정](https://github.com/imhjlov) & [이다은](https://github.com/daeun-react)
+
+#### 메인 / 로그인 / 회원가입 페이지
+
+##### ✅ 마크업 및 스타일링
+
+- 메인 / 로그인 / 회원가입 페이지
+- Header
+- Navigation Bar
+- Modal
+- Input(Text)
+- Input(Radio)
+- Button
+- MessageBox
+
+##### ✅ 로그인, 회원가입 페이지 기능 구현
+
+- form 입력 데이터 유효성 검사
+- 패스워드 암호화 처리(bcrypt.js)
+- 모달 팝업 기능 구현
+  - 주소 입력 모달 창 다음 지도 API 연동(react-daum-postcode)
+  - 신용 카드 입력 모달 창
+
+##### ✅ 유저 데이터 로컬 스토리지 연동
+
+- 이메일 중복 확인
+- Header 로그인 여부 판단 후 조건부 렌더링
+
+### [김남주](https://github.com/skawnkk) & [박현찬](https://github.com/Eyes0n) & [조성상](https://github.com/SeongsangCHO)
+
+#### 관리자 페이지
+
+##### ✅ 권한 조건
+
+- 권한 필터 기능( 부모님, 선생님, 관리자 )
+- 권한 변경 설정 기능
+
+##### ✅ 테이블
+
+- 테이블 스타일링
+- 유저 데이터가 없을 때 조건 처리
+- 각 페이지마다 10개씩 유저 데이터 출력
+
+##### ✅ 페이지네이션
+
+- 페이지네이션 스타일링
+- 페이지네이션 버튼 출력 10개 고정 출력
+- 현재 조회 중인 페이지 버튼 중앙 위치 설정
+
+##### ✅ 검색 및 필터 조건
+
+- 이메일, 이름 키워드에 따른 검색 기능
+- 검색 키워드와 권한 조건 조합에 따른 검색 기능
+
+### [김민기](https://github.com/mong-byte) & [한우빈](https://github.com/hwb0218)
+
+#### 관리자 페이지
+
+##### ✅ 권한
+
+- 유저의 권한에 따른 접근 제한, 리다이렉트 구현
+- 로그인 한 유저의 권한에 따른 다른 메뉴 출력 구현
+- 권한에 따른 Extra 페이지 출력
+
+##### ✅ Utils
+
+- Utils 영역 상수 작성
+- Utils 영역 로컬스토리지 관련 함수 작성
+
+##### ✅ 관리자 페이지
+
+- 관리자 페이지 계정 생성 모달 스타일링
+- 관리자 페이지 계정 생성 로직 구현
+
+## 프로젝트 더 자세히 알아보기
+
+[🔗 팀 7ill Resource 미팅 로그](https://bohyunkang.notion.site/7ill-Resource-2f8ec63f3a9048418eaa18269cc9bfb8)
+
+[🔗 프로젝트 칸반보드](https://github.com/SeongsangCHO/wanted-preonboarding-subject-3/projects/1)
+
+[🔗 피그마 링크](https://www.figma.com/file/BV3d2knhk0j275H0kLQnRs/%EC%9E%90%EB%9E%80%EB%8B%A4-%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85-UI-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=0%3A1)
