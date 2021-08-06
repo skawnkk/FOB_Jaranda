@@ -10,7 +10,7 @@ export const USER_DATA_OBJ = [
     selectName: "선생님",
   },
   {
-    authLevel: 0,
+    authLevel: 2,
     name: "parents",
     selectName: "부모님",
   },
