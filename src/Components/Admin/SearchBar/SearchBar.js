@@ -5,6 +5,15 @@ const SearchBar = ({ searchKeywordRef, setSearchConditions, handleSearchClick })
   const handleSearchKind = (e) =>
     setSearchConditions((prev) => ({ ...prev, searchType: e.target.value }));
 
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearchClick(searchKeywordRef.current.value);
+    }
+  };
+  const clearSearchKeyword = (e) => {
+    handleSearchClick();
+    searchKeywordRef.current.value = "";
+  };
   return (
     <Wrapper>
       <div className="searchBar">
@@ -12,7 +21,13 @@ const SearchBar = ({ searchKeywordRef, setSearchConditions, handleSearchClick })
           <option value="name">Name</option>
           <option value="email">Email</option>
         </select>
-        <input className="searchInput" placeholder="검색 입력" ref={searchKeywordRef} />
+        <input
+          className="searchInput"
+          onKeyPress={onKeyPress}
+          placeholder="검색 입력"
+          ref={searchKeywordRef}
+        />
+        <button onClick={clearSearchKeyword}>검색어 초기화</button>
         <button
           className="searchButton"
           onClick={() => handleSearchClick(searchKeywordRef.current.value)}>
