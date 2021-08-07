@@ -147,7 +147,7 @@
 - 관리자 페이지 계정 생성 로직 구현
 
 ## 프로젝트 더 자세히 알아보기
-[🔗 팀 7ill Resource 마무리 회고](https://www.notion.so/8-6-Project-94fb2d99a1c346ecbf0b1ac3cb01414f)
+[🔗 팀 7ill Resource 마무리 회고](https://bohyunkang.notion.site/8-6-Project-94fb2d99a1c346ecbf0b1ac3cb01414f)
 
 [🔗 팀 7ill Resource 미팅 로그](https://bohyunkang.notion.site/7ill-Resource-2f8ec63f3a9048418eaa18269cc9bfb8)
 
