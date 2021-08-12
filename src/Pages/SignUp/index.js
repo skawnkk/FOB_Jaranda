@@ -165,6 +165,7 @@ const SignUp = () => {
       setEmailDuplicateStatus(SIGNUP_EMAIL_STATUS.unConfirmed);
       return;
     }
+
     if (isAllValid(formData)) {
       formData.id = autoIncrementUserId();
       formData.pw = hashSync(formData.pw, 8);
@@ -176,6 +177,11 @@ const SignUp = () => {
     }
   };
 
+  const AuthTypes = [
+    { value: AUTH_LEVEL.teacher, label: "선생님" },
+    { value: AUTH_LEVEL.parent, label: "부모님" },
+  ];
+
   return (
     <Wrapper>
       <Form onSubmit={handleSignupSubmit}>
@@ -185,10 +191,7 @@ const SignUp = () => {
           name="authority"
           value={formData.authority}
           onChange={handleSetFormData}
-          data={[
-            { value: AUTH_LEVEL.teacher, label: "선생님" },
-            { value: AUTH_LEVEL.parent, label: "부모님" },
-          ]}
+          data={AuthTypes}
           error={errors.authority}
           errorMessage="원하시는 계정 유형을 선택해 주세요."
         />
@@ -256,7 +259,7 @@ const SignUp = () => {
           placeholder="이름을 입력하세요"
           icon={<Person />}
           error={errors.name}
-          errorMessage="이름을 다시 입력해 주세요"
+          errorMessage="이름을 입력해 주세요"
         />
 
         <AddressWrapper>
@@ -267,7 +270,7 @@ const SignUp = () => {
               placeholder="주소를 입력하세요"
               icon={<Map />}
               error={errors.address}
-              errorMessage="주소를 다시 입력해 주세요"
+              errorMessage="주소를 입력해 주세요"
             />
             <span>주소검색</span>
           </div>
