@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { LOGGEDIN_USER } from "Utils/constants";
@@ -21,18 +21,6 @@ const LogoutButton = () => {
   const handleLogout = () => {
     loggedOutStorage();
   };
-
-  useEffect(() => {
-    const pageClickEvent = (e) => {
-      !dropdownRef.current?.contains(e.target) && setActiveMenu(!activeMenu);
-      if (activeMenu) {
-        window.addEventListener("click", pageClickEvent);
-      }
-      return () => {
-        window.removeEventListener("click", pageClickEvent);
-      };
-    };
-  }, [activeMenu]);
 
   return (
     <Wrapper>
