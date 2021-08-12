@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
@@ -131,7 +131,6 @@ const SignUp = () => {
   };
 
   const handleSetFormData = (key, value) => {
-    console.log(value);
     setErrors({ ...errors, [key]: false });
     setFormData({
       ...formData,
@@ -144,7 +143,6 @@ const SignUp = () => {
     handleSetFormData(name, value);
 
     if (name === "email") setEmailDuplicateChecked(false);
-    //이메일이 형식에 다 맞게되면 중복검사 입력이 가능하도록 수정하기
     if (name === "pw") {
       setPasswordError({
         ...passwordError,
