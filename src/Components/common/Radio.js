@@ -6,17 +6,19 @@ const Radio = ({ name, value, onChange, data = [], error = false, errorMessage =
   return (
     <Wrapper>
       <RadioGroup error={error}>
-        {data.map((item, idx) => (
-          <label key={idx}>
-            <input
-              type="radio"
-              name={name}
-              checked={value === item.value}
-              onChange={() => onChange(item.value)}
-            />
-            <span>{item.label}</span>
-          </label>
-        ))}
+        {data.map((item, idx) => {
+          return (
+            <label key={idx}>
+              <input
+                type="radio"
+                name={name}
+                checked={value === item.value}
+                onChange={() => onChange(name, item.value)}
+              />
+              <span>{item.label}</span>
+            </label>
+          );
+        })}
       </RadioGroup>
       {error && errorMessage && <MessageBox textAlign="center">{errorMessage}</MessageBox>}
     </Wrapper>

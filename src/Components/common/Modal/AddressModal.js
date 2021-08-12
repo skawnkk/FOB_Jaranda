@@ -3,7 +3,7 @@ import DaumPostcode from "react-daum-postcode";
 
 const AddressModal = ({ toggleModal, onSelected }) => {
   const handlePostCode = (data) => {
-    let fullAddress = "[" + data.zonecode + "]" + data.address;
+    let fullAddress = "[" + data.zonecode + "] " + data.address;
     let extraAddress = "";
 
     if (data.addressType === "R") {
@@ -16,7 +16,7 @@ const AddressModal = ({ toggleModal, onSelected }) => {
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
 
-    onSelected(fullAddress);
+    onSelected("address", fullAddress);
     toggleModal();
   };
 

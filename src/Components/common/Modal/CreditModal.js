@@ -34,7 +34,7 @@ const CreditModal = ({ creditCard, handleSetCardNum, toggleModal }) => {
     const cardNumberToString = cardNumber.join("-");
 
     if (cardNumberLength === 16) {
-      handleSetCardNum(cardNumberToString);
+      handleSetCardNum("creditCardNum", cardNumberToString);
       setError(false);
       toggleModal(true);
     } else {
