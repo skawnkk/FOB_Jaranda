@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
 import Radio from "Components/common/Radio";
@@ -12,6 +12,7 @@ import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/S
 import { Mail, ClosedEye, OpenedEye, Person, Map, Card, Calendar } from "Assets/svg";
 import { RegExr } from "Utils/RegExr";
 import {
+  PasswordCheck,
   Wrapper,
   Form,
   EmailWrapper,
@@ -55,21 +56,22 @@ const SignUp = () => {
     creditCardNum: false,
     dateOfBirth: false,
   };
+
   const [errors, setErrors] = useState(initialErrorState);
 
   const validator = {
     authority: (authority) => !(authority === AUTH_LEVEL.unknown),
     email: (email) => RegExr.email.test(email),
-    pw: (pw) => RegExr.passwordRegex.test(pw),
+    pw: (pw) => RegExr.password.test(pw),
     pwCheck: (pwCheck) => pwCheck === formData.pw,
     name: (name) => RegExr.name.test(name),
     address: (address) => !(address === ""),
     detailAddress: (detailAddress) => !(detailAddress === ""),
     dateOfBirth: (dateOfBirth) => RegExr.dateOfBirth.test(dateOfBirth),
     creditCardNum: (creditCardNum) => RegExr.creditNumber.test(creditCardNum),
-    pwEnglish: (pw) => RegExr.pwEnglish.test(pw),
-    pwNumber: (pw) => RegExr.pwNumber.test(pw),
-    pwSpecialCharacter: (pw) => RegExr.pwSpecialCharacter.test(pw) >= 0,
+    pwEnglish: (pw) => pw.search(RegExr.pwEnglish) >= 0,
+    pwNumber: (pw) => pw.search(RegExr.pwNumber) >= 0,
+    pwSpecialCharacter: (pw) => pw.search(RegExr.pwSpecialCharacter) >= 0,
     pwLength: (pw) => pw.length >= 8,
   };
 
@@ -80,6 +82,7 @@ const SignUp = () => {
 
       if (!validateFunction(value)) {
         setErrors({ ...errors, [key]: true });
+        if (key === "pwCheck") setPasswordCheckError(true);
         return false;
       }
       setErrors({ ...errors, [key]: false });
@@ -87,7 +90,13 @@ const SignUp = () => {
     return true;
   };
 
-  //!이메일관련
+  const SIGNUP_EMAIL_STATUS = {
+    default: 0,
+    invalidType: 1,
+    unConfirmed: 2,
+    confirmedFailure: 3,
+    confirmedSuccess: 4,
+  };
   const handleClickDuplicateCheck = () => {
     setEmailDuplicateChecked(true);
     //이메일 형식 체크
@@ -122,6 +131,7 @@ const SignUp = () => {
   };
 
   const handleSetFormData = (key, value) => {
+    console.log(value);
     setErrors({ ...errors, [key]: false });
     setFormData({
       ...formData,
@@ -136,17 +146,12 @@ const SignUp = () => {
     if (name === "email") setEmailDuplicateChecked(false);
     //이메일이 형식에 다 맞게되면 중복검사 입력이 가능하도록 수정하기
     if (name === "pw") {
-      setPasswordError((prev) => {
-        console.log(validator.pwEnglish(value));
-        console.log(RegExr.pwEnglish.test(value));
-
-        return {
-          ...prev,
-          pwEnglish: validator.pwEnglish(formData.pw),
-          pwNumber: validator.pwEnglish(value),
-          pwSpecialCharacter: validator.pwSpecialCharacter(value),
-          pwLength: validator.pwLength(value),
-        };
+      setPasswordError({
+        ...passwordError,
+        pwEnglish: validator.pwEnglish(value),
+        pwNumber: validator.pwNumber(value),
+        pwSpecialCharacter: validator.pwSpecialCharacter(value),
+        pwLength: validator.pwLength(value),
       });
     }
     if (name === "pwCheck") setPasswordCheckError(value !== formData.pw);
@@ -160,16 +165,13 @@ const SignUp = () => {
       setEmailDuplicateStatus(SIGNUP_EMAIL_STATUS.unConfirmed);
       return;
     }
-
     if (isAllValid(formData)) {
       formData.id = autoIncrementUserId();
       formData.pw = hashSync(formData.pw, 8);
       delete formData.pwCheck;
 
       const userData = loadLocalStorage(USER_STORAGE);
-      userData
-        ? saveLocalStorage(USER_STORAGE, [...userData, formData])
-        : saveLocalStorage(USER_STORAGE, [formData]);
+      saveLocalStorage(USER_STORAGE, [...userData, formData]);
       toggleModal("success");
     }
   };
@@ -224,11 +226,10 @@ const SignUp = () => {
         />
 
         <PasswordPolicy passwordError={passwordError}>
-          {console.log(passwordError)}
-          <div className="password-pwNum">숫자 </div>
-          <div className="password-spe">특수문자</div>
-          <div className="password-eng">영문</div>
-          <div className="password-digit">8자리 이상</div>
+          <PasswordCheck check={passwordError.pwNumber}>숫자 </PasswordCheck>
+          <PasswordCheck check={passwordError.pwSpecialCharacter}>특수문자</PasswordCheck>
+          <PasswordCheck check={passwordError.pwEnglish}>영문</PasswordCheck>
+          <PasswordCheck check={passwordError.pwLength}>8자리 이상</PasswordCheck>
         </PasswordPolicy>
 
         <Input
@@ -327,14 +328,6 @@ const SignUp = () => {
       </Form>
     </Wrapper>
   );
-};
-
-const SIGNUP_EMAIL_STATUS = {
-  default: 0,
-  invalidType: 1,
-  unConfirmed: 2,
-  confirmedFailure: 3,
-  confirmedSuccess: 4,
 };
 
 export default SignUp;

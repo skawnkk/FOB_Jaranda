@@ -31,51 +31,20 @@ const EmailWrapper = styled.div`
 
 const PasswordPolicy = styled.div`
   ${({ theme }) => theme.flexSet("space-around")};
+`;
 
-  > div {
-    color: ${({ theme }) => theme.color.borderline};
-    text-align: center;
-    font-size: 15px;
-    &::before {
-      display: inline-block;
-      background: url(${checkIcon});
-      content: "";
-      width: 20px;
-      height: 16px;
-    }
+const PasswordCheck = styled.div`
+  &::before {
+    display: inline-block;
+    background: url(${checkIcon});
+    content: "";
+    width: 20px;
+    height: 16px;
   }
-  .password-pwNum {
-    ${(props) =>
-      props.passwordError.pwNum &&
-      css`
-        color: ${({ theme }) => theme.color.green};
-        font-weight: 600;
-      `};
-  }
-  .password-eng {
-    ${(props) =>
-      props.passwordError.eng &&
-      css`
-        color: ${({ theme }) => theme.color.green};
-        font-weight: 600;
-      `};
-  }
-  .password-spe {
-    ${(props) =>
-      props.passwordError.spe &&
-      css`
-        color: ${({ theme }) => theme.color.green};
-        font-weight: 600;
-      `};
-  }
-  .password-digit {
-    ${(props) =>
-      props.passwordError.digit &&
-      css`
-        color: ${({ theme }) => theme.color.green};
-        font-weight: 600;
-      `};
-  }
+  text-align: center;
+  font-size: 15px;
+  color: ${(props) => (props.check ? props.theme.color.green : props.theme.color.borderline)};
+  font-weight: ${(props) => props.check && 600};
 `;
 
 const AddressWrapper = styled.div`
@@ -116,4 +85,12 @@ const CreditCardWrapper = styled.div`
   }
 `;
 
-export { Wrapper, Form, EmailWrapper, PasswordPolicy, AddressWrapper, CreditCardWrapper };
+export {
+  PasswordCheck,
+  Wrapper,
+  Form,
+  EmailWrapper,
+  PasswordPolicy,
+  AddressWrapper,
+  CreditCardWrapper,
+};
