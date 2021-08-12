@@ -67,35 +67,22 @@ const Admin = () => {
 
   useEffect(() => setPageNum(0), [searchConditions.condition, isSearch]);
 
+  const isSameAuth = (item) =>
+    (item.authority === 2 && parents) ||
+    (item.authority === 1 && teacher) ||
+    (item.authority === 0 && admin) ||
+    whole;
+
   const search = (searchKeyword = searchKeywordRef.current.value) => {
     if (searchKeyword)
-      return users.filter(
-        (item) =>
-          ((item.authority === 2 && parents) ||
-            (item.authority === 1 && teacher) ||
-            (item.authority === 0 && admin) ||
-            whole) &&
-          item[searchType] === searchKeyword
-      );
-    return users.filter(
-      (item) =>
-        (item.authority === 2 && parents) ||
-        (item.authority === 1 && teacher) ||
-        (item.authority === 0 && admin) ||
-        whole
-    );
+      return users.filter((item) => isSameAuth(item) && item[searchType] === searchKeyword);
+    return users.filter((item) => isSameAuth(item));
   };
 
   const handleSearchClick = () => setIsSearch((prev) => !prev);
 
   return (
     <AdminWrapper>
-      <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
-        <CreateAccount
-          setIsCreateAccount={setIsCreateAccount}
-          toggleModal={() => setIsOpen(!isOpen)}
-        />
-      </Modal>
       <SearchContainer>
         <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
         <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
@@ -103,6 +90,13 @@ const Admin = () => {
       <AuthFilter {...{ searchConditions, setSearchConditions }} />
       <UserDataTable {...{ filteredUsers, handleAuthUpdate }} />
       <Pagination {...{ pageNum, setPageNum, wholePages }} />
+
+      <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
+        <CreateAccount
+          setIsCreateAccount={setIsCreateAccount}
+          toggleModal={() => setIsOpen(!isOpen)}
+        />
+      </Modal>
     </AdminWrapper>
   );
 };
