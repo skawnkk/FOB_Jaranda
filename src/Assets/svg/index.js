@@ -5,5 +5,6 @@ import { ReactComponent as Person } from "Assets/svg/person.svg";
 import { ReactComponent as Map } from "Assets/svg/map.svg";
 import { ReactComponent as Card } from "Assets/svg/card.svg";
 import { ReactComponent as Calendar } from "Assets/svg/calendar.svg";
+import { ReactComponent as Check } from "Assets/svg/check.svg";
 
-export { Mail, ClosedEye, OpenedEye, Person, Map, Card, Calendar };
+export { Mail, ClosedEye, OpenedEye, Person, Map, Card, Calendar, Check };

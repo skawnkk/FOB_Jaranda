@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
-const SearchBar = ({ searchKeywordRef, setSearchConditions, handleSearchClick }) => {
-  const handleSearchKind = (e) =>
-    setSearchConditions((prev) => ({ ...prev, searchType: e.target.value }));
+const SearchBar = ({ searchKeywordRef, setSearchType, setIsSearch }) => {
+  const notifySearchChange = () => setIsSearch((prev) => !prev);
 
-  const onKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearchClick(searchKeywordRef.current.value);
-    }
-  };
-  const clearSearchKeyword = (e) => {
-    handleSearchClick();
+  const handleSearchKind = useCallback((e) => setSearchType(e.target.value), []);
+
+  const onKeyPress = useCallback((e) => {
+    if (e.key === "Enter") notifySearchChange();
+  }, []);
+
+  const clearSearchKeyword = useCallback(() => {
     searchKeywordRef.current.value = "";
-  };
+    notifySearchChange();
+  }, []);
+
   return (
     <Wrapper>
       <div className="searchBar">
@@ -27,10 +28,8 @@ const SearchBar = ({ searchKeywordRef, setSearchConditions, handleSearchClick })
           placeholder="검색 입력"
           ref={searchKeywordRef}
         />
-        <button onClick={clearSearchKeyword}>검색어 초기화</button>
-        <button
-          className="searchButton"
-          onClick={() => handleSearchClick(searchKeywordRef.current.value)}>
+        <button onClick={clearSearchKeyword}>X</button>
+        <button className="searchButton" onClick={notifySearchChange} value="검색">
           검색
         </button>
       </div>

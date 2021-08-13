@@ -7,9 +7,8 @@ const AddressModal = ({ toggleModal, onSelected }) => {
     let extraAddress = "";
 
     if (data.addressType === "R") {
-      if (data.bname !== "") {
-        extraAddress += data.bname;
-      }
+      if (data.bname !== "") extraAddress += data.bname;
+
       if (data.buildingName !== "") {
         extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
       }
@@ -29,6 +28,7 @@ const AddressModal = ({ toggleModal, onSelected }) => {
     width: "500px",
     height: "500px",
     border: "1px solid #87BF44",
+    zIndex: 9999,
   };
 
   return <DaumPostcode style={addressStyle} onComplete={handlePostCode} />;

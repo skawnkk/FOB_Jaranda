@@ -17,7 +17,7 @@ function Routes() {
       <Switch>
         <Route exact path={LOGIN} component={AuthorityControl(Login, inaccessible, unknown)} />
         <Route exact path={SIGNUP} component={AuthorityControl(SignUp, inaccessible, unknown)} />
-        <Route exact path={LOGOUT} render={() => <Redirect to="/" />} />
+        <Route exact path={LOGOUT} render={() => <Redirect to={HOME} />} />
         <Section>
           <Switch>
             <Route exact path={HOME} component={AuthorityControl(Main, allAllow, unknown)} />
