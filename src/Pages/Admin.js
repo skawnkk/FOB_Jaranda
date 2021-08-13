@@ -7,47 +7,43 @@ import Pagination from "Components/Admin/Pagination/Pagination";
 import Modal from "Components/common/Modal/Modal";
 import CreateAccount from "Components/Admin/CreateAccount/CreateAccount";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
-import { ADMIN, USER_STORAGE } from "Utils/constants";
+import { ADMIN_CONSTANTS, USER_STORAGE } from "Utils/constants";
 
 const Admin = () => {
-  const { PAGE_SIZE } = ADMIN;
+  const { PAGE_SIZE } = ADMIN_CONSTANTS;
   const searchKeywordRef = useRef("");
   const [pageNum, setPageNum] = useState(0);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isAddAccount, setAddAccount] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [wholePages, setWholePages] = useState(1);
   const [isSearch, setIsSearch] = useState(false);
-  const [isCreateAccount, setIsCreateAccount] = useState(false);
-  const [searchConditions, setSearchConditions] = useState({
-    searchType: "name",
-    condition: { whole: true, teacher: false, parents: false, admin: false },
+  const [searchType, setSearchType] = useState("name");
+  const [filterType, setFilterType] = useState({
+    whole: true,
+    teacher: false,
+    parents: false,
+    admin: false,
   });
-  const {
-    searchType,
-    condition: { whole, teacher, parents, admin },
-  } = searchConditions;
+  const { whole, teacher, parents, admin } = filterType;
 
   const handleAuthUpdate = (selectedId, auth) => {
     if (auth === -1) return;
-    const updateUserInfo = (users) => {
-      return users.map((user) => (user.id === selectedId ? { ...user, authority: auth } : user));
-    };
+    const updateUserInfo = (users) =>
+      users.map((user) => (user.id === selectedId ? { ...user, authority: auth } : user));
 
-    const updatedUsers = updateUserInfo(users);
-    setUsers(updatedUsers);
-    saveLocalStorage(USER_STORAGE, updatedUsers);
+    //원본데이터 로컬수정
+    setUsers(updateUserInfo(users));
+    saveLocalStorage(USER_STORAGE, users);
 
-    const updateAuthFilteredUsers = updateUserInfo(filteredUsers);
-    setFilteredUsers(updateAuthFilteredUsers);
+    //보여지는 뷰만 수정
+    setFilteredUsers(updateUserInfo(filteredUsers));
   };
 
-  useEffect(() => {
-    setUsers(loadLocalStorage(USER_STORAGE));
-    const dividedUsers = dividedPageUsers(search());
-    setWholePages(dividedUsers.length);
-    setFilteredUsers(dividedUsers[pageNum] || []);
-  }, [isCreateAccount]);
+  //페이지 초기로딩 & 계정생성시
+  useEffect(() => setUsers(loadLocalStorage(USER_STORAGE)), [isAddAccount]);
+  useEffect(() => setPageNum(0), [filterType, isSearch]);
 
   const dividedPageUsers = (users) => {
     if (!users.length) return [];
@@ -60,49 +56,38 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    const searchedTotalPages = dividedPageUsers(search()).length;
-    setWholePages(searchedTotalPages);
-    setFilteredUsers(dividedPageUsers(search())[pageNum] || []);
-  }, [searchConditions.condition, pageNum, wholePages, isSearch]);
+    const searchedTotalPages = dividedPageUsers(search());
+    setWholePages(searchedTotalPages.length);
+    setFilteredUsers(searchedTotalPages[pageNum] || []);
+  }, [users, filterType, pageNum, isSearch]);
 
-  useEffect(() => setPageNum(0), [searchConditions.condition, isSearch]);
+  const isSameAuth = (item) =>
+    (item.authority === 2 && parents) ||
+    (item.authority === 1 && teacher) ||
+    (item.authority === 0 && admin) ||
+    whole;
 
   const search = (searchKeyword = searchKeywordRef.current.value) => {
     if (searchKeyword)
-      return users.filter(
-        (item) =>
-          ((item.authority === 2 && parents) ||
-            (item.authority === 1 && teacher) ||
-            (item.authority === 0 && admin) ||
-            whole) &&
-          item[searchType] === searchKeyword
-      );
-    return users.filter(
-      (item) =>
-        (item.authority === 2 && parents) ||
-        (item.authority === 1 && teacher) ||
-        (item.authority === 0 && admin) ||
-        whole
-    );
+      return users.filter((item) => isSameAuth(item) && item[searchType] === searchKeyword);
+    return users.filter((item) => isSameAuth(item));
   };
 
-  const handleSearchClick = () => setIsSearch((prev) => !prev);
+  const handleModal = () => setIsOpen((isOpen) => !isOpen);
 
   return (
     <AdminWrapper>
-      <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
-        <CreateAccount
-          setIsCreateAccount={setIsCreateAccount}
-          toggleModal={() => setIsOpen(!isOpen)}
-        />
-      </Modal>
       <SearchContainer>
-        <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
-        <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
+        <CreateAccountButton onClick={handleModal}>계정 생성</CreateAccountButton>
+        <SearchBar {...{ searchKeywordRef, setSearchType, setIsSearch }} />
       </SearchContainer>
-      <AuthFilter {...{ searchConditions, setSearchConditions }} />
+      <AuthFilter {...{ filterType, setFilterType }} />
       <UserDataTable {...{ filteredUsers, handleAuthUpdate }} />
       <Pagination {...{ pageNum, setPageNum, wholePages }} />
+
+      <Modal isOpen={isOpen} toggleModal={handleModal}>
+        <CreateAccount setAddAccount={setAddAccount} toggleModal={handleModal} />
+      </Modal>
     </AdminWrapper>
   );
 };

@@ -7,7 +7,6 @@ import MessageBox from "Components/common/MessageBox";
 import { USER_STORAGE, LOGGEDIN_USER } from "Utils/constants";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
 import { compareSync } from "Utils/bcrypt";
-import { isEmail } from "Utils/validator";
 import { ReactComponent as Mail } from "Assets/svg/mail.svg";
 import { ReactComponent as ClosedEye } from "Assets/svg/eye_closed.svg";
 import { ReactComponent as OpenedEye } from "Assets/svg/eye_opened.svg";
@@ -26,7 +25,7 @@ const Login = () => {
   });
 
   const loginValidator = {
-    email: (email) => isEmail(email),
+    email: (email) => email.length,
     pw: (pw) => pw.length,
   };
 
@@ -34,17 +33,13 @@ const Login = () => {
     for (const name in form) {
       const value = form[name];
       const loginValidateFunction = loginValidator[name];
+
       if (!loginValidateFunction(value)) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: true,
-        }));
+        setErrors((prev) => ({ ...prev, [name]: true }));
         return false;
       } else {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: false,
-        }));
+        console.log(1);
+        setErrors((prev) => ({ ...prev, [name]: false }));
       }
     }
     return true;
@@ -62,6 +57,7 @@ const Login = () => {
     e.preventDefault();
 
     if (isAllValid(formData)) {
+      console.log(2);
       const userData = loadLocalStorage(USER_STORAGE);
       if (!userData) return setUnknownUser(true);
       const existedUser = userData.find(

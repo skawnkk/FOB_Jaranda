@@ -4,7 +4,7 @@ import { USERDATA_TEMPLATE, USER_DATA_OBJ, USER_STORAGE } from "Utils/constants"
 import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
 import { hashSync } from "Utils/bcrypt";
 
-const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
+const CreateAccount = ({ toggleModal, setAddAccount }) => {
   const [userInput, setUserInput] = useState([]);
   const [userList, setUserList] = useState([]);
   const [selectValue, setSelectValue] = useState("");
@@ -14,10 +14,8 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
     setUserList(loadLocalStorage(USER_STORAGE));
   }, []);
 
-  const inputUserData = (event) => {
-    const {
-      target: { value, name },
-    } = event;
+  const inputUserData = (e) => {
+    const { value, name } = e.target;
 
     return setUserInput({
       ...userInput,
@@ -25,17 +23,13 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
     });
   };
 
-  const selectAuthority = (event) => {
-    const {
-      target: { value },
-    } = event;
-    if (value) {
-      setSelectValue(value);
-    }
+  const selectAuthority = (e) => {
+    const { value } = e.target;
+    if (value) setSelectValue(value);
   };
 
-  const userDataSubmit = (event) => {
-    event.preventDefault();
+  const userDataSubmit = (e) => {
+    e.preventDefault();
     if (selectValue) {
       const accountObj = {
         ...userInput,
@@ -44,9 +38,8 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
         authority: Number(selectValue),
       };
       saveLocalStorage(USER_STORAGE, [...userList, accountObj]);
-      setIsCreateAccount((prev) => !prev);
     }
-    event.target.reset();
+    setAddAccount((prev) => !prev);
     toggleModal();
   };
 
