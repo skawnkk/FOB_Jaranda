@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import styled from "styled-components";
 import Button from "Components/common/Button";
 import Input from "Components/common/Input";
 import MessageBox from "Components/common/MessageBox";
+import styled from "styled-components";
 
 const CreditModal = ({ creditCard, handleSetCardNum, toggleModal }) => {
   const inputRef = useRef([]);
@@ -73,17 +73,17 @@ const CreditModal = ({ creditCard, handleSetCardNum, toggleModal }) => {
 };
 
 const Wrapper = styled.form`
+  ${({ theme }) => theme.flexSet("space-evenly", "center", "column")}
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  ${({ theme }) => theme.flexSet("space-evenly", "center", "column")}
   width: 500px;
   height: 300px;
   margin: 0 auto;
   background-color: ${({ theme }) => theme.color.fontWhite};
   border: 1px solid ${({ theme }) => theme.color.green};
-
+  z-index: 9999;
   strong {
     font-size: 30px;
     font-weight: 500;

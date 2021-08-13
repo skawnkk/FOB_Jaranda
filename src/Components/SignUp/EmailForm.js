@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React from "react";
 import Button from "Components/common/Button";
 import Input from "Components/common/Input";
 import { Mail } from "Assets/svg";
-import { validator } from "Utils/validator";
 import { USER_STORAGE, SIGNUP_EMAIL_STATUS } from "Utils/constants";
 import { loadLocalStorage } from "Utils/Storage";
-const EmailForms = ({
+import { validator } from "Utils/validator";
+import styled from "styled-components";
+
+export const EmailForm = ({
   value,
-  onChange,
   errors,
   setErrors,
+  handleSetFormData,
   emailDuplicateStatus,
   setEmailDuplicateStatus,
   emailDuplicateChecked,
@@ -46,12 +47,18 @@ const EmailForms = ({
     return message;
   };
 
+  const handleEmailChange = (e) => {
+    const { name, value } = e.target;
+    handleSetFormData(name, value);
+    setEmailDuplicateChecked(false);
+  };
+
   return (
     <EmailWrapper>
       <Input
         name="email"
         value={value}
-        onChange={onChange}
+        onChange={handleEmailChange}
         error={errors}
         placeholder="이메일을 입력하세요"
         errorMessage={getEmailStatusMessage(emailDuplicateStatus)}
@@ -63,8 +70,6 @@ const EmailForms = ({
     </EmailWrapper>
   );
 };
-
-export default EmailForms;
 
 const EmailWrapper = styled.div`
   ${({ theme }) => theme.flexSet("space-between")};
