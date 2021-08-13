@@ -15,10 +15,10 @@ const Admin = () => {
   const [pageNum, setPageNum] = useState(0);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isAddAccount, setAddAccount] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [wholePages, setWholePages] = useState(1);
   const [isSearch, setIsSearch] = useState(false);
-  const [isCreateAccount, setIsCreateAccount] = useState(false);
   const [searchType, setSearchType] = useState("name");
   const [filterType, setFilterType] = useState({
     whole: true,
@@ -42,12 +42,8 @@ const Admin = () => {
   };
 
   //페이지 초기로딩 & 계정생성시
-  useEffect(() => {
-    setUsers(loadLocalStorage(USER_STORAGE));
-    const dividedUsers = dividedPageUsers(search());
-    setWholePages(dividedUsers.length);
-    setFilteredUsers(dividedUsers[pageNum] || []);
-  }, [isCreateAccount]);
+  useEffect(() => setUsers(loadLocalStorage(USER_STORAGE)), [isAddAccount]);
+  useEffect(() => setPageNum(0), [filterType, isSearch]);
 
   const dividedPageUsers = (users) => {
     if (!users.length) return [];
@@ -63,9 +59,7 @@ const Admin = () => {
     const searchedTotalPages = dividedPageUsers(search());
     setWholePages(searchedTotalPages.length);
     setFilteredUsers(searchedTotalPages[pageNum] || []);
-  }, [filterType, pageNum, wholePages, isSearch]);
-
-  useEffect(() => setPageNum(0), [filterType, isSearch]);
+  }, [filterType, pageNum, isSearch]);
 
   const isSameAuth = (item) =>
     (item.authority === 2 && parents) ||
@@ -78,7 +72,9 @@ const Admin = () => {
       return users.filter((item) => isSameAuth(item) && item[searchType] === searchKeyword);
     return users.filter((item) => isSameAuth(item));
   };
+
   const handleModal = () => setIsOpen(!isOpen);
+
   return (
     <AdminWrapper>
       <SearchContainer>
@@ -90,7 +86,7 @@ const Admin = () => {
       <Pagination {...{ pageNum, setPageNum, wholePages }} />
 
       <Modal isOpen={isOpen} toggleModal={handleModal}>
-        <CreateAccount setIsCreateAccount={setIsCreateAccount} toggleModal={handleModal} />
+        <CreateAccount setAddAccount={setAddAccount} toggleModal={handleModal} />
       </Modal>
     </AdminWrapper>
   );

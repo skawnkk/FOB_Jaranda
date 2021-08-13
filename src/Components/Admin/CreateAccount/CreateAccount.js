@@ -4,7 +4,7 @@ import { USERDATA_TEMPLATE, USER_DATA_OBJ, USER_STORAGE } from "Utils/constants"
 import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
 import { hashSync } from "Utils/bcrypt";
 
-const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
+const CreateAccount = ({ toggleModal, setAddAccount }) => {
   const [userInput, setUserInput] = useState([]);
   const [userList, setUserList] = useState([]);
   const [selectValue, setSelectValue] = useState("");
@@ -38,9 +38,8 @@ const CreateAccount = ({ toggleModal, setIsCreateAccount }) => {
         authority: Number(selectValue),
       };
       saveLocalStorage(USER_STORAGE, [...userList, accountObj]);
-      setIsCreateAccount((prev) => !prev);
     }
-    e.target.reset();
+    setAddAccount((prev) => !prev);
     toggleModal();
   };
 
