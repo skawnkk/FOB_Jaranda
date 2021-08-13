@@ -1,38 +1,30 @@
 import React, { useState } from "react";
 import Input from "Components/common/Input";
 import Button from "Components/common/Button";
-import Radio from "Components/common/Radio";
+import EmailForms from "Components/SignUp/EmailForms";
+import AuthTypeForm from "Components/SignUp/AuthTypeForm";
 import Modal from "Components/common/Modal/Modal";
 import AddressModal from "Components/common/Modal/AddressModal";
 import SignupModal from "Components/common/Modal/SignupModal";
 import CreditModal from "Components/common/Modal/CreditModal";
-import { Mail, ClosedEye, OpenedEye, Person, Map, Card, Calendar } from "Assets/svg";
+import { ClosedEye, OpenedEye, Person, Map, Card, Calendar } from "Assets/svg";
 import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
-import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
+import { AUTH_LEVEL, USER_STORAGE, SIGNUP_EMAIL_STATUS } from "Utils/constants";
 import { validator } from "Utils/validator";
 import { hashSync } from "Utils/bcrypt";
 import {
   PasswordCheck,
   Wrapper,
   Form,
-  EmailWrapper,
   PasswordPolicy,
   AddressWrapper,
   CreditCardWrapper,
 } from "Pages/SignUp/style";
-
-const SIGNUP_EMAIL_STATUS = {
-  default: 0,
-  invalidType: 1,
-  unConfirmed: 2,
-  confirmedFailure: 3,
-  confirmedSuccess: 4,
-};
-
 const SignUp = () => {
+  const { defaultStatus, unConfirmed } = SIGNUP_EMAIL_STATUS;
   const [modalType, setModalType] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [emailDuplicateStatus, setEmailDuplicateStatus] = useState(SIGNUP_EMAIL_STATUS.default);
+  const [emailDuplicateStatus, setEmailDuplicateStatus] = useState(defaultStatus);
   const [emailDuplicateChecked, setEmailDuplicateChecked] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(true);
   const [passwordCheckError, setPasswordCheckError] = useState(false);
@@ -82,34 +74,6 @@ const SignUp = () => {
     return true;
   };
 
-  const handleClickDuplicateCheck = () => {
-    setEmailDuplicateChecked(true);
-    //이메일 형식 체크
-    if (!validator.email(formData.email)) {
-      setErrors({ ...errors, email: true });
-      setEmailDuplicateStatus(SIGNUP_EMAIL_STATUS.invalidType);
-      return;
-    }
-    //중복 체크
-    const userData = loadLocalStorage(USER_STORAGE);
-    const searchSameEmail = userData.filter((user) => user.email === formData.email);
-    if (searchSameEmail.length) {
-      setErrors({ ...errors, email: true });
-      setEmailDuplicateStatus(SIGNUP_EMAIL_STATUS.confirmedFailure);
-    } else {
-      setErrors({ ...errors, email: false });
-      setEmailDuplicateStatus(SIGNUP_EMAIL_STATUS.confirmedSuccess);
-    }
-  };
-
-  const getEmailStatusMessage = (status) => {
-    let message = errors.email ? "이메일을 입력하세요" : "";
-    if (status === SIGNUP_EMAIL_STATUS.invalidType) message = "이메일 형식을 확인해주세요";
-    else if (status === SIGNUP_EMAIL_STATUS.unConfirmed) message = "중복 검사를 진행해주세요";
-    else if (status === SIGNUP_EMAIL_STATUS.confirmedFailure) message = "중복된 이메일 입니다.";
-    return message;
-  };
-
   const toggleModal = (modal) => {
     setModalType(modal);
     setModalOpen(!modalOpen);
@@ -145,7 +109,7 @@ const SignUp = () => {
 
     if (!emailDuplicateChecked) {
       setErrors({ ...errors, email: true });
-      setEmailDuplicateStatus(SIGNUP_EMAIL_STATUS.unConfirmed);
+      setEmailDuplicateStatus(unConfirmed);
       return;
     }
 
@@ -160,39 +124,29 @@ const SignUp = () => {
     }
   };
 
-  const AuthTypes = [
-    { value: AUTH_LEVEL.teacher, label: "선생님" },
-    { value: AUTH_LEVEL.parent, label: "부모님" },
-  ];
-
   return (
     <Wrapper>
       <Form onSubmit={handleSignupSubmit}>
         <h4>회원가입</h4>
 
-        <Radio
-          name="authority"
+        <AuthTypeForm
           value={formData.authority}
           onChange={handleSetFormData}
-          data={AuthTypes}
-          error={errors.authority}
-          errorMessage="원하시는 계정 유형을 선택해 주세요."
+          errors={errors.authority}
         />
 
-        <EmailWrapper>
-          <Input
-            name="email"
-            value={formData.email}
-            onChange={handleSignUpChange}
-            placeholder="이메일을 입력하세요"
-            icon={<Mail />}
-            error={errors.email}
-            errorMessage={getEmailStatusMessage(emailDuplicateStatus)}
-            successMessage={emailDuplicateChecked && "사용 가능한 이메일 입니다"}
-            width="75%"
-          />
-          <Button value="중복확인" width="20%" onClick={handleClickDuplicateCheck} />
-        </EmailWrapper>
+        <EmailForms
+          value={formData.email}
+          onChange={handleSignUpChange}
+          errors={errors.email}
+          setErrors={setErrors}
+          {...{
+            emailDuplicateStatus,
+            setEmailDuplicateStatus,
+            emailDuplicateChecked,
+            setEmailDuplicateChecked,
+          }}
+        />
 
         <Input
           name="pw"

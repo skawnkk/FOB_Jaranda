@@ -29,7 +29,7 @@ const SearchBar = ({ searchKeywordRef, setSearchType, setIsSearch }) => {
           ref={searchKeywordRef}
         />
         <button onClick={clearSearchKeyword}>X</button>
-        <button className="searchButton" onClick={notifySearchChange}>
+        <button className="searchButton" onClick={notifySearchChange} value="검색">
           검색
         </button>
       </div>

@@ -30,7 +30,7 @@ export const ROUTES = {
   TEACHER: "/teacher",
   KIDS: "/kids",
 };
-
+export const { HOME, LOGIN, LOGOUT, SIGNUP, ADMIN, STUDENTS, MATCHUP, TEACHER, KIDS } = ROUTES;
 export const USERDATA_TEMPLATE = {
   id: "",
   authority: "",
@@ -55,25 +55,32 @@ export const AUTH_LEVEL = {
   unknown: 3,
 };
 
+export const SIGNUP_EMAIL_STATUS = {
+  defaultStatus: 0,
+  invalidType: 1,
+  unConfirmed: 2,
+  confirmedFailure: 3,
+  confirmedSuccess: 4,
+};
 export const CATEGORY = {
   admin: [
-    { title: "이용 안내", path: "/" },
-    { title: "사용자 관리", path: "/admin" },
+    { title: "이용 안내", path: HOME },
+    { title: "사용자 관리", path: ADMIN },
   ],
   teacher: [
-    { title: "이용 안내", path: "/" },
-    { title: "학생 관리", path: "/students" },
-    { title: "학생 소개 받기", path: "/matchup" },
+    { title: "이용 안내", path: HOME },
+    { title: "학생 관리", path: STUDENTS },
+    { title: "학생 소개 받기", path: MATCHUP },
   ],
   parent: [
-    { title: "이용 안내", path: "/" },
-    { title: "우리 아이 관리", path: "/kids" },
-    { title: "자란다 선생님 찾기", path: "/teacher" },
+    { title: "이용 안내", path: HOME },
+    { title: "우리 아이 관리", path: KIDS },
+    { title: "자란다 선생님 찾기", path: TEACHER },
   ],
-  allUser: [{ title: "이용 안내", path: "/" }],
+  allUser: [{ title: "이용 안내", path: HOME }],
 };
 
-export const ADMIN = {
+export const ADMIN_CONSTANTS = {
   PAGE_SIZE: 10,
   authTitle: { choice: "선택", admin: "관리자", teacher: "선생님", parents: "부모님" },
 };

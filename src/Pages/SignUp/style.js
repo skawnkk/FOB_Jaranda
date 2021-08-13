@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import checkIcon from "Assets/svg/check.svg";
-
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexSet("center", "center", "column")};
   width: 100%;
@@ -23,10 +22,6 @@ const Form = styled.form`
     width: 100%;
     padding: 40px 0;
   }
-`;
-
-const EmailWrapper = styled.div`
-  ${({ theme }) => theme.flexSet("space-between")};
 `;
 
 const PasswordPolicy = styled.div`
@@ -85,12 +80,4 @@ const CreditCardWrapper = styled.div`
   }
 `;
 
-export {
-  PasswordCheck,
-  Wrapper,
-  Form,
-  EmailWrapper,
-  PasswordPolicy,
-  AddressWrapper,
-  CreditCardWrapper,
-};
+export { PasswordCheck, Wrapper, Form, PasswordPolicy, AddressWrapper, CreditCardWrapper };

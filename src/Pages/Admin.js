@@ -7,10 +7,10 @@ import Pagination from "Components/Admin/Pagination/Pagination";
 import Modal from "Components/common/Modal/Modal";
 import CreateAccount from "Components/Admin/CreateAccount/CreateAccount";
 import { loadLocalStorage, saveLocalStorage } from "Utils/Storage";
-import { ADMIN, USER_STORAGE } from "Utils/constants";
+import { ADMIN_CONSTANTS, USER_STORAGE } from "Utils/constants";
 
 const Admin = () => {
-  const { PAGE_SIZE } = ADMIN;
+  const { PAGE_SIZE } = ADMIN_CONSTANTS;
   const searchKeywordRef = useRef("");
   const [pageNum, setPageNum] = useState(0);
   const [users, setUsers] = useState([]);
@@ -73,7 +73,7 @@ const Admin = () => {
     return users.filter((item) => isSameAuth(item));
   };
 
-  const handleModal = () => setIsOpen(!isOpen);
+  const handleModal = () => setIsOpen((isOpen) => !isOpen);
 
   return (
     <AdminWrapper>

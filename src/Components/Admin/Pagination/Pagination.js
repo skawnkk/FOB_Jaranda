@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ADMIN } from "Utils/constants";
+import { ADMIN_CONSTANTS } from "Utils/constants";
 
 const Pagination = ({ pageNum, setPageNum, wholePages }) => {
-  const { PAGE_SIZE } = ADMIN;
+  const { PAGE_SIZE } = ADMIN_CONSTANTS;
   const [lastBook, setLastBook] = useState([]);
   const totalPages = Array.from({ length: wholePages }, (_, idx) => idx + 1);
   const changeBook = (totalPages, pageNum) => {

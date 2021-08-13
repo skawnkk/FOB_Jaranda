@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import AuthSelector from "Components/Admin/UserDataTable/AuthSelector";
-import { ADMIN } from "Utils/constants";
+import { ADMIN_CONSTANTS } from "Utils/constants";
 import styled from "styled-components";
 export const UserDataLine = ({ filteredUsers, handleAuthUpdate }) => {
   const {
     authTitle: { choice, admin, teacher, parents },
-  } = ADMIN;
+  } = ADMIN_CONSTANTS;
   const authTitle = [choice, admin, teacher, parents];
   const [choicedAuth, setChoicedAuth] = useState(-1);
 
