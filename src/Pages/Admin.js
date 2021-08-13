@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
@@ -59,7 +59,7 @@ const Admin = () => {
     const searchedTotalPages = dividedPageUsers(search());
     setWholePages(searchedTotalPages.length);
     setFilteredUsers(searchedTotalPages[pageNum] || []);
-  }, [filterType, pageNum, isSearch]);
+  }, [users, filterType, pageNum, isSearch]);
 
   const isSameAuth = (item) =>
     (item.authority === 2 && parents) ||

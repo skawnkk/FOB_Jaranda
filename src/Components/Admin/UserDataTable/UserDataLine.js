@@ -10,7 +10,6 @@ export const UserDataLine = ({ filteredUsers, handleAuthUpdate }) => {
   const [choicedAuth, setChoicedAuth] = useState(-1);
 
   const handleOptionChange = (auth) => {
-    console.log(auth);
     if (auth === -1) return;
     setChoicedAuth(auth);
   };

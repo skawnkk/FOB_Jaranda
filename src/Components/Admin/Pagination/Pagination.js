@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { ADMIN } from "Utils/constants";
 
 const Pagination = ({ pageNum, setPageNum, wholePages }) => {
+  const { PAGE_SIZE } = ADMIN;
   const [lastBook, setLastBook] = useState([]);
   const totalPages = Array.from({ length: wholePages }, (_, idx) => idx + 1);
-  const changeBook = (totalPages) => {
+  const changeBook = (totalPages, pageNum) => {
     const left = wholePages - pageNum;
 
-    if (wholePages <= 10) return totalPages.slice(0, wholePages);
+    if (wholePages <= PAGE_SIZE) return totalPages.slice(0, wholePages);
 
-    if (pageNum < 6) {
-      return totalPages.slice(0, 10);
-    } else {
-      if (left <= 5) {
-        return totalPages.slice(pageNum - 10 + left, wholePages);
-      } else {
-        return totalPages.slice(pageNum - 5, pageNum + 5);
-      }
-    }
+    if (pageNum <= PAGE_SIZE / 2) {
+      return totalPages.slice(0, PAGE_SIZE);
+    } else
+      return left <= 5
+        ? totalPages.slice(pageNum - PAGE_SIZE + left, wholePages)
+        : totalPages.slice(pageNum - PAGE_SIZE / 2, pageNum + PAGE_SIZE / 2);
   };
+  const newBook = changeBook(totalPages, pageNum);
 
   useEffect(() => {
-    setLastBook(changeBook(totalPages));
-  }, [pageNum, wholePages]);
+    setLastBook(newBook);
+  }, [pageNum, newBook]);
 
   const handlePage = (e, page) => {
     const type = e.target.id;

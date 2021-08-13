@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import checkIcon from "Assets/svg/check.svg";
 
 const Wrapper = styled.div`
