@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import SearchBar from "Components/Admin/SearchBar/SearchBar";
 import AuthFilter from "Components/Admin/AuthFilter/AuthFilter";
@@ -19,29 +19,29 @@ const Admin = () => {
   const [wholePages, setWholePages] = useState(1);
   const [isSearch, setIsSearch] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
-  const [searchConditions, setSearchConditions] = useState({
-    searchType: "name",
-    condition: { whole: true, teacher: false, parents: false, admin: false },
+  const [searchType, setSearchType] = useState("name");
+  const [filterType, setFilterType] = useState({
+    whole: true,
+    teacher: false,
+    parents: false,
+    admin: false,
   });
-  const {
-    searchType,
-    condition: { whole, teacher, parents, admin },
-  } = searchConditions;
+  const { whole, teacher, parents, admin } = filterType;
 
   const handleAuthUpdate = (selectedId, auth) => {
     if (auth === -1) return;
-    const updateUserInfo = (users) => {
-      return users.map((user) => (user.id === selectedId ? { ...user, authority: auth } : user));
-    };
+    const updateUserInfo = (users) =>
+      users.map((user) => (user.id === selectedId ? { ...user, authority: auth } : user));
 
-    const updatedUsers = updateUserInfo(users);
-    setUsers(updatedUsers);
-    saveLocalStorage(USER_STORAGE, updatedUsers);
+    //원본데이터 로컬수정
+    setUsers(updateUserInfo(users));
+    saveLocalStorage(USER_STORAGE, users);
 
-    const updateAuthFilteredUsers = updateUserInfo(filteredUsers);
-    setFilteredUsers(updateAuthFilteredUsers);
+    //보여지는 뷰만 수정
+    setFilteredUsers(updateUserInfo(filteredUsers));
   };
 
+  //페이지 초기로딩 & 계정생성시
   useEffect(() => {
     setUsers(loadLocalStorage(USER_STORAGE));
     const dividedUsers = dividedPageUsers(search());
@@ -60,12 +60,12 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    const searchedTotalPages = dividedPageUsers(search()).length;
-    setWholePages(searchedTotalPages);
-    setFilteredUsers(dividedPageUsers(search())[pageNum] || []);
-  }, [searchConditions.condition, pageNum, wholePages, isSearch]);
+    const searchedTotalPages = dividedPageUsers(search());
+    setWholePages(searchedTotalPages.length);
+    setFilteredUsers(searchedTotalPages[pageNum] || []);
+  }, [filterType, pageNum, wholePages, isSearch]);
 
-  useEffect(() => setPageNum(0), [searchConditions.condition, isSearch]);
+  useEffect(() => setPageNum(0), [filterType, isSearch]);
 
   const isSameAuth = (item) =>
     (item.authority === 2 && parents) ||
@@ -78,24 +78,19 @@ const Admin = () => {
       return users.filter((item) => isSameAuth(item) && item[searchType] === searchKeyword);
     return users.filter((item) => isSameAuth(item));
   };
-
-  const handleSearchClick = () => setIsSearch((prev) => !prev);
-
+  const handleModal = () => setIsOpen(!isOpen);
   return (
     <AdminWrapper>
       <SearchContainer>
-        <CreateAccountButton onClick={() => setIsOpen(!isOpen)}>계정 생성</CreateAccountButton>
-        <SearchBar {...{ searchKeywordRef, setSearchConditions, handleSearchClick }} />
+        <CreateAccountButton onClick={handleModal}>계정 생성</CreateAccountButton>
+        <SearchBar {...{ searchKeywordRef, setSearchType, setIsSearch }} />
       </SearchContainer>
-      <AuthFilter {...{ searchConditions, setSearchConditions }} />
+      <AuthFilter {...{ filterType, setFilterType }} />
       <UserDataTable {...{ filteredUsers, handleAuthUpdate }} />
       <Pagination {...{ pageNum, setPageNum, wholePages }} />
 
-      <Modal isOpen={isOpen} toggleModal={() => setIsOpen(!isOpen)}>
-        <CreateAccount
-          setIsCreateAccount={setIsCreateAccount}
-          toggleModal={() => setIsOpen(!isOpen)}
-        />
+      <Modal isOpen={isOpen} toggleModal={handleModal}>
+        <CreateAccount setIsCreateAccount={setIsCreateAccount} toggleModal={handleModal} />
       </Modal>
     </AdminWrapper>
   );

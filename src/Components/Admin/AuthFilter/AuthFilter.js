@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const AuthFilter = ({ searchConditions, setSearchConditions }) => {
-  const { searchType, condition } = searchConditions;
-
+const AuthFilter = ({ filterType, setFilterType }) => {
   const authFilters = [
     { type: "전체", key: "whole" },
     { type: "관리자", key: "admin" },
@@ -12,36 +10,35 @@ const AuthFilter = ({ searchConditions, setSearchConditions }) => {
   ];
 
   const activeWholeFilter = () => ({
-    searchType: searchType,
-    condition: { whole: true, teacher: true, parents: true, admin: true },
+    whole: true,
+    teacher: true,
+    parents: true,
+    admin: true,
   });
 
-  const toggleAuthFilter = (filterType) => ({
-    searchType: searchType,
-    condition: {
-      ...condition,
-      whole: false,
-      [filterType]: !condition[filterType],
-    },
+  const toggleAuthFilter = (choicedAuth) => ({
+    ...filterType,
+    whole: false,
+    [choicedAuth]: !filterType[choicedAuth],
   });
 
-  const activeAuthFilters = (filterType) => {
-    const toggledCondition = toggleAuthFilter(filterType);
-    const { teacher, parents, admin } = toggledCondition.condition;
-    const isAllUnChecked = teacher === false && parents === false && admin === false;
+  const activeOtherFilters = (choicedAuth) => {
+    const toggledAuthFilter = toggleAuthFilter(choicedAuth);
+    const { parents, teacher, admin } = toggledAuthFilter;
+
+    const isAllUnChecked = !teacher && !parents && !admin;
     const isAllChecked = teacher && parents && admin;
 
     if (isAllUnChecked || isAllChecked) return activeWholeFilter();
-    return toggledCondition;
+    return toggledAuthFilter;
   };
 
-  const changeFilter = (filterType) =>
-    filterType === "whole" ? activeWholeFilter() : activeAuthFilters(filterType);
+  const changeFilter = (choicedAuth) =>
+    choicedAuth === "whole" ? activeWholeFilter() : activeOtherFilters(choicedAuth);
 
   const handleAuthFilter = (e) => {
-    const filterType = e.target.value;
-    const updatedConditions = changeFilter(filterType);
-    setSearchConditions(updatedConditions);
+    const choicedAuth = e.target.value;
+    setFilterType(changeFilter(choicedAuth));
   };
 
   return (
@@ -54,7 +51,7 @@ const AuthFilter = ({ searchConditions, setSearchConditions }) => {
               id={idx}
               onChange={handleAuthFilter}
               value={filter.key}
-              checked={searchConditions.condition[filter.key]}
+              checked={filterType[filter.key]}
             />
             <span>{filter.type}</span>
           </label>

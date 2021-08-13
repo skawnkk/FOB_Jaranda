@@ -15,35 +15,43 @@ export const UserDataLine = ({ filteredUsers, handleAuthUpdate }) => {
   };
 
   return filteredUsers.length > 0 ? (
-    filteredUsers.map(({ id, name, email, pw, address, dateOfBirth, creditCardNum, authority }) => (
-      <tr key={id}>
-        <td>{id}</td>
-        <td>{name}</td>
-        <td>{email}</td>
-        <td>{pw}</td>
-        <td>{address}</td>
-        <td>{dateOfBirth}</td>
-        <td>{creditCardNum}</td>
-        <td>{authTitle.slice(1)[authority]}</td>
-        <td>
-          <AuthSelector handleOptionChange={handleOptionChange} authTitle={authTitle} />
-        </td>
-        <td>
-          <button type="button" onClick={() => handleAuthUpdate(id, choicedAuth)}>
-            수정
-          </button>
-        </td>
-      </tr>
-    ))
+    filteredUsers.map(({ id, name, email, pw, address, dateOfBirth, creditCardNum, authority }) => {
+      const authType = authTitle.slice(1)[authority];
+      return (
+        <tr key={id}>
+          <td>{id}</td>
+          <td>{name}</td>
+          <td>{email}</td>
+          <td>{pw}</td>
+          <td>{address}</td>
+          <td>{dateOfBirth}</td>
+          <td>{creditCardNum}</td>
+          <td>{authType}</td>
+          <td>
+            <AuthSelector handleOptionChange={handleOptionChange} authTitle={authTitle} />
+          </td>
+          <td>
+            <button type="button" onClick={() => handleAuthUpdate(id, choicedAuth)}>
+              수정
+            </button>
+          </td>
+        </tr>
+      );
+    })
   ) : (
-    <EmptyData>일치하는 데이터가 없습니다. 🤢</EmptyData>
+    <EmptyData>
+      <td colSpan="8">일치하는 데이터가 없습니다. 🤢</td>
+    </EmptyData>
   );
 };
 
 export default UserDataLine;
 
-const EmptyData = styled.div`
-  ${({ theme }) => theme.flexSet()};
-  height: 300px;
+const EmptyData = styled.tr`
+  height: 50px;
   border: 1px solid ${({ theme }) => theme.color.borderline};
+  td {
+    text-align: center;
+    padding-top: 20px;
+  }
 `;

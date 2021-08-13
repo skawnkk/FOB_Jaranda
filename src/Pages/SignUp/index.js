@@ -6,11 +6,11 @@ import Modal from "Components/common/Modal/Modal";
 import AddressModal from "Components/common/Modal/AddressModal";
 import SignupModal from "Components/common/Modal/SignupModal";
 import CreditModal from "Components/common/Modal/CreditModal";
-import { hashSync } from "Utils/bcrypt";
-import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
-import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
 import { Mail, ClosedEye, OpenedEye, Person, Map, Card, Calendar } from "Assets/svg";
-import { RegExr } from "Utils/RegExr";
+import { loadLocalStorage, saveLocalStorage, autoIncrementUserId } from "Utils/Storage";
+import { AUTH_LEVEL, USER_STORAGE } from "Utils/constants";
+import { validator } from "Utils/validator";
+import { hashSync } from "Utils/bcrypt";
 import {
   PasswordCheck,
   Wrapper,
@@ -20,6 +20,14 @@ import {
   AddressWrapper,
   CreditCardWrapper,
 } from "Pages/SignUp/style";
+
+const SIGNUP_EMAIL_STATUS = {
+  default: 0,
+  invalidType: 1,
+  unConfirmed: 2,
+  confirmedFailure: 3,
+  confirmedSuccess: 4,
+};
 
 const SignUp = () => {
   const [modalType, setModalType] = useState("");
@@ -59,28 +67,12 @@ const SignUp = () => {
 
   const [errors, setErrors] = useState(initialErrorState);
 
-  const validator = {
-    authority: (authority) => !(authority === AUTH_LEVEL.unknown),
-    email: (email) => RegExr.email.test(email),
-    pw: (pw) => RegExr.password.test(pw),
-    pwCheck: (pwCheck) => pwCheck === formData.pw,
-    name: (name) => RegExr.name.test(name),
-    address: (address) => !(address === ""),
-    detailAddress: (detailAddress) => !(detailAddress === ""),
-    dateOfBirth: (dateOfBirth) => RegExr.dateOfBirth.test(dateOfBirth),
-    creditCardNum: (creditCardNum) => RegExr.creditNumber.test(creditCardNum),
-    pwEnglish: (pw) => pw.search(RegExr.pwEnglish) >= 0,
-    pwNumber: (pw) => pw.search(RegExr.pwNumber) >= 0,
-    pwSpecialCharacter: (pw) => pw.search(RegExr.pwSpecialCharacter) >= 0,
-    pwLength: (pw) => pw.length >= 8,
-  };
-
   const isAllValid = (formData) => {
     for (const key in formData) {
       const value = formData[key];
       const validateFunction = validator[key];
 
-      if (!validateFunction(value)) {
+      if (!validateFunction(value, formData.pw)) {
         setErrors({ ...errors, [key]: true });
         if (key === "pwCheck") setPasswordCheckError(true);
         return false;
@@ -90,13 +82,6 @@ const SignUp = () => {
     return true;
   };
 
-  const SIGNUP_EMAIL_STATUS = {
-    default: 0,
-    invalidType: 1,
-    unConfirmed: 2,
-    confirmedFailure: 3,
-    confirmedSuccess: 4,
-  };
   const handleClickDuplicateCheck = () => {
     setEmailDuplicateChecked(true);
     //이메일 형식 체크
