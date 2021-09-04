@@ -1,4 +1,6 @@
-### > 김남주: [블로그 회고✨](https://prod.velog.io/@skawnkk/%EC%9E%90%EB%9E%80%EB%8B%A4-%EA%B8%B0%EC%97%85%EA%B3%BC%EC%A0%9C-%ED%9A%8C%EA%B3%A0-%EC%A1%B0%EA%B1%B4%EC%97%90-%EB%A7%9E%EB%8A%94-%EA%B2%80%EC%83%89%EA%B2%B0%EA%B3%BC-%EB%B3%B4%EC%97%AC%EC%A3%BC%EA%B8%B0)
+### > 김남주: 
+#### [블로그 회고✨](https://prod.velog.io/@skawnkk/%EC%9E%90%EB%9E%80%EB%8B%A4-%EA%B8%B0%EC%97%85%EA%B3%BC%EC%A0%9C-%ED%9A%8C%EA%B3%A0-%EC%A1%B0%EA%B1%B4%EC%97%90-%EB%A7%9E%EB%8A%94-%EA%B2%80%EC%83%89%EA%B2%B0%EA%B3%BC-%EB%B3%B4%EC%97%AC%EC%A3%BC%EA%B8%B0)
+#### [코드 리팩토링 정리💦](https://www.notion.so/53fd811008674a038b1183cdeb39914a)
 
 # 자란다 교육 사이트(Team 7ill Resource)
 
